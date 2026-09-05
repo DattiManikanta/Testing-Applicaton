@@ -8,6 +8,7 @@ import { RegistrationForm } from './components/RegistrationForm.jsx';
 import { TokenSlip } from './components/TokenSlip.jsx';
 import { DoctorDirectory } from './components/DoctorDirectory.jsx';
 import { PatientPortal } from './components/PatientPortal.jsx';
+import { VitalsScreen } from './components/VitalsScreen.jsx';
 import { PharmacyScreen } from './components/PharmacyScreen.jsx';
 import { StaffDashboard } from './components/StaffDashboard.jsx';
 import { Footer } from './components/Footer.jsx';
@@ -154,6 +155,22 @@ export function App() {
     setActiveTab('slip');
   };
 
+  // Save vitals from separate Vitals Station module
+  const handleSaveVitals = (token, vitalsData) => {
+    setRecords(prev => {
+      const patient = prev[token];
+      if (!patient) return prev;
+      return {
+        ...prev,
+        [token]: {
+          ...patient,
+          vitals: vitalsData,
+          vitalsRecorded: true
+        }
+      };
+    });
+  };
+
   // Add Fast-Track Urgent triage patient from staff console
   const handleAddUrgentPatient = (depId) => {
     const dep = departments.find(d => d.id === depId);
@@ -270,6 +287,16 @@ export function App() {
             tokenData={lastGeneratedToken}
             onBackToQueue={() => setActiveTab('queue')}
             onNewRegistration={() => setActiveTab('register')}
+            onGoToVitals={() => setActiveTab('vitals')}
+          />
+        )}
+
+        {/* Dedicated Nursing Triage & Vitals Station Module */}
+        {activeTab === 'vitals' && (
+          <VitalsScreen 
+            records={records}
+            onSaveVitals={handleSaveVitals}
+            initialToken={lastGeneratedToken ? lastGeneratedToken.token : 'CAR-104'}
           />
         )}
 

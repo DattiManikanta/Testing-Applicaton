@@ -905,7 +905,24 @@ function Navbar({
     x2: "16",
     y1: "11",
     y2: "11"
-  })), "New OP Registration"), /*#__PURE__*/React.createElement("button", {
+  })), "OP Registration & Pay"), /*#__PURE__*/React.createElement("button", {
+    className: `nav-item ${activeTab === 'vitals' ? 'active' : ''}`,
+    onClick: () => setActiveTab('vitals'),
+    style: {
+      color: '#059669'
+    }
+  }, /*#__PURE__*/React.createElement("svg", {
+    width: "16",
+    height: "16",
+    viewBox: "0 0 24 24",
+    fill: "none",
+    stroke: "currentColor",
+    strokeWidth: "2",
+    strokeLinecap: "round",
+    strokeLinejoin: "round"
+  }, /*#__PURE__*/React.createElement("path", {
+    d: "M22 12h-4l-3 9L9 3l-3 9H2"
+  })), "Vitals Station"), /*#__PURE__*/React.createElement("button", {
     className: `nav-item ${activeTab === 'doctors' ? 'active' : ''}`,
     onClick: () => setActiveTab('doctors')
   }, /*#__PURE__*/React.createElement("svg", {
@@ -1379,12 +1396,10 @@ function QueueBoard({
 function RegistrationForm({
   departments,
   doctors,
-  onRegisterSuccess
+  onRegisterSuccess,
+  onGoToVitals
 }) {
-  // Step 1: Demographics, Department & Payment | Step 2: Nursing Triage & Vitals
-  const [currentStep, setCurrentStep] = useState(1);
-
-  // Step 1: Patient Information
+  // Patient Information
   const [formData, setFormData] = useState({
     patientName: '',
     age: '',
@@ -1397,7 +1412,7 @@ function RegistrationForm({
     priority: 'Regular'
   });
 
-  // Step 1: Payment Information
+  // Payment Information (Registration Time Payment Only)
   const [paymentData, setPaymentData] = useState({
     consultationFee: 700,
     regFee: 100,
@@ -1406,25 +1421,12 @@ function RegistrationForm({
     paymentStatus: 'Paid',
     transactionId: `TXN-${Math.floor(100000 + Math.random() * 900000)}`
   });
-
-  // Step 2: Clinical Vitals Entity
-  const [vitalsData, setVitalsData] = useState({
-    bpSystolic: '120',
-    bpDiastolic: '80',
-    pulse: '74',
-    spo2: '99',
-    temp: '98.6',
-    weight: '68',
-    height: '172',
-    bloodSugar: '110',
-    triageNotes: 'Patient conscious, alert and oriented. Normal breathing on room air.'
-  });
   const [errors, setErrors] = useState({});
 
   // Filter doctors based on department selected
   const availableDoctors = doctors.filter(d => d.depCode === formData.departmentCode);
 
-  // Auto-sync consultation fee when department or doctor changes
+  // Auto-sync consultation fee when doctor changes
   useEffect(() => {
     const selectedDoc = doctors.find(d => d.name === formData.doctor);
     if (selectedDoc) {
@@ -1467,16 +1469,6 @@ function RegistrationForm({
       transactionId: `TXN-${Math.floor(100000 + Math.random() * 900000)}`
     }));
   };
-  const handleVitalsChange = e => {
-    const {
-      name,
-      value
-    } = e.target;
-    setVitalsData(prev => ({
-      ...prev,
-      [name]: value
-    }));
-  };
   const handlePrioritySelect = priority => {
     setFormData(prev => ({
       ...prev,
@@ -1484,60 +1476,8 @@ function RegistrationForm({
     }));
   };
 
-  // Calculate BMI dynamically
-  const calculateBMI = (wt, ht) => {
-    const w = parseFloat(wt);
-    const h = parseFloat(ht) / 100;
-    if (!w || !h || h <= 0) return '23.0 (Normal)';
-    const bmiVal = (w / (h * h)).toFixed(1);
-    let category = 'Normal';
-    if (bmiVal < 18.5) category = 'Underweight';else if (bmiVal < 25) category = 'Normal';else if (bmiVal < 30) category = 'Overweight';else category = 'Obese';
-    return `${bmiVal} (${category})`;
-  };
-
-  // Quick Vitals Presets
-  const applyVitalsPreset = preset => {
-    if (preset === 'normal') {
-      setVitalsData({
-        bpSystolic: '120',
-        bpDiastolic: '80',
-        pulse: '74',
-        spo2: '99',
-        temp: '98.6',
-        weight: '68',
-        height: '172',
-        bloodSugar: '110',
-        triageNotes: 'Vitals stable and within normal adult clinical limits.'
-      });
-    } else if (preset === 'hypertension') {
-      setVitalsData({
-        bpSystolic: '152',
-        bpDiastolic: '94',
-        pulse: '84',
-        spo2: '98',
-        temp: '98.4',
-        weight: '78',
-        height: '170',
-        bloodSugar: '145',
-        triageNotes: 'Elevated blood pressure observed. Patient alerted for cardiology evaluation.'
-      });
-    } else if (preset === 'fever') {
-      setVitalsData({
-        bpSystolic: '118',
-        bpDiastolic: '78',
-        pulse: '98',
-        spo2: '97',
-        temp: '101.4',
-        weight: '62',
-        height: '168',
-        bloodSugar: '105',
-        triageNotes: 'Febrile patient with mild tachycardia. Expedited to consultation.'
-      });
-    }
-  };
-
-  // Validate Step 1 (Registration + Payment)
-  const handleProceedToVitals = e => {
+  // Handle Registration & Payment Submit
+  const handleSubmit = e => {
     e.preventDefault();
     const newErrors = {};
     if (!formData.patientName.trim()) newErrors.patientName = 'Patient full name is required';
@@ -1547,25 +1487,8 @@ function RegistrationForm({
       setErrors(newErrors);
       return;
     }
-    setCurrentStep(2);
-  };
-
-  // Final Submission on Step 2 (Vitals complete -> Print Registration & Vitals Form)
-  const handleFinalSubmit = e => {
-    e.preventDefault();
     const selectedDep = departments.find(d => d.code === formData.departmentCode) || departments[0];
     const assignedDoc = formData.doctor || (availableDoctors[0] ? availableDoctors[0].name : selectedDep.doctor);
-    const formattedVitals = {
-      bp: `${vitalsData.bpSystolic}/${vitalsData.bpDiastolic} mmHg`,
-      pulse: `${vitalsData.pulse} bpm`,
-      spo2: `${vitalsData.spo2}%`,
-      temp: `${vitalsData.temp} °F`,
-      weight: `${vitalsData.weight} kg`,
-      height: `${vitalsData.height} cm`,
-      bmi: calculateBMI(vitalsData.weight, vitalsData.height),
-      bloodSugar: `${vitalsData.bloodSugar} mg/dL`,
-      triageNotes: vitalsData.triageNotes
-    };
     const totalAmount = paymentData.consultationFee + paymentData.regFee;
     onRegisterSuccess({
       ...formData,
@@ -1575,8 +1498,7 @@ function RegistrationForm({
       payment: {
         ...paymentData,
         totalAmount: totalAmount
-      },
-      vitals: formattedVitals
+      }
     });
   };
   const totalPayable = paymentData.consultationFee + paymentData.regFee;
@@ -1590,50 +1512,10 @@ function RegistrationForm({
       flexDirection: 'column',
       alignItems: 'center'
     }
-  }, /*#__PURE__*/React.createElement("h2", null, "\uD83D\uDCDD Outpatient (OP) Registration, Payment & Vitals Intake"), /*#__PURE__*/React.createElement("p", null, "Step 1: Patient Details & Payment \u2794 Step 2: Clinical Vitals Check \u2794 Step 3: Print Form")), /*#__PURE__*/React.createElement("div", {
-    style: {
-      maxWidth: '700px',
-      margin: '0 auto 24px',
-      display: 'flex',
-      alignItems: 'center',
-      justifyContent: 'center',
-      gap: '14px'
-    }
-  }, /*#__PURE__*/React.createElement("div", {
-    onClick: () => setCurrentStep(1),
-    style: {
-      display: 'flex',
-      alignItems: 'center',
-      gap: '8px',
-      cursor: 'pointer',
-      padding: '8px 18px',
-      borderRadius: 'var(--radius-full)',
-      background: currentStep === 1 ? 'var(--primary)' : 'var(--emerald-light)',
-      color: currentStep === 1 ? 'white' : '#065f46',
-      fontWeight: 700,
-      fontSize: '0.88rem'
-    }
-  }, /*#__PURE__*/React.createElement("span", null, currentStep > 1 ? '✓' : '1'), /*#__PURE__*/React.createElement("span", null, "Step 1: Patient Info & Payment")), /*#__PURE__*/React.createElement("span", {
-    style: {
-      color: 'var(--text-muted)'
-    }
-  }, "\u2794"), /*#__PURE__*/React.createElement("div", {
-    style: {
-      display: 'flex',
-      alignItems: 'center',
-      gap: '8px',
-      padding: '8px 18px',
-      borderRadius: 'var(--radius-full)',
-      background: currentStep === 2 ? 'var(--primary)' : 'var(--bg-alt)',
-      color: currentStep === 2 ? 'white' : 'var(--text-muted)',
-      border: currentStep === 2 ? 'none' : '1px solid var(--border)',
-      fontWeight: 700,
-      fontSize: '0.88rem'
-    }
-  }, /*#__PURE__*/React.createElement("span", null, "2"), /*#__PURE__*/React.createElement("span", null, "Step 2: Add Clinical Vitals Entity"))), /*#__PURE__*/React.createElement("div", {
+  }, /*#__PURE__*/React.createElement("h2", null, "\uD83D\uDCDD Outpatient (OP) Patient Registration & Counter Payment"), /*#__PURE__*/React.createElement("p", null, "Register new outpatient and complete consultation billing payment. (Vitals recorded separately at Nursing Triage)")), /*#__PURE__*/React.createElement("div", {
     className: "form-card"
-  }, currentStep === 1 && /*#__PURE__*/React.createElement("form", {
-    onSubmit: handleProceedToVitals
+  }, /*#__PURE__*/React.createElement("form", {
+    onSubmit: handleSubmit
   }, /*#__PURE__*/React.createElement("div", {
     className: "form-group",
     style: {
@@ -1711,7 +1593,7 @@ function RegistrationForm({
     className: "form-group"
   }, /*#__PURE__*/React.createElement("label", {
     className: "form-label"
-  }, "Contact Mobile ", /*#__PURE__*/React.createElement("span", {
+  }, "Contact Mobile Number ", /*#__PURE__*/React.createElement("span", {
     className: "req"
   }, "*")), /*#__PURE__*/React.createElement("input", {
     type: "tel",
@@ -1786,7 +1668,7 @@ function RegistrationForm({
     type: "text",
     name: "symptoms",
     className: "form-input",
-    placeholder: "e.g. Chest tightness, fever, joint pain, general checkup...",
+    placeholder: "e.g. Chest discomfort, recurrent fever, knee joint pain...",
     value: formData.symptoms,
     onChange: handleChange
   }))), /*#__PURE__*/React.createElement("div", {
@@ -1795,7 +1677,7 @@ function RegistrationForm({
       background: '#f8fafc',
       border: '2px solid #e2e8f0',
       borderRadius: 'var(--radius-lg)',
-      padding: '20px 24px'
+      padding: '22px 24px'
     }
   }, /*#__PURE__*/React.createElement("div", {
     style: {
@@ -1812,7 +1694,7 @@ function RegistrationForm({
     }
   }, /*#__PURE__*/React.createElement("span", {
     style: {
-      fontSize: '1.25rem'
+      fontSize: '1.3rem'
     }
   }, "\uD83D\uDCB3"), /*#__PURE__*/React.createElement("div", null, /*#__PURE__*/React.createElement("h3", {
     style: {
@@ -1820,28 +1702,28 @@ function RegistrationForm({
       fontWeight: 800,
       color: 'var(--dark)'
     }
-  }, "OP Consultation Billing & Registration Fee"), /*#__PURE__*/React.createElement("p", {
+  }, "Registration Counter Billing & Fee Collection"), /*#__PURE__*/React.createElement("p", {
     style: {
       fontSize: '0.78rem',
       color: 'var(--text-muted)'
     }
-  }, "Mandatory outpatient registration counter payment."))), /*#__PURE__*/React.createElement("span", {
+  }, "Registration fee & Doctor consultation charge."))), /*#__PURE__*/React.createElement("span", {
     style: {
-      background: 'var(--emerald-light)',
-      color: '#065f46',
-      padding: '3px 10px',
+      background: '#dcfce7',
+      color: '#15803d',
+      padding: '4px 12px',
       borderRadius: 'var(--radius-full)',
       fontSize: '0.76rem',
       fontWeight: 800
     }
-  }, "READY FOR COLLECTION")), /*#__PURE__*/React.createElement("div", {
+  }, "COUNTER PAYMENT REQUIRED")), /*#__PURE__*/React.createElement("div", {
     style: {
       display: 'grid',
       gridTemplateColumns: 'repeat(3, 1fr)',
       gap: '14px',
       marginBottom: '16px',
       background: 'white',
-      padding: '12px 16px',
+      padding: '14px 16px',
       borderRadius: 'var(--radius-md)',
       border: '1px solid var(--border)'
     }
@@ -1853,7 +1735,7 @@ function RegistrationForm({
     }
   }, "Doctor Consultation Fee:"), /*#__PURE__*/React.createElement("div", {
     style: {
-      fontSize: '1.1rem',
+      fontSize: '1.15rem',
       fontWeight: 800,
       color: 'var(--dark)'
     }
@@ -1863,9 +1745,9 @@ function RegistrationForm({
       color: 'var(--text-muted)',
       fontWeight: 600
     }
-  }, "One-Time OP Registration Card:"), /*#__PURE__*/React.createElement("div", {
+  }, "Hospital OP Registration Card:"), /*#__PURE__*/React.createElement("div", {
     style: {
-      fontSize: '1.1rem',
+      fontSize: '1.15rem',
       fontWeight: 800,
       color: 'var(--dark)'
     }
@@ -1880,9 +1762,9 @@ function RegistrationForm({
       color: 'var(--text-muted)',
       fontWeight: 700
     }
-  }, "TOTAL AMOUNT PAYABLE:"), /*#__PURE__*/React.createElement("div", {
+  }, "TOTAL AMOUNT TO PAY:"), /*#__PURE__*/React.createElement("div", {
     style: {
-      fontSize: '1.3rem',
+      fontSize: '1.35rem',
       fontWeight: 800,
       color: 'var(--primary)'
     }
@@ -1904,7 +1786,7 @@ function RegistrationForm({
   }, "\uD83D\uDCF1 UPI / QR (GPay)"), /*#__PURE__*/React.createElement("div", {
     className: `priority-btn ${paymentData.paymentMethod === 'Cash' ? 'active' : ''}`,
     onClick: () => handlePaymentMethodSelect('Cash')
-  }, "\uD83D\uDCB5 Cash Counter"), /*#__PURE__*/React.createElement("div", {
+  }, "\uD83D\uDCB5 Cash at Counter"), /*#__PURE__*/React.createElement("div", {
     className: `priority-btn ${paymentData.paymentMethod === 'Card' ? 'active' : ''}`,
     onClick: () => handlePaymentMethodSelect('Card')
   }, "\uD83D\uDCB3 Debit / Credit Card"), /*#__PURE__*/React.createElement("div", {
@@ -1912,7 +1794,7 @@ function RegistrationForm({
     onClick: () => handlePaymentMethodSelect('Insurance')
   }, "\uD83D\uDEE1\uFE0F TPA Insurance")), /*#__PURE__*/React.createElement("div", {
     style: {
-      fontSize: '0.75rem',
+      fontSize: '0.76rem',
       color: '#64748b',
       marginTop: '8px'
     }
@@ -1920,7 +1802,7 @@ function RegistrationForm({
     style: {
       color: '#059669'
     }
-  }, "Payment Verified & Settled \u2713")))), /*#__PURE__*/React.createElement("div", {
+  }, "Counter Payment Collected & Settled \u2713")))), /*#__PURE__*/React.createElement("div", {
     style: {
       marginTop: '28px',
       display: 'flex',
@@ -1938,283 +1820,17 @@ function RegistrationForm({
       bloodGroup: 'O+',
       departmentCode: 'CAR',
       doctor: 'Dr. Ananya Iyer',
-      symptoms: 'Mild palpitation after running, routine heart checkup',
+      symptoms: 'Mild chest tightness upon climbing stairs',
       priority: 'Regular'
     })
   }, "\u26A1 Fill Demo Patient"), /*#__PURE__*/React.createElement("button", {
     type: "submit",
     className: "btn btn-primary",
     style: {
-      padding: '13px 30px',
-      fontSize: '0.96rem'
-    }
-  }, "Collect Payment (\u20B9", totalPayable, ") & Proceed to Vitals Entry (Step 2) \u25B6"))), currentStep === 2 && /*#__PURE__*/React.createElement("form", {
-    onSubmit: handleFinalSubmit
-  }, /*#__PURE__*/React.createElement("div", {
-    style: {
-      background: 'var(--bg-alt)',
-      border: '1px solid var(--border)',
-      borderRadius: 'var(--radius-md)',
-      padding: '14px 18px',
-      marginBottom: '20px',
-      display: 'flex',
-      justifyContent: 'space-between',
-      alignItems: 'center'
-    }
-  }, /*#__PURE__*/React.createElement("div", null, /*#__PURE__*/React.createElement("span", {
-    style: {
-      fontSize: '0.76rem',
-      color: 'var(--text-muted)',
-      textTransform: 'uppercase',
-      fontWeight: 700
-    }
-  }, "Patient Registration & Payment Confirmed:"), /*#__PURE__*/React.createElement("div", {
-    style: {
-      fontSize: '1.05rem',
-      fontWeight: 800,
-      color: 'var(--dark)'
-    }
-  }, formData.patientName, " (", formData.age, " Yrs / ", formData.gender, ")"), /*#__PURE__*/React.createElement("div", {
-    style: {
-      fontSize: '0.8rem',
-      color: 'var(--primary)',
-      fontWeight: 600
-    }
-  }, "Dept: ", departments.find(d => d.code === formData.departmentCode)?.name, " \u2022 Doctor: ", formData.doctor || 'Assigned')), /*#__PURE__*/React.createElement("div", {
-    style: {
-      textAlign: 'right'
-    }
-  }, /*#__PURE__*/React.createElement("div", {
-    style: {
-      background: '#dcfce7',
-      color: '#15803d',
-      padding: '4px 12px',
-      borderRadius: 'var(--radius-full)',
-      fontWeight: 800,
-      fontSize: '0.82rem'
-    }
-  }, "PAID: \u20B9", totalPayable, " via ", paymentData.paymentMethod, " \u2713"), /*#__PURE__*/React.createElement("div", {
-    style: {
-      fontSize: '0.72rem',
-      color: 'var(--text-muted)',
-      marginTop: '2px'
-    }
-  }, "Ref: ", paymentData.transactionId))), /*#__PURE__*/React.createElement("div", {
-    style: {
-      display: 'flex',
-      justifyContent: 'space-between',
-      alignItems: 'center',
-      marginBottom: '16px'
-    }
-  }, /*#__PURE__*/React.createElement("h3", {
-    style: {
-      fontSize: '1.05rem',
-      fontWeight: 800,
-      color: 'var(--dark)',
-      display: 'flex',
-      alignItems: 'center',
-      gap: '8px'
-    }
-  }, /*#__PURE__*/React.createElement("span", null, "\uD83E\uDE7A"), " Nursing Triage Station \u2014 Add Clinical Vitals Entity"), /*#__PURE__*/React.createElement("div", {
-    style: {
-      display: 'flex',
-      gap: '6px',
-      alignItems: 'center'
-    }
-  }, /*#__PURE__*/React.createElement("span", {
-    style: {
-      fontSize: '0.75rem',
-      fontWeight: 700,
-      color: 'var(--text-muted)'
-    }
-  }, "QUICK PRESET:"), /*#__PURE__*/React.createElement("button", {
-    type: "button",
-    className: "btn btn-secondary btn-sm",
-    onClick: () => applyVitalsPreset('normal'),
-    style: {
-      fontSize: '0.74rem',
-      padding: '4px 8px'
-    }
-  }, "Normal"), /*#__PURE__*/React.createElement("button", {
-    type: "button",
-    className: "btn btn-secondary btn-sm",
-    onClick: () => applyVitalsPreset('hypertension'),
-    style: {
-      fontSize: '0.74rem',
-      padding: '4px 8px',
-      color: '#b91c1c'
-    }
-  }, "High BP"), /*#__PURE__*/React.createElement("button", {
-    type: "button",
-    className: "btn btn-secondary btn-sm",
-    onClick: () => applyVitalsPreset('fever'),
-    style: {
-      fontSize: '0.74rem',
-      padding: '4px 8px',
-      color: '#d97706'
-    }
-  }, "Fever"))), /*#__PURE__*/React.createElement("div", {
-    className: "form-grid"
-  }, /*#__PURE__*/React.createElement("div", {
-    className: "form-group"
-  }, /*#__PURE__*/React.createElement("label", {
-    className: "form-label"
-  }, "Blood Pressure (Systolic / Diastolic)", /*#__PURE__*/React.createElement("span", {
-    style: {
-      color: '#059669',
-      fontSize: '0.75rem',
-      fontWeight: 600,
-      marginLeft: '6px'
-    }
-  }, "Target: 120/80")), /*#__PURE__*/React.createElement("div", {
-    style: {
-      display: 'grid',
-      gridTemplateColumns: '1fr 1fr',
-      gap: '8px'
-    }
-  }, /*#__PURE__*/React.createElement("input", {
-    type: "number",
-    name: "bpSystolic",
-    className: "form-input",
-    placeholder: "Sys (e.g. 120)",
-    value: vitalsData.bpSystolic,
-    onChange: handleVitalsChange
-  }), /*#__PURE__*/React.createElement("input", {
-    type: "number",
-    name: "bpDiastolic",
-    className: "form-input",
-    placeholder: "Dia (e.g. 80)",
-    value: vitalsData.bpDiastolic,
-    onChange: handleVitalsChange
-  }))), /*#__PURE__*/React.createElement("div", {
-    className: "form-group"
-  }, /*#__PURE__*/React.createElement("label", {
-    className: "form-label"
-  }, "Pulse / Heart Rate (bpm)", /*#__PURE__*/React.createElement("span", {
-    style: {
-      color: 'var(--text-muted)',
-      fontSize: '0.75rem',
-      marginLeft: '6px'
-    }
-  }, "Normal: 60-100")), /*#__PURE__*/React.createElement("input", {
-    type: "number",
-    name: "pulse",
-    className: "form-input",
-    placeholder: "e.g. 74",
-    value: vitalsData.pulse,
-    onChange: handleVitalsChange
-  })), /*#__PURE__*/React.createElement("div", {
-    className: "form-group"
-  }, /*#__PURE__*/React.createElement("label", {
-    className: "form-label"
-  }, "Oxygen Saturation SpO2 (%)", /*#__PURE__*/React.createElement("span", {
-    style: {
-      color: 'var(--text-muted)',
-      fontSize: '0.75rem',
-      marginLeft: '6px'
-    }
-  }, "Normal: 95-100%")), /*#__PURE__*/React.createElement("input", {
-    type: "number",
-    name: "spo2",
-    className: "form-input",
-    placeholder: "e.g. 99",
-    value: vitalsData.spo2,
-    onChange: handleVitalsChange
-  })), /*#__PURE__*/React.createElement("div", {
-    className: "form-group"
-  }, /*#__PURE__*/React.createElement("label", {
-    className: "form-label"
-  }, "Body Temperature (\xB0F)", /*#__PURE__*/React.createElement("span", {
-    style: {
-      color: 'var(--text-muted)',
-      fontSize: '0.75rem',
-      marginLeft: '6px'
-    }
-  }, "Normal: 98.4 - 98.6\xB0F")), /*#__PURE__*/React.createElement("input", {
-    type: "text",
-    name: "temp",
-    className: "form-input",
-    placeholder: "e.g. 98.6",
-    value: vitalsData.temp,
-    onChange: handleVitalsChange
-  })), /*#__PURE__*/React.createElement("div", {
-    className: "form-group"
-  }, /*#__PURE__*/React.createElement("label", {
-    className: "form-label"
-  }, "Weight (kg) & Height (cm)", /*#__PURE__*/React.createElement("span", {
-    style: {
-      color: 'var(--primary)',
-      fontSize: '0.75rem',
-      fontWeight: 700,
-      marginLeft: '6px'
-    }
-  }, "BMI: ", calculateBMI(vitalsData.weight, vitalsData.height))), /*#__PURE__*/React.createElement("div", {
-    style: {
-      display: 'grid',
-      gridTemplateColumns: '1fr 1fr',
-      gap: '8px'
-    }
-  }, /*#__PURE__*/React.createElement("input", {
-    type: "number",
-    name: "weight",
-    className: "form-input",
-    placeholder: "Weight (kg)",
-    value: vitalsData.weight,
-    onChange: handleVitalsChange
-  }), /*#__PURE__*/React.createElement("input", {
-    type: "number",
-    name: "height",
-    className: "form-input",
-    placeholder: "Height (cm)",
-    value: vitalsData.height,
-    onChange: handleVitalsChange
-  }))), /*#__PURE__*/React.createElement("div", {
-    className: "form-group"
-  }, /*#__PURE__*/React.createElement("label", {
-    className: "form-label"
-  }, "Random Blood Sugar RBS (mg/dL)", /*#__PURE__*/React.createElement("span", {
-    style: {
-      color: 'var(--text-muted)',
-      fontSize: '0.75rem',
-      marginLeft: '6px'
-    }
-  }, "Target: < 140")), /*#__PURE__*/React.createElement("input", {
-    type: "number",
-    name: "bloodSugar",
-    className: "form-input",
-    placeholder: "e.g. 110",
-    value: vitalsData.bloodSugar,
-    onChange: handleVitalsChange
-  })), /*#__PURE__*/React.createElement("div", {
-    className: "form-group full-width"
-  }, /*#__PURE__*/React.createElement("label", {
-    className: "form-label"
-  }, "Nursing Triage Assessment Notes"), /*#__PURE__*/React.createElement("input", {
-    type: "text",
-    name: "triageNotes",
-    className: "form-input",
-    placeholder: "e.g. Patient conscious, oriented. No acute respiratory distress.",
-    value: vitalsData.triageNotes,
-    onChange: handleVitalsChange
-  }))), /*#__PURE__*/React.createElement("div", {
-    style: {
-      marginTop: '28px',
-      display: 'flex',
-      justifyContent: 'space-between',
-      alignItems: 'center'
-    }
-  }, /*#__PURE__*/React.createElement("button", {
-    type: "button",
-    className: "btn btn-secondary",
-    onClick: () => setCurrentStep(1)
-  }, "\u25C0 Back to Step 1 (Edit Registration / Payment)"), /*#__PURE__*/React.createElement("button", {
-    type: "submit",
-    className: "btn btn-emerald",
-    style: {
       padding: '13px 32px',
-      fontSize: '0.96rem'
+      fontSize: '0.98rem'
     }
-  }, "\uD83D\uDDA8\uFE0F Complete & Print Registration + Vitals Form \u25B6")))));
+  }, "\u2713 Complete Registration & Collect Payment (\u20B9", totalPayable, ") \u25B6")))));
 }
 
 // --- src/components/TokenSlip.jsx ---
@@ -2222,7 +1838,8 @@ function RegistrationForm({
 function TokenSlip({
   tokenData,
   onBackToQueue,
-  onNewRegistration
+  onNewRegistration,
+  onGoToVitals
 }) {
   if (!tokenData) return null;
   const handlePrint = () => {
@@ -2701,9 +2318,28 @@ function TokenSlip({
       display: 'flex',
       justifyContent: 'center',
       gap: '14px',
-      marginTop: '20px'
+      marginTop: '20px',
+      flexWrap: 'wrap'
     }
-  }, /*#__PURE__*/React.createElement("button", {
+  }, onGoToVitals && /*#__PURE__*/React.createElement("button", {
+    className: "btn btn-emerald",
+    onClick: onGoToVitals,
+    style: {
+      padding: '12px 24px',
+      fontSize: '0.94rem'
+    }
+  }, /*#__PURE__*/React.createElement("svg", {
+    width: "16",
+    height: "16",
+    viewBox: "0 0 24 24",
+    fill: "none",
+    stroke: "currentColor",
+    strokeWidth: "2.5",
+    strokeLinecap: "round",
+    strokeLinejoin: "round"
+  }, /*#__PURE__*/React.createElement("path", {
+    d: "M22 12h-4l-3 9L9 3l-3 9H2"
+  })), "Proceed to Vitals Station \u25B6"), /*#__PURE__*/React.createElement("button", {
     className: "btn btn-primary",
     onClick: handlePrint,
     style: {
@@ -2759,6 +2395,838 @@ function TokenSlip({
     className: "btn btn-secondary",
     onClick: onNewRegistration
   }, "+ Register Next Patient")));
+}
+
+// --- src/components/VitalsScreen.jsx ---
+
+function VitalsScreen({
+  records,
+  onSaveVitals,
+  initialToken
+}) {
+  // Extract all patients from records
+  const patientList = Object.values(records);
+  const [selectedToken, setSelectedToken] = useState(initialToken || (patientList[0] ? patientList[0].token : 'CAR-104'));
+  const activePatient = records[selectedToken] || patientList[0] || null;
+
+  // Vitals Input Form State
+  const [vitalsData, setVitalsData] = useState({
+    bpSystolic: activePatient && activePatient.vitals ? activePatient.vitals.bp ? activePatient.vitals.bp.split('/')[0] : '120' : '120',
+    bpDiastolic: activePatient && activePatient.vitals ? activePatient.vitals.bp && activePatient.vitals.bp.includes('/') ? activePatient.vitals.bp.split('/')[1].replace(/\D/g, '') : '80' : '80',
+    pulse: activePatient && activePatient.vitals ? activePatient.vitals.pulse ? activePatient.vitals.pulse.replace(/\D/g, '') : '74' : '74',
+    spo2: activePatient && activePatient.vitals ? activePatient.vitals.spo2 ? activePatient.vitals.spo2.replace(/\D/g, '') : '99' : '99',
+    temp: activePatient && activePatient.vitals ? activePatient.vitals.temp ? activePatient.vitals.temp.replace(/[^\d.]/g, '') : '98.6' : '98.6',
+    weight: activePatient && activePatient.vitals ? activePatient.vitals.weight ? activePatient.vitals.weight.replace(/\D/g, '') : '68' : '68',
+    height: '172',
+    bloodSugar: activePatient && activePatient.vitals && activePatient.vitals.bloodSugar ? activePatient.vitals.bloodSugar.replace(/\D/g, '') : '110',
+    triageNotes: activePatient && activePatient.vitals && activePatient.vitals.triageNotes ? activePatient.vitals.triageNotes : 'Patient conscious and oriented. Vital signs stable at triage.'
+  });
+  const [savedDocument, setSavedDocument] = useState(null);
+  const [searchTokenInput, setSearchTokenInput] = useState('');
+
+  // Handle switching patient
+  const handleSelectPatient = token => {
+    setSelectedToken(token);
+    const p = records[token];
+    if (p) {
+      setVitalsData({
+        bpSystolic: p.vitals && p.vitals.bp ? p.vitals.bp.split('/')[0] : '120',
+        bpDiastolic: p.vitals && p.vitals.bp && p.vitals.bp.includes('/') ? p.vitals.bp.split('/')[1].replace(/\D/g, '') : '80',
+        pulse: p.vitals && p.vitals.pulse ? p.vitals.pulse.replace(/\D/g, '') : '74',
+        spo2: p.vitals && p.vitals.spo2 ? p.vitals.spo2.replace(/\D/g, '') : '99',
+        temp: p.vitals && p.vitals.temp ? p.vitals.temp.replace(/[^\d.]/g, '') : '98.6',
+        weight: p.vitals && p.vitals.weight ? p.vitals.weight.replace(/\D/g, '') : '68',
+        height: '172',
+        bloodSugar: p.vitals && p.vitals.bloodSugar ? p.vitals.bloodSugar.replace(/\D/g, '') : '110',
+        triageNotes: p.vitals && p.vitals.triageNotes ? p.vitals.triageNotes : 'Patient conscious and oriented. Vital signs stable.'
+      });
+      setSavedDocument(null);
+    }
+  };
+  const handleVitalsChange = e => {
+    const {
+      name,
+      value
+    } = e.target;
+    setVitalsData(prev => ({
+      ...prev,
+      [name]: value
+    }));
+  };
+
+  // Auto calculate BMI
+  const calculateBMI = (wt, ht) => {
+    const w = parseFloat(wt);
+    const h = parseFloat(ht) / 100;
+    if (!w || !h || h <= 0) return '23.0 (Normal)';
+    const bmiVal = (w / (h * h)).toFixed(1);
+    let category = 'Normal';
+    if (bmiVal < 18.5) category = 'Underweight';else if (bmiVal < 25) category = 'Normal';else if (bmiVal < 30) category = 'Overweight';else category = 'Obese';
+    return `${bmiVal} (${category})`;
+  };
+
+  // Quick Vitals Presets
+  const applyVitalsPreset = preset => {
+    if (preset === 'normal') {
+      setVitalsData({
+        bpSystolic: '120',
+        bpDiastolic: '80',
+        pulse: '74',
+        spo2: '99',
+        temp: '98.6',
+        weight: '68',
+        height: '172',
+        bloodSugar: '110',
+        triageNotes: 'Vitals stable and within normal adult clinical limits.'
+      });
+    } else if (preset === 'hypertension') {
+      setVitalsData({
+        bpSystolic: '152',
+        bpDiastolic: '94',
+        pulse: '84',
+        spo2: '98',
+        temp: '98.4',
+        weight: '78',
+        height: '170',
+        bloodSugar: '145',
+        triageNotes: 'Elevated blood pressure observed. Patient alerted for cardiology consultation.'
+      });
+    } else if (preset === 'fever') {
+      setVitalsData({
+        bpSystolic: '118',
+        bpDiastolic: '78',
+        pulse: '98',
+        spo2: '97',
+        temp: '101.4',
+        weight: '62',
+        height: '168',
+        bloodSugar: '105',
+        triageNotes: 'Febrile patient with mild tachycardia. Expedited to doctor cabin.'
+      });
+    }
+  };
+
+  // Save Vitals and generate printable combined form
+  const handleSaveVitals = e => {
+    e.preventDefault();
+    if (!activePatient) return;
+    const formattedVitals = {
+      bp: `${vitalsData.bpSystolic}/${vitalsData.bpDiastolic} mmHg`,
+      pulse: `${vitalsData.pulse} bpm`,
+      spo2: `${vitalsData.spo2}%`,
+      temp: `${vitalsData.temp} °F`,
+      weight: `${vitalsData.weight} kg`,
+      height: `${vitalsData.height} cm`,
+      bmi: calculateBMI(vitalsData.weight, vitalsData.height),
+      bloodSugar: `${vitalsData.bloodSugar} mg/dL`,
+      triageNotes: vitalsData.triageNotes,
+      nurseName: 'Sister Mary Joseph (Reg #RN-55410)'
+    };
+    onSaveVitals(activePatient.token, formattedVitals);
+
+    // Set printable document
+    setSavedDocument({
+      ...activePatient,
+      vitals: formattedVitals
+    });
+  };
+  return /*#__PURE__*/React.createElement("div", {
+    className: "vitals-station-section"
+  }, /*#__PURE__*/React.createElement("div", {
+    className: "section-header"
+  }, /*#__PURE__*/React.createElement("div", null, /*#__PURE__*/React.createElement("h2", null, "\uD83E\uDE7A Nursing Triage & Patient Vitals Station"), /*#__PURE__*/React.createElement("p", null, "Dedicated module: Select registered patient after payment, record clinical vitals entity, and print the official form.")), /*#__PURE__*/React.createElement("div", null, /*#__PURE__*/React.createElement("span", {
+    style: {
+      background: 'var(--emerald-light)',
+      color: '#065f46',
+      padding: '4px 12px',
+      borderRadius: 'var(--radius-full)',
+      fontSize: '0.8rem',
+      fontWeight: 800
+    }
+  }, "Triage Desk Active \u25CF"))), /*#__PURE__*/React.createElement("div", {
+    style: {
+      background: 'white',
+      border: '1px solid var(--border)',
+      borderRadius: 'var(--radius-lg)',
+      padding: '20px 24px',
+      marginBottom: '24px',
+      boxShadow: 'var(--shadow-sm)'
+    }
+  }, /*#__PURE__*/React.createElement("div", {
+    style: {
+      display: 'flex',
+      justifyContent: 'space-between',
+      alignItems: 'center',
+      marginBottom: '14px',
+      flexWrap: 'wrap',
+      gap: '10px'
+    }
+  }, /*#__PURE__*/React.createElement("div", null, /*#__PURE__*/React.createElement("h3", {
+    style: {
+      fontSize: '1.05rem',
+      fontWeight: 800,
+      color: 'var(--dark)'
+    }
+  }, "Select Registered Patient for Vitals Check:"), /*#__PURE__*/React.createElement("p", {
+    style: {
+      fontSize: '0.8rem',
+      color: 'var(--text-muted)'
+    }
+  }, "Patients who completed registration and counter payment are queued here for vitals measurement.")), /*#__PURE__*/React.createElement("div", {
+    style: {
+      display: 'flex',
+      gap: '8px'
+    }
+  }, /*#__PURE__*/React.createElement("input", {
+    type: "text",
+    className: "form-input",
+    placeholder: "Search Token (e.g. CAR-104)",
+    value: searchTokenInput,
+    onChange: e => setSearchTokenInput(e.target.value),
+    style: {
+      width: '220px',
+      padding: '6px 12px',
+      fontSize: '0.85rem'
+    }
+  }), /*#__PURE__*/React.createElement("button", {
+    className: "btn btn-secondary btn-sm",
+    onClick: () => {
+      const k = searchTokenInput.trim().toUpperCase();
+      if (records[k]) handleSelectPatient(k);else alert(`Token ${k} not found.`);
+    }
+  }, "Search"))), /*#__PURE__*/React.createElement("div", {
+    style: {
+      display: 'flex',
+      gap: '10px',
+      flexWrap: 'wrap'
+    }
+  }, patientList.map(p => {
+    const isSelected = p.token === selectedToken;
+    return /*#__PURE__*/React.createElement("div", {
+      key: p.token,
+      onClick: () => handleSelectPatient(p.token),
+      style: {
+        padding: '10px 14px',
+        borderRadius: 'var(--radius-md)',
+        border: isSelected ? '2px solid var(--primary)' : '1px solid var(--border)',
+        background: isSelected ? 'var(--primary-light)' : 'var(--bg-alt)',
+        cursor: 'pointer',
+        transition: 'var(--transition)'
+      }
+    }, /*#__PURE__*/React.createElement("div", {
+      style: {
+        display: 'flex',
+        alignItems: 'center',
+        gap: '8px'
+      }
+    }, /*#__PURE__*/React.createElement("strong", {
+      style: {
+        color: isSelected ? 'var(--primary)' : 'var(--dark)'
+      }
+    }, p.token), /*#__PURE__*/React.createElement("span", {
+      style: {
+        fontSize: '0.72rem',
+        background: '#dcfce7',
+        color: '#15803d',
+        padding: '1px 6px',
+        borderRadius: '4px',
+        fontWeight: 700
+      }
+    }, "PAID \u2713")), /*#__PURE__*/React.createElement("div", {
+      style: {
+        fontSize: '0.82rem',
+        fontWeight: 700,
+        color: 'var(--dark)',
+        marginTop: '2px'
+      }
+    }, p.patientName), /*#__PURE__*/React.createElement("div", {
+      style: {
+        fontSize: '0.74rem',
+        color: 'var(--text-muted)'
+      }
+    }, p.department));
+  }))), activePatient && /*#__PURE__*/React.createElement("div", {
+    className: "form-card",
+    style: {
+      maxWidth: '900px',
+      margin: '0 auto'
+    }
+  }, /*#__PURE__*/React.createElement("div", {
+    style: {
+      background: 'var(--bg-alt)',
+      border: '1px solid var(--border)',
+      borderRadius: 'var(--radius-md)',
+      padding: '16px 20px',
+      marginBottom: '20px',
+      display: 'flex',
+      justifyContent: 'space-between',
+      alignItems: 'center'
+    }
+  }, /*#__PURE__*/React.createElement("div", null, /*#__PURE__*/React.createElement("span", {
+    style: {
+      fontSize: '0.75rem',
+      color: 'var(--text-muted)',
+      textTransform: 'uppercase',
+      fontWeight: 700
+    }
+  }, "Patient Registration Particulars:"), /*#__PURE__*/React.createElement("div", {
+    style: {
+      fontSize: '1.15rem',
+      fontWeight: 800,
+      color: 'var(--dark)'
+    }
+  }, activePatient.patientName, " (", activePatient.age, " Yrs / ", activePatient.gender, ")"), /*#__PURE__*/React.createElement("div", {
+    style: {
+      fontSize: '0.82rem',
+      color: 'var(--primary)',
+      fontWeight: 600,
+      marginTop: '2px'
+    }
+  }, "Token: ", /*#__PURE__*/React.createElement("strong", null, activePatient.token), " \u2022 OP ID: ", /*#__PURE__*/React.createElement("strong", null, activePatient.opId), " \u2022 Dept: ", /*#__PURE__*/React.createElement("strong", null, activePatient.department), " (", activePatient.room, ")"), /*#__PURE__*/React.createElement("div", {
+    style: {
+      fontSize: '0.78rem',
+      color: 'var(--text-muted)',
+      marginTop: '2px'
+    }
+  }, "Doctor: ", /*#__PURE__*/React.createElement("strong", null, activePatient.doctor), " \u2022 Symptoms: ", /*#__PURE__*/React.createElement("em", null, activePatient.symptoms || 'General OP evaluation'))), /*#__PURE__*/React.createElement("div", {
+    style: {
+      textAlign: 'right'
+    }
+  }, /*#__PURE__*/React.createElement("span", {
+    style: {
+      background: '#dcfce7',
+      color: '#15803d',
+      padding: '6px 14px',
+      borderRadius: 'var(--radius-full)',
+      fontWeight: 800,
+      fontSize: '0.85rem'
+    }
+  }, "PAID: \u20B9", activePatient.payment ? activePatient.payment.totalAmount : 800, " \u2713"), /*#__PURE__*/React.createElement("div", {
+    style: {
+      fontSize: '0.74rem',
+      color: 'var(--text-muted)',
+      marginTop: '4px'
+    }
+  }, "Mode: ", activePatient.payment ? activePatient.payment.paymentMethod : 'UPI', " \u2022 Txn Ref: ", activePatient.payment ? activePatient.payment.transactionId : 'TXN-849201'))), /*#__PURE__*/React.createElement("form", {
+    onSubmit: handleSaveVitals
+  }, /*#__PURE__*/React.createElement("div", {
+    style: {
+      display: 'flex',
+      justifyContent: 'space-between',
+      alignItems: 'center',
+      marginBottom: '16px'
+    }
+  }, /*#__PURE__*/React.createElement("h3", {
+    style: {
+      fontSize: '1.05rem',
+      fontWeight: 800,
+      color: 'var(--dark)',
+      display: 'flex',
+      alignItems: 'center',
+      gap: '8px'
+    }
+  }, /*#__PURE__*/React.createElement("span", null, "\uD83E\uDE7A"), " Enter Clinical Vitals Measurements"), /*#__PURE__*/React.createElement("div", {
+    style: {
+      display: 'flex',
+      gap: '6px',
+      alignItems: 'center'
+    }
+  }, /*#__PURE__*/React.createElement("span", {
+    style: {
+      fontSize: '0.75rem',
+      fontWeight: 700,
+      color: 'var(--text-muted)'
+    }
+  }, "QUICK PRESETS:"), /*#__PURE__*/React.createElement("button", {
+    type: "button",
+    className: "btn btn-secondary btn-sm",
+    onClick: () => applyVitalsPreset('normal'),
+    style: {
+      fontSize: '0.74rem',
+      padding: '4px 8px'
+    }
+  }, "Normal"), /*#__PURE__*/React.createElement("button", {
+    type: "button",
+    className: "btn btn-secondary btn-sm",
+    onClick: () => applyVitalsPreset('hypertension'),
+    style: {
+      fontSize: '0.74rem',
+      padding: '4px 8px',
+      color: '#b91c1c'
+    }
+  }, "High BP"), /*#__PURE__*/React.createElement("button", {
+    type: "button",
+    className: "btn btn-secondary btn-sm",
+    onClick: () => applyVitalsPreset('fever'),
+    style: {
+      fontSize: '0.74rem',
+      padding: '4px 8px',
+      color: '#d97706'
+    }
+  }, "Fever"))), /*#__PURE__*/React.createElement("div", {
+    className: "form-grid"
+  }, /*#__PURE__*/React.createElement("div", {
+    className: "form-group"
+  }, /*#__PURE__*/React.createElement("label", {
+    className: "form-label"
+  }, "Blood Pressure (Systolic / Diastolic)", /*#__PURE__*/React.createElement("span", {
+    style: {
+      color: '#059669',
+      fontSize: '0.75rem',
+      fontWeight: 600,
+      marginLeft: '6px'
+    }
+  }, "Target: 120/80")), /*#__PURE__*/React.createElement("div", {
+    style: {
+      display: 'grid',
+      gridTemplateColumns: '1fr 1fr',
+      gap: '8px'
+    }
+  }, /*#__PURE__*/React.createElement("input", {
+    type: "number",
+    name: "bpSystolic",
+    className: "form-input",
+    placeholder: "Sys (e.g. 120)",
+    value: vitalsData.bpSystolic,
+    onChange: handleVitalsChange
+  }), /*#__PURE__*/React.createElement("input", {
+    type: "number",
+    name: "bpDiastolic",
+    className: "form-input",
+    placeholder: "Dia (e.g. 80)",
+    value: vitalsData.bpDiastolic,
+    onChange: handleVitalsChange
+  }))), /*#__PURE__*/React.createElement("div", {
+    className: "form-group"
+  }, /*#__PURE__*/React.createElement("label", {
+    className: "form-label"
+  }, "Pulse / Heart Rate (bpm)", /*#__PURE__*/React.createElement("span", {
+    style: {
+      color: 'var(--text-muted)',
+      fontSize: '0.75rem',
+      marginLeft: '6px'
+    }
+  }, "Normal: 60-100")), /*#__PURE__*/React.createElement("input", {
+    type: "number",
+    name: "pulse",
+    className: "form-input",
+    placeholder: "e.g. 74",
+    value: vitalsData.pulse,
+    onChange: handleVitalsChange
+  })), /*#__PURE__*/React.createElement("div", {
+    className: "form-group"
+  }, /*#__PURE__*/React.createElement("label", {
+    className: "form-label"
+  }, "Oxygen Saturation SpO2 (%)", /*#__PURE__*/React.createElement("span", {
+    style: {
+      color: 'var(--text-muted)',
+      fontSize: '0.75rem',
+      marginLeft: '6px'
+    }
+  }, "Normal: 95-100%")), /*#__PURE__*/React.createElement("input", {
+    type: "number",
+    name: "spo2",
+    className: "form-input",
+    placeholder: "e.g. 99",
+    value: vitalsData.spo2,
+    onChange: handleVitalsChange
+  })), /*#__PURE__*/React.createElement("div", {
+    className: "form-group"
+  }, /*#__PURE__*/React.createElement("label", {
+    className: "form-label"
+  }, "Body Temperature (\xB0F)", /*#__PURE__*/React.createElement("span", {
+    style: {
+      color: 'var(--text-muted)',
+      fontSize: '0.75rem',
+      marginLeft: '6px'
+    }
+  }, "Normal: 98.4 - 98.6\xB0F")), /*#__PURE__*/React.createElement("input", {
+    type: "text",
+    name: "temp",
+    className: "form-input",
+    placeholder: "e.g. 98.6",
+    value: vitalsData.temp,
+    onChange: handleVitalsChange
+  })), /*#__PURE__*/React.createElement("div", {
+    className: "form-group"
+  }, /*#__PURE__*/React.createElement("label", {
+    className: "form-label"
+  }, "Weight (kg) & Height (cm)", /*#__PURE__*/React.createElement("span", {
+    style: {
+      color: 'var(--primary)',
+      fontSize: '0.75rem',
+      fontWeight: 700,
+      marginLeft: '6px'
+    }
+  }, "BMI: ", calculateBMI(vitalsData.weight, vitalsData.height))), /*#__PURE__*/React.createElement("div", {
+    style: {
+      display: 'grid',
+      gridTemplateColumns: '1fr 1fr',
+      gap: '8px'
+    }
+  }, /*#__PURE__*/React.createElement("input", {
+    type: "number",
+    name: "weight",
+    className: "form-input",
+    placeholder: "Weight (kg)",
+    value: vitalsData.weight,
+    onChange: handleVitalsChange
+  }), /*#__PURE__*/React.createElement("input", {
+    type: "number",
+    name: "height",
+    className: "form-input",
+    placeholder: "Height (cm)",
+    value: vitalsData.height,
+    onChange: handleVitalsChange
+  }))), /*#__PURE__*/React.createElement("div", {
+    className: "form-group"
+  }, /*#__PURE__*/React.createElement("label", {
+    className: "form-label"
+  }, "Random Blood Sugar RBS (mg/dL)", /*#__PURE__*/React.createElement("span", {
+    style: {
+      color: 'var(--text-muted)',
+      fontSize: '0.75rem',
+      marginLeft: '6px'
+    }
+  }, "Target: < 140")), /*#__PURE__*/React.createElement("input", {
+    type: "number",
+    name: "bloodSugar",
+    className: "form-input",
+    placeholder: "e.g. 110",
+    value: vitalsData.bloodSugar,
+    onChange: handleVitalsChange
+  })), /*#__PURE__*/React.createElement("div", {
+    className: "form-group full-width"
+  }, /*#__PURE__*/React.createElement("label", {
+    className: "form-label"
+  }, "Nursing Triage Assessment Notes"), /*#__PURE__*/React.createElement("input", {
+    type: "text",
+    name: "triageNotes",
+    className: "form-input",
+    placeholder: "e.g. Patient conscious, oriented. No acute distress.",
+    value: vitalsData.triageNotes,
+    onChange: handleVitalsChange
+  }))), /*#__PURE__*/React.createElement("div", {
+    style: {
+      marginTop: '24px',
+      display: 'flex',
+      justifyContent: 'flex-end',
+      gap: '12px'
+    }
+  }, /*#__PURE__*/React.createElement("button", {
+    type: "submit",
+    className: "btn btn-primary",
+    style: {
+      padding: '12px 28px',
+      fontSize: '0.96rem'
+    }
+  }, "\u2713 Save Vitals & Generate Printable Registration + Vitals Slip \u25B6")))), savedDocument && /*#__PURE__*/React.createElement("div", {
+    style: {
+      marginTop: '36px'
+    }
+  }, /*#__PURE__*/React.createElement("div", {
+    style: {
+      textAlign: 'center',
+      marginBottom: '16px'
+    }
+  }, /*#__PURE__*/React.createElement("span", {
+    style: {
+      background: 'var(--emerald-light)',
+      color: '#065f46',
+      padding: '6px 18px',
+      borderRadius: 'var(--radius-full)',
+      fontWeight: 800,
+      fontSize: '0.88rem'
+    }
+  }, "\u2713 Vitals Recorded & Form Ready for Doctor Cabin")), /*#__PURE__*/React.createElement("div", {
+    className: "token-slip-container",
+    id: "printable-slip",
+    style: {
+      maxWidth: '640px'
+    }
+  }, /*#__PURE__*/React.createElement("div", {
+    className: "token-slip-header"
+  }, /*#__PURE__*/React.createElement("div", {
+    style: {
+      display: 'flex',
+      alignItems: 'center',
+      justifyContent: 'center',
+      gap: '8px',
+      marginBottom: '4px'
+    }
+  }, /*#__PURE__*/React.createElement("svg", {
+    width: "22",
+    height: "22",
+    viewBox: "0 0 24 24",
+    fill: "none",
+    stroke: "currentColor",
+    strokeWidth: "2.5",
+    strokeLinecap: "round",
+    strokeLinejoin: "round"
+  }, /*#__PURE__*/React.createElement("path", {
+    d: "M19 14c1.49-1.46 3-3.21 3-5.5A5.5 5.5 0 0 0 16.5 3c-1.76 0-3 .5-4.5 2-1.5-1.5-2.74-2-4.5-2A5.5 5.5 0 0 0 2 8.5c0 2.3 1.5 4.05 3 5.5l7 7Z"
+  }), /*#__PURE__*/React.createElement("path", {
+    d: "M12 5v14"
+  }), /*#__PURE__*/React.createElement("path", {
+    d: "M5 12h14"
+  })), /*#__PURE__*/React.createElement("h3", {
+    className: "slip-hospital-title"
+  }, "PULSECARE HEALTH CITY")), /*#__PURE__*/React.createElement("p", {
+    className: "slip-tagline"
+  }, "Outpatient Department (OPD) \u2022 Registration, Billing & Clinical Vitals Slip"), /*#__PURE__*/React.createElement("p", {
+    style: {
+      fontSize: '0.72rem',
+      color: '#94a3b8',
+      marginTop: '2px'
+    }
+  }, "NABH Accredited \u2022 Helpdesk: +91 80 2400 1100 \u2022 Campus Block A, Level 1")), /*#__PURE__*/React.createElement("div", {
+    className: "token-hero-badge",
+    style: {
+      padding: '16px 24px'
+    }
+  }, /*#__PURE__*/React.createElement("div", {
+    style: {
+      fontSize: '0.74rem',
+      fontWeight: 700,
+      color: 'var(--text-muted)',
+      textTransform: 'uppercase',
+      letterSpacing: '0.08em'
+    }
+  }, "OUTPATIENT CONSULTATION TOKEN"), /*#__PURE__*/React.createElement("div", {
+    className: "token-number-hero",
+    style: {
+      margin: '4px 0'
+    }
+  }, savedDocument.token), /*#__PURE__*/React.createElement("div", {
+    style: {
+      display: 'flex',
+      justifyContent: 'center',
+      gap: '8px'
+    }
+  }, /*#__PURE__*/React.createElement("span", {
+    style: {
+      background: 'var(--primary-light)',
+      color: 'var(--primary-hover)',
+      padding: '2px 10px',
+      borderRadius: 'var(--radius-full)',
+      fontSize: '0.75rem',
+      fontWeight: 700
+    }
+  }, savedDocument.priority || 'Regular', " Queue"), /*#__PURE__*/React.createElement("span", {
+    style: {
+      background: '#f1f5f9',
+      color: '#475569',
+      padding: '2px 10px',
+      borderRadius: 'var(--radius-full)',
+      fontSize: '0.75rem',
+      fontWeight: 600
+    }
+  }, "Room: ", savedDocument.room))), /*#__PURE__*/React.createElement("div", {
+    className: "token-slip-body",
+    style: {
+      padding: '20px 24px'
+    }
+  }, /*#__PURE__*/React.createElement("div", {
+    style: {
+      fontSize: '0.75rem',
+      fontWeight: 800,
+      color: 'var(--primary)',
+      letterSpacing: '0.05em',
+      marginBottom: '8px'
+    }
+  }, "1. PATIENT REGISTRATION PARTICULARS"), /*#__PURE__*/React.createElement("div", {
+    className: "slip-detail-row"
+  }, /*#__PURE__*/React.createElement("span", {
+    className: "slip-label"
+  }, "OP Registration ID:"), /*#__PURE__*/React.createElement("span", {
+    className: "slip-val"
+  }, savedDocument.opId || 'OP-2026-9041')), /*#__PURE__*/React.createElement("div", {
+    className: "slip-detail-row"
+  }, /*#__PURE__*/React.createElement("span", {
+    className: "slip-label"
+  }, "Patient Full Name:"), /*#__PURE__*/React.createElement("span", {
+    className: "slip-val"
+  }, savedDocument.patientName)), /*#__PURE__*/React.createElement("div", {
+    className: "slip-detail-row"
+  }, /*#__PURE__*/React.createElement("span", {
+    className: "slip-label"
+  }, "Age / Gender / Blood:"), /*#__PURE__*/React.createElement("span", {
+    className: "slip-val"
+  }, savedDocument.age, " Yrs / ", savedDocument.gender, " / ", savedDocument.bloodGroup)), /*#__PURE__*/React.createElement("div", {
+    className: "slip-detail-row"
+  }, /*#__PURE__*/React.createElement("span", {
+    className: "slip-label"
+  }, "Department & Room:"), /*#__PURE__*/React.createElement("span", {
+    className: "slip-val",
+    style: {
+      color: 'var(--primary)'
+    }
+  }, savedDocument.department, " \u2014 ", savedDocument.room)), /*#__PURE__*/React.createElement("div", {
+    className: "slip-detail-row"
+  }, /*#__PURE__*/React.createElement("span", {
+    className: "slip-label"
+  }, "Consulting Doctor:"), /*#__PURE__*/React.createElement("span", {
+    className: "slip-val"
+  }, savedDocument.doctor)), /*#__PURE__*/React.createElement("div", {
+    style: {
+      marginTop: '16px',
+      background: '#f0fdf4',
+      border: '1px solid #bbf7d0',
+      borderRadius: '8px',
+      padding: '12px 14px'
+    }
+  }, /*#__PURE__*/React.createElement("div", {
+    style: {
+      display: 'flex',
+      justifyContent: 'space-between',
+      alignItems: 'center',
+      marginBottom: '6px'
+    }
+  }, /*#__PURE__*/React.createElement("span", {
+    style: {
+      fontSize: '0.74rem',
+      fontWeight: 800,
+      color: '#166534',
+      letterSpacing: '0.05em'
+    }
+  }, "2. OP PAYMENT RECEIPT (COUNTER SETTLED)"), /*#__PURE__*/React.createElement("span", {
+    style: {
+      background: '#16a34a',
+      color: 'white',
+      fontSize: '0.7rem',
+      padding: '2px 8px',
+      borderRadius: '4px',
+      fontWeight: 800
+    }
+  }, "PAID & SETTLED \u2713")), /*#__PURE__*/React.createElement("div", {
+    style: {
+      display: 'grid',
+      gridTemplateColumns: 'repeat(3, 1fr)',
+      gap: '8px',
+      fontSize: '0.78rem'
+    }
+  }, /*#__PURE__*/React.createElement("div", null, "Doctor Fee: ", /*#__PURE__*/React.createElement("strong", null, "\u20B9", savedDocument.payment ? savedDocument.payment.consultationFee : 700)), /*#__PURE__*/React.createElement("div", null, "OP Card Fee: ", /*#__PURE__*/React.createElement("strong", null, "\u20B9", savedDocument.payment ? savedDocument.payment.regFee : 100)), /*#__PURE__*/React.createElement("div", {
+    style: {
+      color: '#15803d',
+      fontWeight: 800
+    }
+  }, "Total: ", /*#__PURE__*/React.createElement("strong", null, "\u20B9", savedDocument.payment ? savedDocument.payment.totalAmount : 800)))), /*#__PURE__*/React.createElement("div", {
+    style: {
+      marginTop: '16px',
+      background: '#f8fafc',
+      border: '1.5px solid var(--border)',
+      borderRadius: '8px',
+      padding: '12px 14px'
+    }
+  }, /*#__PURE__*/React.createElement("div", {
+    style: {
+      display: 'flex',
+      justifyContent: 'space-between',
+      alignItems: 'center',
+      marginBottom: '8px'
+    }
+  }, /*#__PURE__*/React.createElement("span", {
+    style: {
+      fontSize: '0.74rem',
+      fontWeight: 800,
+      color: 'var(--dark)',
+      letterSpacing: '0.05em'
+    }
+  }, "3. CLINICAL TRIAGE VITALS (MEASURED AT NURSING STATION)"), /*#__PURE__*/React.createElement("span", {
+    style: {
+      background: 'var(--primary-light)',
+      color: 'var(--primary)',
+      fontSize: '0.7rem',
+      padding: '2px 8px',
+      borderRadius: '4px',
+      fontWeight: 800
+    }
+  }, "NURSE VERIFIED \u2713")), /*#__PURE__*/React.createElement("div", {
+    style: {
+      display: 'grid',
+      gridTemplateColumns: 'repeat(4, 1fr)',
+      gap: '8px',
+      fontSize: '0.78rem'
+    }
+  }, /*#__PURE__*/React.createElement("div", null, "BP: ", /*#__PURE__*/React.createElement("strong", {
+    style: {
+      color: 'var(--primary)'
+    }
+  }, savedDocument.vitals.bp)), /*#__PURE__*/React.createElement("div", null, "Pulse: ", /*#__PURE__*/React.createElement("strong", {
+    style: {
+      color: '#10b981'
+    }
+  }, savedDocument.vitals.pulse)), /*#__PURE__*/React.createElement("div", null, "SpO2: ", /*#__PURE__*/React.createElement("strong", {
+    style: {
+      color: '#0d9488'
+    }
+  }, savedDocument.vitals.spo2)), /*#__PURE__*/React.createElement("div", null, "Temp: ", /*#__PURE__*/React.createElement("strong", null, savedDocument.vitals.temp)), /*#__PURE__*/React.createElement("div", null, "Weight: ", /*#__PURE__*/React.createElement("strong", null, savedDocument.vitals.weight)), /*#__PURE__*/React.createElement("div", null, "Height: ", /*#__PURE__*/React.createElement("strong", null, savedDocument.vitals.height || '172 cm')), /*#__PURE__*/React.createElement("div", null, "BMI: ", /*#__PURE__*/React.createElement("strong", null, savedDocument.vitals.bmi ? savedDocument.vitals.bmi.split(' ')[0] : '23.0')), /*#__PURE__*/React.createElement("div", null, "Blood Sugar: ", /*#__PURE__*/React.createElement("strong", null, savedDocument.vitals.bloodSugar || '110 mg/dL'))), savedDocument.vitals.triageNotes && /*#__PURE__*/React.createElement("div", {
+    style: {
+      fontSize: '0.74rem',
+      color: 'var(--text-muted)',
+      marginTop: '8px',
+      borderTop: '1px solid #e2e8f0',
+      paddingTop: '6px'
+    }
+  }, /*#__PURE__*/React.createElement("strong", null, "Nursing Notes:"), " ", savedDocument.vitals.triageNotes)), /*#__PURE__*/React.createElement("div", {
+    style: {
+      marginTop: '16px',
+      textAlign: 'center',
+      borderTop: '1px dashed #cbd5e1',
+      paddingTop: '12px'
+    }
+  }, /*#__PURE__*/React.createElement("div", {
+    style: {
+      fontSize: '0.72rem',
+      color: 'var(--text-muted)',
+      letterSpacing: '0.12em'
+    }
+  }, "*", savedDocument.opId || 'OP-2026-9041', "*"), /*#__PURE__*/React.createElement("p", {
+    style: {
+      fontSize: '0.74rem',
+      color: '#64748b',
+      marginTop: '4px',
+      fontStyle: 'italic'
+    }
+  }, "Vitals recorded. Please proceed with this slip to ", /*#__PURE__*/React.createElement("strong", null, savedDocument.department, " \u2014 ", savedDocument.room), "."))), /*#__PURE__*/React.createElement("div", {
+    className: "token-slip-footer",
+    style: {
+      padding: '12px 20px'
+    }
+  }, /*#__PURE__*/React.createElement("span", null, "Valid for today's consultation only."), /*#__PURE__*/React.createElement("span", {
+    style: {
+      fontWeight: 800
+    }
+  }, "Triage Station \u2022 PulseCare OPD"))), /*#__PURE__*/React.createElement("div", {
+    style: {
+      textAlign: 'center',
+      marginTop: '16px'
+    }
+  }, /*#__PURE__*/React.createElement("button", {
+    className: "btn btn-primary",
+    onClick: () => window.print(),
+    style: {
+      padding: '12px 24px'
+    }
+  }, /*#__PURE__*/React.createElement("svg", {
+    width: "16",
+    height: "16",
+    viewBox: "0 0 24 24",
+    fill: "none",
+    stroke: "currentColor",
+    strokeWidth: "2",
+    strokeLinecap: "round",
+    strokeLinejoin: "round"
+  }, /*#__PURE__*/React.createElement("polyline", {
+    points: "6 9 6 2 18 2 18 9"
+  }), /*#__PURE__*/React.createElement("path", {
+    d: "M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2"
+  }), /*#__PURE__*/React.createElement("rect", {
+    width: "12",
+    height: "8",
+    x: "6",
+    y: "14"
+  })), "\uD83D\uDDA8\uFE0F Print Registration Form & Vitals Slip (PDF)"))));
 }
 
 // --- src/components/DoctorDirectory.jsx ---
@@ -4574,6 +5042,22 @@ function App() {
     setActiveTab('slip');
   };
 
+  // Save vitals from separate Vitals Station module
+  const handleSaveVitals = (token, vitalsData) => {
+    setRecords(prev => {
+      const patient = prev[token];
+      if (!patient) return prev;
+      return {
+        ...prev,
+        [token]: {
+          ...patient,
+          vitals: vitalsData,
+          vitalsRecorded: true
+        }
+      };
+    });
+  };
+
   // Add Fast-Track Urgent triage patient from staff console
   const handleAddUrgentPatient = depId => {
     const dep = departments.find(d => d.id === depId);
@@ -4657,7 +5141,12 @@ function App() {
   }), activeTab === 'slip' && /*#__PURE__*/React.createElement(TokenSlip, {
     tokenData: lastGeneratedToken,
     onBackToQueue: () => setActiveTab('queue'),
-    onNewRegistration: () => setActiveTab('register')
+    onNewRegistration: () => setActiveTab('register'),
+    onGoToVitals: () => setActiveTab('vitals')
+  }), activeTab === 'vitals' && /*#__PURE__*/React.createElement(VitalsScreen, {
+    records: records,
+    onSaveVitals: handleSaveVitals,
+    initialToken: lastGeneratedToken ? lastGeneratedToken.token : 'CAR-104'
   }), activeTab === 'doctors' && /*#__PURE__*/React.createElement(DoctorDirectory, {
     doctors: doctors,
     onSelectDoctorForBooking: handleSelectDoctorForBooking
