@@ -1,0 +1,9 @@
+# Dependencies & build tools
+tools/
+node_modules/
+
+# OS and Temp
+.DS_Store
+Thumbs.db
+*.tmp
+*.log
