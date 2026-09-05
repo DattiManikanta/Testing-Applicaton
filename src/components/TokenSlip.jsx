@@ -99,6 +99,25 @@ export function TokenSlip({ tokenData, onBackToQueue, onNewRegistration }) {
             <span className="slip-val">{new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })} (05-Sep-2026)</span>
           </div>
 
+          {/* Triage Clinical Vitals at Registration */}
+          {tokenData.vitals && (
+            <div style={{ marginTop: '14px', background: '#f8fafc', border: '1px solid #e2e8f0', borderRadius: '8px', padding: '10px 14px' }}>
+              <div style={{ fontSize: '0.72rem', fontWeight: 700, color: 'var(--text-muted)', textTransform: 'uppercase', marginBottom: '6px' }}>
+                🩺 Clinical Vitals Recorded at OP Triage:
+              </div>
+              <div style={{ display: 'grid', gridTemplateColumns: 'repeat(4, 1fr)', gap: '8px', fontSize: '0.78rem' }}>
+                <div>BP: <strong>{tokenData.vitals.bp}</strong></div>
+                <div>Pulse: <strong>{tokenData.vitals.pulse}</strong></div>
+                <div>SpO2: <strong>{tokenData.vitals.spo2}</strong></div>
+                <div>Temp: <strong>{tokenData.vitals.temp}</strong></div>
+                <div>Weight: <strong>{tokenData.vitals.weight}</strong></div>
+                <div>BMI: <strong>{tokenData.vitals.bmi ? tokenData.vitals.bmi.split(' ')[0] : '22.8'}</strong></div>
+                <div>Sugar: <strong>{tokenData.vitals.bloodSugar || '110 mg/dL'}</strong></div>
+                <div style={{ color: '#059669', fontWeight: 700 }}>Triage: Verified ✓</div>
+              </div>
+            </div>
+          )}
+
           {/* Barcode & Instructions */}
           <div style={{ marginTop: '20px', textAlign: 'center', borderTop: '1px dashed #cbd5e1', paddingTop: '16px' }}>
             {/* SVG Barcode simulation */}

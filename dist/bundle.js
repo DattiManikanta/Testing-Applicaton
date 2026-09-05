@@ -1381,6 +1381,10 @@ function RegistrationForm({
   doctors,
   onRegisterSuccess
 }) {
+  // Step 1: Demographics & Department | Step 2: Nursing Triage & Vitals
+  const [currentStep, setCurrentStep] = useState(1);
+
+  // Step 1: Patient Information
   const [formData, setFormData] = useState({
     patientName: '',
     age: '',
@@ -1391,6 +1395,19 @@ function RegistrationForm({
     doctor: '',
     symptoms: '',
     priority: 'Regular'
+  });
+
+  // Step 2: Clinical Vitals & Triage
+  const [vitalsData, setVitalsData] = useState({
+    bpSystolic: '120',
+    bpDiastolic: '80',
+    pulse: '74',
+    spo2: '99',
+    temp: '98.6',
+    weight: '68',
+    height: '172',
+    bloodSugar: '110',
+    triageNotes: 'Patient conscious, alert and oriented. Normal breathing on room air.'
   });
   const [errors, setErrors] = useState({});
 
@@ -1404,7 +1421,6 @@ function RegistrationForm({
     setFormData(prev => ({
       ...prev,
       [name]: value,
-      // Reset doctor when department changes
       ...(name === 'departmentCode' ? {
         doctor: ''
       } : {})
@@ -1416,13 +1432,77 @@ function RegistrationForm({
       }));
     }
   };
+  const handleVitalsChange = e => {
+    const {
+      name,
+      value
+    } = e.target;
+    setVitalsData(prev => ({
+      ...prev,
+      [name]: value
+    }));
+  };
   const handlePrioritySelect = priority => {
     setFormData(prev => ({
       ...prev,
       priority
     }));
   };
-  const handleSubmit = e => {
+
+  // Calculate BMI dynamically from height & weight
+  const calculateBMI = (wt, ht) => {
+    const w = parseFloat(wt);
+    const h = parseFloat(ht) / 100; // cm to meters
+    if (!w || !h || h <= 0) return '22.8 (Normal)';
+    const bmiVal = (w / (h * h)).toFixed(1);
+    let category = 'Normal';
+    if (bmiVal < 18.5) category = 'Underweight';else if (bmiVal < 25) category = 'Normal';else if (bmiVal < 30) category = 'Overweight';else category = 'Obese';
+    return `${bmiVal} (${category})`;
+  };
+
+  // Quick Vitals Presets for Demo
+  const applyVitalsPreset = preset => {
+    if (preset === 'normal') {
+      setVitalsData({
+        bpSystolic: '120',
+        bpDiastolic: '80',
+        pulse: '74',
+        spo2: '99',
+        temp: '98.6',
+        weight: '68',
+        height: '172',
+        bloodSugar: '110',
+        triageNotes: 'Vitals stable and within normal adult clinical limits.'
+      });
+    } else if (preset === 'hypertension') {
+      setVitalsData({
+        bpSystolic: '152',
+        bpDiastolic: '94',
+        pulse: '84',
+        spo2: '98',
+        temp: '98.4',
+        weight: '78',
+        height: '170',
+        bloodSugar: '145',
+        triageNotes: 'Elevated blood pressure observed. Patient alerted for cardiology evaluation.'
+      });
+    } else if (preset === 'fever') {
+      setVitalsData({
+        bpSystolic: '118',
+        bpDiastolic: '78',
+        pulse: '98',
+        spo2: '97',
+        temp: '101.4',
+        weight: '62',
+        height: '168',
+        bloodSugar: '105',
+        triageNotes: 'Febrile patient with mild tachycardia. Expedited to consultation.'
+      });
+    }
+  };
+
+  // Validate Step 1
+  const handleProceedToVitals = e => {
     e.preventDefault();
     const newErrors = {};
     if (!formData.patientName.trim()) newErrors.patientName = 'Patient full name is required';
@@ -1432,15 +1512,30 @@ function RegistrationForm({
       setErrors(newErrors);
       return;
     }
+    setCurrentStep(2);
+  };
 
-    // Auto assign doctor if not chosen
+  // Final Submission on Step 2
+  const handleFinalSubmit = e => {
+    e.preventDefault();
     const selectedDep = departments.find(d => d.code === formData.departmentCode) || departments[0];
     const assignedDoc = formData.doctor || (availableDoctors[0] ? availableDoctors[0].name : selectedDep.doctor);
+    const formattedVitals = {
+      bp: `${vitalsData.bpSystolic}/${vitalsData.bpDiastolic} mmHg`,
+      pulse: `${vitalsData.pulse} bpm`,
+      spo2: `${vitalsData.spo2}%`,
+      temp: `${vitalsData.temp} °F`,
+      weight: `${vitalsData.weight} kg`,
+      bmi: calculateBMI(vitalsData.weight, vitalsData.height),
+      bloodSugar: `${vitalsData.bloodSugar} mg/dL`,
+      triageNotes: vitalsData.triageNotes
+    };
     onRegisterSuccess({
       ...formData,
       departmentName: selectedDep.name,
       doctor: assignedDoc,
-      room: selectedDep.room
+      room: selectedDep.room,
+      vitals: formattedVitals
     });
   };
   return /*#__PURE__*/React.createElement("div", {
@@ -1453,10 +1548,50 @@ function RegistrationForm({
       flexDirection: 'column',
       alignItems: 'center'
     }
-  }, /*#__PURE__*/React.createElement("h2", null, "\uD83D\uDCDD Outpatient (OP) Patient Registration"), /*#__PURE__*/React.createElement("p", null, "Generate your digital OPD consultation token. Fast-track options for seniors and emergencies.")), /*#__PURE__*/React.createElement("div", {
+  }, /*#__PURE__*/React.createElement("h2", null, "\uD83D\uDCDD Outpatient (OP) Intake & Nursing Triage"), /*#__PURE__*/React.createElement("p", null, "2-Step OPD Registration: Patient Intake followed by Clinical Vitals Check.")), /*#__PURE__*/React.createElement("div", {
+    style: {
+      maxWidth: '650px',
+      margin: '0 auto 24px',
+      display: 'flex',
+      alignItems: 'center',
+      justifyContent: 'center',
+      gap: '16px'
+    }
+  }, /*#__PURE__*/React.createElement("div", {
+    onClick: () => setCurrentStep(1),
+    style: {
+      display: 'flex',
+      alignItems: 'center',
+      gap: '8px',
+      cursor: 'pointer',
+      padding: '8px 16px',
+      borderRadius: 'var(--radius-full)',
+      background: currentStep === 1 ? 'var(--primary)' : 'var(--emerald-light)',
+      color: currentStep === 1 ? 'white' : '#065f46',
+      fontWeight: 700,
+      fontSize: '0.88rem'
+    }
+  }, /*#__PURE__*/React.createElement("span", null, currentStep > 1 ? '✓' : '1'), /*#__PURE__*/React.createElement("span", null, "Step 1: Patient Registration")), /*#__PURE__*/React.createElement("span", {
+    style: {
+      color: 'var(--text-muted)'
+    }
+  }, "\u2794"), /*#__PURE__*/React.createElement("div", {
+    style: {
+      display: 'flex',
+      alignItems: 'center',
+      gap: '8px',
+      padding: '8px 16px',
+      borderRadius: 'var(--radius-full)',
+      background: currentStep === 2 ? 'var(--primary)' : 'var(--bg-alt)',
+      color: currentStep === 2 ? 'white' : 'var(--text-muted)',
+      border: currentStep === 2 ? 'none' : '1px solid var(--border)',
+      fontWeight: 700,
+      fontSize: '0.88rem'
+    }
+  }, /*#__PURE__*/React.createElement("span", null, "2"), /*#__PURE__*/React.createElement("span", null, "Step 2: Clinical Vitals & Triage"))), /*#__PURE__*/React.createElement("div", {
     className: "form-card"
-  }, /*#__PURE__*/React.createElement("form", {
-    onSubmit: handleSubmit
+  }, currentStep === 1 && /*#__PURE__*/React.createElement("form", {
+    onSubmit: handleProceedToVitals
   }, /*#__PURE__*/React.createElement("div", {
     className: "form-group",
     style: {
@@ -1615,8 +1750,8 @@ function RegistrationForm({
     style: {
       marginTop: '28px',
       display: 'flex',
-      justifyContent: 'flex-end',
-      gap: '12px'
+      justifyContent: 'space-between',
+      alignItems: 'center'
     }
   }, /*#__PURE__*/React.createElement("button", {
     type: "button",
@@ -1629,17 +1764,260 @@ function RegistrationForm({
       bloodGroup: 'O+',
       departmentCode: 'CAR',
       doctor: 'Dr. Ananya Iyer',
-      symptoms: 'Mild palpitation after running, regular checkup',
+      symptoms: 'Mild palpitation after running, routine heart checkup',
       priority: 'Regular'
-    }),
-    title: "Auto-fill realistic details for quick testing"
-  }, "\u26A1 Fill Demo Data"), /*#__PURE__*/React.createElement("button", {
+    })
+  }, "\u26A1 Fill Demo Patient"), /*#__PURE__*/React.createElement("button", {
     type: "submit",
     className: "btn btn-primary",
     style: {
       padding: '12px 28px'
     }
-  }, "Generate Digital OP Token Slip \u25B6")))));
+  }, "Proceed to Vitals Check (Step 2) \u25B6"))), currentStep === 2 && /*#__PURE__*/React.createElement("form", {
+    onSubmit: handleFinalSubmit
+  }, /*#__PURE__*/React.createElement("div", {
+    style: {
+      background: 'var(--bg-alt)',
+      border: '1px solid var(--border)',
+      borderRadius: 'var(--radius-md)',
+      padding: '14px 18px',
+      marginBottom: '20px',
+      display: 'flex',
+      justifyContent: 'space-between',
+      alignItems: 'center'
+    }
+  }, /*#__PURE__*/React.createElement("div", null, /*#__PURE__*/React.createElement("span", {
+    style: {
+      fontSize: '0.78rem',
+      color: 'var(--text-muted)',
+      textTransform: 'uppercase',
+      fontWeight: 700
+    }
+  }, "Active Patient:"), /*#__PURE__*/React.createElement("div", {
+    style: {
+      fontSize: '1.05rem',
+      fontWeight: 800,
+      color: 'var(--dark)'
+    }
+  }, formData.patientName, " (", formData.age, " Yrs / ", formData.gender, ")"), /*#__PURE__*/React.createElement("div", {
+    style: {
+      fontSize: '0.8rem',
+      color: 'var(--primary)',
+      fontWeight: 600
+    }
+  }, "Dept: ", departments.find(d => d.code === formData.departmentCode)?.name, " \u2022 Priority: ", formData.priority)), /*#__PURE__*/React.createElement("div", {
+    style: {
+      textAlign: 'right'
+    }
+  }, /*#__PURE__*/React.createElement("div", {
+    style: {
+      fontSize: '0.76rem',
+      color: 'var(--text-muted)',
+      fontWeight: 700,
+      marginBottom: '4px'
+    }
+  }, "QUICK VITALS PRESETS:"), /*#__PURE__*/React.createElement("div", {
+    style: {
+      display: 'flex',
+      gap: '6px'
+    }
+  }, /*#__PURE__*/React.createElement("button", {
+    type: "button",
+    className: "btn btn-secondary btn-sm",
+    onClick: () => applyVitalsPreset('normal'),
+    style: {
+      fontSize: '0.74rem',
+      padding: '4px 8px'
+    }
+  }, "Normal"), /*#__PURE__*/React.createElement("button", {
+    type: "button",
+    className: "btn btn-secondary btn-sm",
+    onClick: () => applyVitalsPreset('hypertension'),
+    style: {
+      fontSize: '0.74rem',
+      padding: '4px 8px',
+      color: '#b91c1c'
+    }
+  }, "High BP"), /*#__PURE__*/React.createElement("button", {
+    type: "button",
+    className: "btn btn-secondary btn-sm",
+    onClick: () => applyVitalsPreset('fever'),
+    style: {
+      fontSize: '0.74rem',
+      padding: '4px 8px',
+      color: '#d97706'
+    }
+  }, "Fever")))), /*#__PURE__*/React.createElement("h3", {
+    style: {
+      fontSize: '1.05rem',
+      fontWeight: 800,
+      color: 'var(--dark)',
+      marginBottom: '16px',
+      display: 'flex',
+      alignItems: 'center',
+      gap: '8px'
+    }
+  }, /*#__PURE__*/React.createElement("span", null, "\uD83E\uDE7A"), " Triage Nurse Station \u2014 Clinical Vitals Measurement"), /*#__PURE__*/React.createElement("div", {
+    className: "form-grid"
+  }, /*#__PURE__*/React.createElement("div", {
+    className: "form-group"
+  }, /*#__PURE__*/React.createElement("label", {
+    className: "form-label"
+  }, "Blood Pressure (Systolic / Diastolic)", /*#__PURE__*/React.createElement("span", {
+    style: {
+      color: '#059669',
+      fontSize: '0.75rem',
+      fontWeight: 600,
+      marginLeft: '6px'
+    }
+  }, "Target: 120/80")), /*#__PURE__*/React.createElement("div", {
+    style: {
+      display: 'grid',
+      gridTemplateColumns: '1fr 1fr',
+      gap: '8px'
+    }
+  }, /*#__PURE__*/React.createElement("input", {
+    type: "number",
+    name: "bpSystolic",
+    className: "form-input",
+    placeholder: "Sys (e.g. 120)",
+    value: vitalsData.bpSystolic,
+    onChange: handleVitalsChange
+  }), /*#__PURE__*/React.createElement("input", {
+    type: "number",
+    name: "bpDiastolic",
+    className: "form-input",
+    placeholder: "Dia (e.g. 80)",
+    value: vitalsData.bpDiastolic,
+    onChange: handleVitalsChange
+  }))), /*#__PURE__*/React.createElement("div", {
+    className: "form-group"
+  }, /*#__PURE__*/React.createElement("label", {
+    className: "form-label"
+  }, "Pulse / Heart Rate (bpm)", /*#__PURE__*/React.createElement("span", {
+    style: {
+      color: 'var(--text-muted)',
+      fontSize: '0.75rem',
+      marginLeft: '6px'
+    }
+  }, "Normal: 60-100")), /*#__PURE__*/React.createElement("input", {
+    type: "number",
+    name: "pulse",
+    className: "form-input",
+    placeholder: "e.g. 74",
+    value: vitalsData.pulse,
+    onChange: handleVitalsChange
+  })), /*#__PURE__*/React.createElement("div", {
+    className: "form-group"
+  }, /*#__PURE__*/React.createElement("label", {
+    className: "form-label"
+  }, "Oxygen Saturation SpO2 (%)", /*#__PURE__*/React.createElement("span", {
+    style: {
+      color: 'var(--text-muted)',
+      fontSize: '0.75rem',
+      marginLeft: '6px'
+    }
+  }, "Normal: 95-100%")), /*#__PURE__*/React.createElement("input", {
+    type: "number",
+    name: "spo2",
+    className: "form-input",
+    placeholder: "e.g. 99",
+    value: vitalsData.spo2,
+    onChange: handleVitalsChange
+  })), /*#__PURE__*/React.createElement("div", {
+    className: "form-group"
+  }, /*#__PURE__*/React.createElement("label", {
+    className: "form-label"
+  }, "Body Temperature (\xB0F)", /*#__PURE__*/React.createElement("span", {
+    style: {
+      color: 'var(--text-muted)',
+      fontSize: '0.75rem',
+      marginLeft: '6px'
+    }
+  }, "Normal: 98.4 - 98.6\xB0F")), /*#__PURE__*/React.createElement("input", {
+    type: "text",
+    name: "temp",
+    className: "form-input",
+    placeholder: "e.g. 98.6",
+    value: vitalsData.temp,
+    onChange: handleVitalsChange
+  })), /*#__PURE__*/React.createElement("div", {
+    className: "form-group"
+  }, /*#__PURE__*/React.createElement("label", {
+    className: "form-label"
+  }, "Weight (kg) & Height (cm)", /*#__PURE__*/React.createElement("span", {
+    style: {
+      color: 'var(--primary)',
+      fontSize: '0.75rem',
+      fontWeight: 700,
+      marginLeft: '6px'
+    }
+  }, "BMI: ", calculateBMI(vitalsData.weight, vitalsData.height))), /*#__PURE__*/React.createElement("div", {
+    style: {
+      display: 'grid',
+      gridTemplateColumns: '1fr 1fr',
+      gap: '8px'
+    }
+  }, /*#__PURE__*/React.createElement("input", {
+    type: "number",
+    name: "weight",
+    className: "form-input",
+    placeholder: "Weight (kg)",
+    value: vitalsData.weight,
+    onChange: handleVitalsChange
+  }), /*#__PURE__*/React.createElement("input", {
+    type: "number",
+    name: "height",
+    className: "form-input",
+    placeholder: "Height (cm)",
+    value: vitalsData.height,
+    onChange: handleVitalsChange
+  }))), /*#__PURE__*/React.createElement("div", {
+    className: "form-group"
+  }, /*#__PURE__*/React.createElement("label", {
+    className: "form-label"
+  }, "Random Blood Sugar RBS (mg/dL)", /*#__PURE__*/React.createElement("span", {
+    style: {
+      color: 'var(--text-muted)',
+      fontSize: '0.75rem',
+      marginLeft: '6px'
+    }
+  }, "Target: < 140")), /*#__PURE__*/React.createElement("input", {
+    type: "number",
+    name: "bloodSugar",
+    className: "form-input",
+    placeholder: "e.g. 110",
+    value: vitalsData.bloodSugar,
+    onChange: handleVitalsChange
+  })), /*#__PURE__*/React.createElement("div", {
+    className: "form-group full-width"
+  }, /*#__PURE__*/React.createElement("label", {
+    className: "form-label"
+  }, "Nursing Triage Assessment Notes"), /*#__PURE__*/React.createElement("input", {
+    type: "text",
+    name: "triageNotes",
+    className: "form-input",
+    placeholder: "e.g. Patient conscious, oriented. No respiratory distress.",
+    value: vitalsData.triageNotes,
+    onChange: handleVitalsChange
+  }))), /*#__PURE__*/React.createElement("div", {
+    style: {
+      marginTop: '28px',
+      display: 'flex',
+      justifyContent: 'space-between',
+      alignItems: 'center'
+    }
+  }, /*#__PURE__*/React.createElement("button", {
+    type: "button",
+    className: "btn btn-secondary",
+    onClick: () => setCurrentStep(1)
+  }, "\u25C0 Back to Step 1 (Patient Info)"), /*#__PURE__*/React.createElement("button", {
+    type: "submit",
+    className: "btn btn-primary",
+    style: {
+      padding: '12px 30px'
+    }
+  }, "\u2713 Complete Registration & Generate Token Slip \u25B6")))));
 }
 
 // --- src/components/TokenSlip.jsx ---
@@ -1799,7 +2177,35 @@ function TokenSlip({
   }, new Date().toLocaleTimeString([], {
     hour: '2-digit',
     minute: '2-digit'
-  }), " (05-Sep-2026)")), /*#__PURE__*/React.createElement("div", {
+  }), " (05-Sep-2026)")), tokenData.vitals && /*#__PURE__*/React.createElement("div", {
+    style: {
+      marginTop: '14px',
+      background: '#f8fafc',
+      border: '1px solid #e2e8f0',
+      borderRadius: '8px',
+      padding: '10px 14px'
+    }
+  }, /*#__PURE__*/React.createElement("div", {
+    style: {
+      fontSize: '0.72rem',
+      fontWeight: 700,
+      color: 'var(--text-muted)',
+      textTransform: 'uppercase',
+      marginBottom: '6px'
+    }
+  }, "\uD83E\uDE7A Clinical Vitals Recorded at OP Triage:"), /*#__PURE__*/React.createElement("div", {
+    style: {
+      display: 'grid',
+      gridTemplateColumns: 'repeat(4, 1fr)',
+      gap: '8px',
+      fontSize: '0.78rem'
+    }
+  }, /*#__PURE__*/React.createElement("div", null, "BP: ", /*#__PURE__*/React.createElement("strong", null, tokenData.vitals.bp)), /*#__PURE__*/React.createElement("div", null, "Pulse: ", /*#__PURE__*/React.createElement("strong", null, tokenData.vitals.pulse)), /*#__PURE__*/React.createElement("div", null, "SpO2: ", /*#__PURE__*/React.createElement("strong", null, tokenData.vitals.spo2)), /*#__PURE__*/React.createElement("div", null, "Temp: ", /*#__PURE__*/React.createElement("strong", null, tokenData.vitals.temp)), /*#__PURE__*/React.createElement("div", null, "Weight: ", /*#__PURE__*/React.createElement("strong", null, tokenData.vitals.weight)), /*#__PURE__*/React.createElement("div", null, "BMI: ", /*#__PURE__*/React.createElement("strong", null, tokenData.vitals.bmi ? tokenData.vitals.bmi.split(' ')[0] : '22.8')), /*#__PURE__*/React.createElement("div", null, "Sugar: ", /*#__PURE__*/React.createElement("strong", null, tokenData.vitals.bloodSugar || '110 mg/dL')), /*#__PURE__*/React.createElement("div", {
+    style: {
+      color: '#059669',
+      fontWeight: 700
+    }
+  }, "Triage: Verified \u2713"))), /*#__PURE__*/React.createElement("div", {
     style: {
       marginTop: '20px',
       textAlign: 'center',
@@ -3810,13 +4216,14 @@ function App() {
       room: formData.room,
       visitDate: '05-Sep-2026',
       visitType: formData.priority === 'Emergency' ? 'Emergency Outpatient' : 'OPD Consultation',
-      vitals: {
+      vitals: formData.vitals || {
         bp: '122/82 mmHg',
         pulse: '74 bpm',
         spo2: '99%',
         temp: '98.6 °F',
         weight: '65 kg',
-        bmi: '22.8 (Normal)'
+        bmi: '22.8 (Normal)',
+        bloodSugar: '110 mg/dL'
       },
       symptoms: formData.symptoms || 'General Outpatient checkup and clinical evaluation.',
       diagnosis: 'Clinical Consultation in Progress (Initial OP Intake)',
@@ -3838,7 +4245,7 @@ function App() {
         testName: 'Consultant Clinical Examination',
         status: 'In Waiting Queue'
       }],
-      doctorNotes: 'Patient registered at Outpatient Desk. Vitals stable. Awaiting specialist examination in cabin.'
+      doctorNotes: `Patient registered at Outpatient Desk. Vitals recorded: BP ${formData.vitals ? formData.vitals.bp : '120/80'}, SpO2 ${formData.vitals ? formData.vitals.spo2 : '99%'}. Awaiting examination in cabin.`
     };
     setRecords(prev => ({
       ...prev,
@@ -3846,6 +4253,7 @@ function App() {
     }));
     const tokenReceiptData = {
       ...formData,
+      vitals: formData.vitals,
       token: generatedToken,
       opId: generatedOpId,
       estimatedTime: formData.priority === 'Emergency' ? 'Immediate Fast-Track' : '15-20 Mins'

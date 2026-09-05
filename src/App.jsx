@@ -113,13 +113,14 @@ export function App() {
       room: formData.room,
       visitDate: '05-Sep-2026',
       visitType: formData.priority === 'Emergency' ? 'Emergency Outpatient' : 'OPD Consultation',
-      vitals: {
+      vitals: formData.vitals || {
         bp: '122/82 mmHg',
         pulse: '74 bpm',
         spo2: '99%',
         temp: '98.6 °F',
         weight: '65 kg',
-        bmi: '22.8 (Normal)'
+        bmi: '22.8 (Normal)',
+        bloodSugar: '110 mg/dL'
       },
       symptoms: formData.symptoms || 'General Outpatient checkup and clinical evaluation.',
       diagnosis: 'Clinical Consultation in Progress (Initial OP Intake)',
@@ -131,7 +132,7 @@ export function App() {
         { testName: 'Standard Vitals & Screening', status: 'Completed at Triage Desk' },
         { testName: 'Consultant Clinical Examination', status: 'In Waiting Queue' }
       ],
-      doctorNotes: 'Patient registered at Outpatient Desk. Vitals stable. Awaiting specialist examination in cabin.'
+      doctorNotes: `Patient registered at Outpatient Desk. Vitals recorded: BP ${formData.vitals ? formData.vitals.bp : '120/80'}, SpO2 ${formData.vitals ? formData.vitals.spo2 : '99%'}. Awaiting examination in cabin.`
     };
 
     setRecords(prev => ({
@@ -141,6 +142,7 @@ export function App() {
 
     const tokenReceiptData = {
       ...formData,
+      vitals: formData.vitals,
       token: generatedToken,
       opId: generatedOpId,
       estimatedTime: formData.priority === 'Emergency' ? 'Immediate Fast-Track' : '15-20 Mins'
