@@ -111,6 +111,7 @@ export function App() {
       department: formData.departmentName,
       doctor: formData.doctor,
       room: formData.room,
+      payment: formData.payment,
       visitDate: '05-Sep-2026',
       visitType: formData.priority === 'Emergency' ? 'Emergency Outpatient' : 'OPD Consultation',
       vitals: formData.vitals || {
@@ -132,7 +133,7 @@ export function App() {
         { testName: 'Standard Vitals & Screening', status: 'Completed at Triage Desk' },
         { testName: 'Consultant Clinical Examination', status: 'In Waiting Queue' }
       ],
-      doctorNotes: `Patient registered at Outpatient Desk. Vitals recorded: BP ${formData.vitals ? formData.vitals.bp : '120/80'}, SpO2 ${formData.vitals ? formData.vitals.spo2 : '99%'}. Awaiting examination in cabin.`
+      doctorNotes: `Patient registered at Outpatient Desk. Vitals recorded: BP ${formData.vitals ? formData.vitals.bp : '120/80'}, SpO2 ${formData.vitals ? formData.vitals.spo2 : '99%'}. Paid ₹${formData.payment ? formData.payment.totalAmount : 800} via ${formData.payment ? formData.payment.paymentMethod : 'UPI'}. Awaiting examination.`
     };
 
     setRecords(prev => ({
@@ -142,6 +143,7 @@ export function App() {
 
     const tokenReceiptData = {
       ...formData,
+      payment: formData.payment,
       vitals: formData.vitals,
       token: generatedToken,
       opId: generatedOpId,

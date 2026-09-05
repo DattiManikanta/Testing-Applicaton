@@ -1,7 +1,7 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 
 export function RegistrationForm({ departments, doctors, onRegisterSuccess }) {
-  // Step 1: Demographics & Department | Step 2: Nursing Triage & Vitals
+  // Step 1: Demographics, Department & Payment | Step 2: Nursing Triage & Vitals
   const [currentStep, setCurrentStep] = useState(1);
 
   // Step 1: Patient Information
@@ -17,7 +17,16 @@ export function RegistrationForm({ departments, doctors, onRegisterSuccess }) {
     priority: 'Regular'
   });
 
-  // Step 2: Clinical Vitals & Triage
+  // Step 1: Payment Information
+  const [paymentData, setPaymentData] = useState({
+    consultationFee: 700,
+    regFee: 100,
+    paymentMethod: 'UPI', // 'UPI', 'Cash', 'Card', 'Insurance'
+    paymentStatus: 'Paid',
+    transactionId: `TXN-${Math.floor(100000 + Math.random() * 900000)}`
+  });
+
+  // Step 2: Clinical Vitals Entity
   const [vitalsData, setVitalsData] = useState({
     bpSystolic: '120',
     bpDiastolic: '80',
@@ -35,6 +44,18 @@ export function RegistrationForm({ departments, doctors, onRegisterSuccess }) {
   // Filter doctors based on department selected
   const availableDoctors = doctors.filter(d => d.depCode === formData.departmentCode);
 
+  // Auto-sync consultation fee when department or doctor changes
+  useEffect(() => {
+    const selectedDoc = doctors.find(d => d.name === formData.doctor);
+    if (selectedDoc) {
+      const parsedFee = parseInt(selectedDoc.fee.replace(/\D/g, ''), 10) || 700;
+      setPaymentData(prev => ({ ...prev, consultationFee: parsedFee }));
+    } else if (availableDoctors[0]) {
+      const parsedFee = parseInt(availableDoctors[0].fee.replace(/\D/g, ''), 10) || 700;
+      setPaymentData(prev => ({ ...prev, consultationFee: parsedFee }));
+    }
+  }, [formData.departmentCode, formData.doctor]);
+
   const handleChange = (e) => {
     const { name, value } = e.target;
     setFormData(prev => ({
@@ -47,6 +68,14 @@ export function RegistrationForm({ departments, doctors, onRegisterSuccess }) {
     }
   };
 
+  const handlePaymentMethodSelect = (method) => {
+    setPaymentData(prev => ({
+      ...prev,
+      paymentMethod: method,
+      transactionId: `TXN-${Math.floor(100000 + Math.random() * 900000)}`
+    }));
+  };
+
   const handleVitalsChange = (e) => {
     const { name, value } = e.target;
     setVitalsData(prev => ({ ...prev, [name]: value }));
@@ -56,11 +85,11 @@ export function RegistrationForm({ departments, doctors, onRegisterSuccess }) {
     setFormData(prev => ({ ...prev, priority }));
   };
 
-  // Calculate BMI dynamically from height & weight
+  // Calculate BMI dynamically
   const calculateBMI = (wt, ht) => {
     const w = parseFloat(wt);
-    const h = parseFloat(ht) / 100; // cm to meters
-    if (!w || !h || h <= 0) return '22.8 (Normal)';
+    const h = parseFloat(ht) / 100;
+    if (!w || !h || h <= 0) return '23.0 (Normal)';
     const bmiVal = (w / (h * h)).toFixed(1);
     let category = 'Normal';
     if (bmiVal < 18.5) category = 'Underweight';
@@ -70,7 +99,7 @@ export function RegistrationForm({ departments, doctors, onRegisterSuccess }) {
     return `${bmiVal} (${category})`;
   };
 
-  // Quick Vitals Presets for Demo
+  // Quick Vitals Presets
   const applyVitalsPreset = (preset) => {
     if (preset === 'normal') {
       setVitalsData({
@@ -111,7 +140,7 @@ export function RegistrationForm({ departments, doctors, onRegisterSuccess }) {
     }
   };
 
-  // Validate Step 1
+  // Validate Step 1 (Registration + Payment)
   const handleProceedToVitals = (e) => {
     e.preventDefault();
     const newErrors = {};
@@ -127,7 +156,7 @@ export function RegistrationForm({ departments, doctors, onRegisterSuccess }) {
     setCurrentStep(2);
   };
 
-  // Final Submission on Step 2
+  // Final Submission on Step 2 (Vitals complete -> Print Registration & Vitals Form)
   const handleFinalSubmit = (e) => {
     e.preventDefault();
     const selectedDep = departments.find(d => d.code === formData.departmentCode) || departments[0];
@@ -139,29 +168,38 @@ export function RegistrationForm({ departments, doctors, onRegisterSuccess }) {
       spo2: `${vitalsData.spo2}%`,
       temp: `${vitalsData.temp} °F`,
       weight: `${vitalsData.weight} kg`,
+      height: `${vitalsData.height} cm`,
       bmi: calculateBMI(vitalsData.weight, vitalsData.height),
       bloodSugar: `${vitalsData.bloodSugar} mg/dL`,
       triageNotes: vitalsData.triageNotes
     };
+
+    const totalAmount = paymentData.consultationFee + paymentData.regFee;
 
     onRegisterSuccess({
       ...formData,
       departmentName: selectedDep.name,
       doctor: assignedDoc,
       room: selectedDep.room,
+      payment: {
+        ...paymentData,
+        totalAmount: totalAmount
+      },
       vitals: formattedVitals
     });
   };
 
+  const totalPayable = paymentData.consultationFee + paymentData.regFee;
+
   return (
     <div className="registration-section">
       <div className="section-header" style={{ justifyContent: 'center', textAlign: 'center', flexDirection: 'column', alignItems: 'center' }}>
-        <h2>📝 Outpatient (OP) Intake & Nursing Triage</h2>
-        <p>2-Step OPD Registration: Patient Intake followed by Clinical Vitals Check.</p>
+        <h2>📝 Outpatient (OP) Registration, Payment & Vitals Intake</h2>
+        <p>Step 1: Patient Details & Payment ➔ Step 2: Clinical Vitals Check ➔ Step 3: Print Form</p>
       </div>
 
-      {/* Stepper Wizard Indicator */}
-      <div style={{ maxWidth: '650px', margin: '0 auto 24px', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '16px' }}>
+      {/* Stepper Wizard Header */}
+      <div style={{ maxWidth: '700px', margin: '0 auto 24px', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '14px' }}>
         <div 
           onClick={() => setCurrentStep(1)}
           style={{ 
@@ -169,7 +207,7 @@ export function RegistrationForm({ departments, doctors, onRegisterSuccess }) {
             alignItems: 'center', 
             gap: '8px', 
             cursor: 'pointer',
-            padding: '8px 16px',
+            padding: '8px 18px',
             borderRadius: 'var(--radius-full)',
             background: currentStep === 1 ? 'var(--primary)' : 'var(--emerald-light)',
             color: currentStep === 1 ? 'white' : '#065f46',
@@ -178,7 +216,7 @@ export function RegistrationForm({ departments, doctors, onRegisterSuccess }) {
           }}
         >
           <span>{currentStep > 1 ? '✓' : '1'}</span>
-          <span>Step 1: Patient Registration</span>
+          <span>Step 1: Patient Info & Payment</span>
         </div>
 
         <span style={{ color: 'var(--text-muted)' }}>➔</span>
@@ -188,7 +226,7 @@ export function RegistrationForm({ departments, doctors, onRegisterSuccess }) {
             display: 'flex', 
             alignItems: 'center', 
             gap: '8px',
-            padding: '8px 16px',
+            padding: '8px 18px',
             borderRadius: 'var(--radius-full)',
             background: currentStep === 2 ? 'var(--primary)' : 'var(--bg-alt)',
             color: currentStep === 2 ? 'white' : 'var(--text-muted)',
@@ -198,12 +236,12 @@ export function RegistrationForm({ departments, doctors, onRegisterSuccess }) {
           }}
         >
           <span>2</span>
-          <span>Step 2: Clinical Vitals & Triage</span>
+          <span>Step 2: Add Clinical Vitals Entity</span>
         </div>
       </div>
 
       <div className="form-card">
-        {/* ================= STEP 1: PATIENT DEMOGRAPHICS ================= */}
+        {/* ================= STEP 1: PATIENT REGISTRATION & PAYMENT ================= */}
         {currentStep === 1 && (
           <form onSubmit={handleProceedToVitals}>
             {/* Priority Tier Switcher */}
@@ -271,7 +309,7 @@ export function RegistrationForm({ departments, doctors, onRegisterSuccess }) {
               </div>
 
               <div className="form-group">
-                <label className="form-label">Contact Number <span className="req">*</span></label>
+                <label className="form-label">Contact Mobile <span className="req">*</span></label>
                 <input
                   type="tel"
                   name="phone"
@@ -303,7 +341,7 @@ export function RegistrationForm({ departments, doctors, onRegisterSuccess }) {
               </div>
 
               <div className="form-group">
-                <label className="form-label">Select OPD Department <span className="req">*</span></label>
+                <label className="form-label">OPD Department <span className="req">*</span></label>
                 <select
                   name="departmentCode"
                   className="form-select"
@@ -319,7 +357,7 @@ export function RegistrationForm({ departments, doctors, onRegisterSuccess }) {
               </div>
 
               <div className="form-group">
-                <label className="form-label">Consulting Doctor (Optional)</label>
+                <label className="form-label">Consulting Doctor</label>
                 <select
                   name="doctor"
                   className="form-select"
@@ -329,7 +367,7 @@ export function RegistrationForm({ departments, doctors, onRegisterSuccess }) {
                   <option value="">Any Available Specialist</option>
                   {availableDoctors.map(doc => (
                     <option key={doc.id} value={doc.name}>
-                      {doc.name} - {doc.degrees.split(',')[0]} ({doc.fee})
+                      {doc.name} ({doc.fee})
                     </option>
                   ))}
                 </select>
@@ -337,13 +375,99 @@ export function RegistrationForm({ departments, doctors, onRegisterSuccess }) {
 
               <div className="form-group full-width">
                 <label className="form-label">Chief Complaint / Symptoms</label>
-                <textarea
+                <input
+                  type="text"
                   name="symptoms"
-                  className="form-textarea"
-                  placeholder="Briefly describe symptoms (e.g. Chest tightness, joint pain, fever, cough since 2 days)..."
+                  className="form-input"
+                  placeholder="e.g. Chest tightness, fever, joint pain, general checkup..."
                   value={formData.symptoms}
                   onChange={handleChange}
-                ></textarea>
+                />
+              </div>
+            </div>
+
+            {/* ================= PAYMENT BILLING BOX (AT REGISTRATION) ================= */}
+            <div style={{ 
+              marginTop: '24px', 
+              background: '#f8fafc', 
+              border: '2px solid #e2e8f0', 
+              borderRadius: 'var(--radius-lg)', 
+              padding: '20px 24px' 
+            }}>
+              <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '14px' }}>
+                <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+                  <span style={{ fontSize: '1.25rem' }}>💳</span>
+                  <div>
+                    <h3 style={{ fontSize: '1.05rem', fontWeight: 800, color: 'var(--dark)' }}>
+                      OP Consultation Billing & Registration Fee
+                    </h3>
+                    <p style={{ fontSize: '0.78rem', color: 'var(--text-muted)' }}>
+                      Mandatory outpatient registration counter payment.
+                    </p>
+                  </div>
+                </div>
+                <span style={{ 
+                  background: 'var(--emerald-light)', 
+                  color: '#065f46', 
+                  padding: '3px 10px', 
+                  borderRadius: 'var(--radius-full)', 
+                  fontSize: '0.76rem', 
+                  fontWeight: 800 
+                }}>
+                  READY FOR COLLECTION
+                </span>
+              </div>
+
+              {/* Fee Breakdown */}
+              <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: '14px', marginBottom: '16px', background: 'white', padding: '12px 16px', borderRadius: 'var(--radius-md)', border: '1px solid var(--border)' }}>
+                <div>
+                  <div style={{ fontSize: '0.74rem', color: 'var(--text-muted)', fontWeight: 600 }}>Doctor Consultation Fee:</div>
+                  <div style={{ fontSize: '1.1rem', fontWeight: 800, color: 'var(--dark)' }}>₹{paymentData.consultationFee}</div>
+                </div>
+                <div>
+                  <div style={{ fontSize: '0.74rem', color: 'var(--text-muted)', fontWeight: 600 }}>One-Time OP Registration Card:</div>
+                  <div style={{ fontSize: '1.1rem', fontWeight: 800, color: 'var(--dark)' }}>₹{paymentData.regFee}</div>
+                </div>
+                <div style={{ borderLeft: '2px solid var(--border)', paddingLeft: '14px' }}>
+                  <div style={{ fontSize: '0.74rem', color: 'var(--text-muted)', fontWeight: 700 }}>TOTAL AMOUNT PAYABLE:</div>
+                  <div style={{ fontSize: '1.3rem', fontWeight: 800, color: 'var(--primary)' }}>₹{totalPayable}</div>
+                </div>
+              </div>
+
+              {/* Payment Method Selector */}
+              <div>
+                <label className="form-label" style={{ marginBottom: '8px', display: 'block' }}>
+                  Select Counter Payment Method:
+                </label>
+                <div style={{ display: 'grid', gridTemplateColumns: 'repeat(4, 1fr)', gap: '10px' }}>
+                  <div 
+                    className={`priority-btn ${paymentData.paymentMethod === 'UPI' ? 'active' : ''}`}
+                    onClick={() => handlePaymentMethodSelect('UPI')}
+                  >
+                    📱 UPI / QR (GPay)
+                  </div>
+                  <div 
+                    className={`priority-btn ${paymentData.paymentMethod === 'Cash' ? 'active' : ''}`}
+                    onClick={() => handlePaymentMethodSelect('Cash')}
+                  >
+                    💵 Cash Counter
+                  </div>
+                  <div 
+                    className={`priority-btn ${paymentData.paymentMethod === 'Card' ? 'active' : ''}`}
+                    onClick={() => handlePaymentMethodSelect('Card')}
+                  >
+                    💳 Debit / Credit Card
+                  </div>
+                  <div 
+                    className={`priority-btn ${paymentData.paymentMethod === 'Insurance' ? 'active' : ''}`}
+                    onClick={() => handlePaymentMethodSelect('Insurance')}
+                  >
+                    🛡️ TPA Insurance
+                  </div>
+                </div>
+                <div style={{ fontSize: '0.75rem', color: '#64748b', marginTop: '8px' }}>
+                  Receipt Ref: <strong>{paymentData.transactionId}</strong> • Status: <strong style={{ color: '#059669' }}>Payment Verified & Settled ✓</strong>
+                </div>
               </div>
             </div>
 
@@ -366,14 +490,14 @@ export function RegistrationForm({ departments, doctors, onRegisterSuccess }) {
                 ⚡ Fill Demo Patient
               </button>
 
-              <button type="submit" className="btn btn-primary" style={{ padding: '12px 28px' }}>
-                Proceed to Vitals Check (Step 2) ▶
+              <button type="submit" className="btn btn-primary" style={{ padding: '13px 30px', fontSize: '0.96rem' }}>
+                Collect Payment (₹{totalPayable}) & Proceed to Vitals Entry (Step 2) ▶
               </button>
             </div>
           </form>
         )}
 
-        {/* ================= STEP 2: CLINICAL VITALS RECORDING ================= */}
+        {/* ================= STEP 2: CLINICAL VITALS ENTITY ================= */}
         {currentStep === 2 && (
           <form onSubmit={handleFinalSubmit}>
             {/* Patient Header Summary Bar */}
@@ -388,39 +512,46 @@ export function RegistrationForm({ departments, doctors, onRegisterSuccess }) {
               alignItems: 'center'
             }}>
               <div>
-                <span style={{ fontSize: '0.78rem', color: 'var(--text-muted)', textTransform: 'uppercase', fontWeight: 700 }}>
-                  Active Patient:
+                <span style={{ fontSize: '0.76rem', color: 'var(--text-muted)', textTransform: 'uppercase', fontWeight: 700 }}>
+                  Patient Registration & Payment Confirmed:
                 </span>
                 <div style={{ fontSize: '1.05rem', fontWeight: 800, color: 'var(--dark)' }}>
                   {formData.patientName} ({formData.age} Yrs / {formData.gender})
                 </div>
                 <div style={{ fontSize: '0.8rem', color: 'var(--primary)', fontWeight: 600 }}>
-                  Dept: {departments.find(d => d.code === formData.departmentCode)?.name} • Priority: {formData.priority}
+                  Dept: {departments.find(d => d.code === formData.departmentCode)?.name} • Doctor: {formData.doctor || 'Assigned'}
                 </div>
               </div>
 
-              {/* Quick Vitals Presets */}
+              {/* Payment Summary Tag */}
               <div style={{ textAlign: 'right' }}>
-                <div style={{ fontSize: '0.76rem', color: 'var(--text-muted)', fontWeight: 700, marginBottom: '4px' }}>
-                  QUICK VITALS PRESETS:
+                <div style={{ background: '#dcfce7', color: '#15803d', padding: '4px 12px', borderRadius: 'var(--radius-full)', fontWeight: 800, fontSize: '0.82rem' }}>
+                  PAID: ₹{totalPayable} via {paymentData.paymentMethod} ✓
                 </div>
-                <div style={{ display: 'flex', gap: '6px' }}>
-                  <button type="button" className="btn btn-secondary btn-sm" onClick={() => applyVitalsPreset('normal')} style={{ fontSize: '0.74rem', padding: '4px 8px' }}>
-                    Normal
-                  </button>
-                  <button type="button" className="btn btn-secondary btn-sm" onClick={() => applyVitalsPreset('hypertension')} style={{ fontSize: '0.74rem', padding: '4px 8px', color: '#b91c1c' }}>
-                    High BP
-                  </button>
-                  <button type="button" className="btn btn-secondary btn-sm" onClick={() => applyVitalsPreset('fever')} style={{ fontSize: '0.74rem', padding: '4px 8px', color: '#d97706' }}>
-                    Fever
-                  </button>
+                <div style={{ fontSize: '0.72rem', color: 'var(--text-muted)', marginTop: '2px' }}>
+                  Ref: {paymentData.transactionId}
                 </div>
               </div>
             </div>
 
-            <h3 style={{ fontSize: '1.05rem', fontWeight: 800, color: 'var(--dark)', marginBottom: '16px', display: 'flex', alignItems: 'center', gap: '8px' }}>
-              <span>🩺</span> Triage Nurse Station — Clinical Vitals Measurement
-            </h3>
+            {/* Quick Vitals Presets Bar */}
+            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '16px' }}>
+              <h3 style={{ fontSize: '1.05rem', fontWeight: 800, color: 'var(--dark)', display: 'flex', alignItems: 'center', gap: '8px' }}>
+                <span>🩺</span> Nursing Triage Station — Add Clinical Vitals Entity
+              </h3>
+              <div style={{ display: 'flex', gap: '6px', alignItems: 'center' }}>
+                <span style={{ fontSize: '0.75rem', fontWeight: 700, color: 'var(--text-muted)' }}>QUICK PRESET:</span>
+                <button type="button" className="btn btn-secondary btn-sm" onClick={() => applyVitalsPreset('normal')} style={{ fontSize: '0.74rem', padding: '4px 8px' }}>
+                  Normal
+                </button>
+                <button type="button" className="btn btn-secondary btn-sm" onClick={() => applyVitalsPreset('hypertension')} style={{ fontSize: '0.74rem', padding: '4px 8px', color: '#b91c1c' }}>
+                  High BP
+                </button>
+                <button type="button" className="btn btn-secondary btn-sm" onClick={() => applyVitalsPreset('fever')} style={{ fontSize: '0.74rem', padding: '4px 8px', color: '#d97706' }}>
+                  Fever
+                </button>
+              </div>
+            </div>
 
             <div className="form-grid">
               {/* Blood Pressure */}
@@ -548,7 +679,7 @@ export function RegistrationForm({ departments, doctors, onRegisterSuccess }) {
                   type="text"
                   name="triageNotes"
                   className="form-input"
-                  placeholder="e.g. Patient conscious, oriented. No respiratory distress."
+                  placeholder="e.g. Patient conscious, oriented. No acute respiratory distress."
                   value={vitalsData.triageNotes}
                   onChange={handleVitalsChange}
                 />
@@ -561,11 +692,11 @@ export function RegistrationForm({ departments, doctors, onRegisterSuccess }) {
                 className="btn btn-secondary"
                 onClick={() => setCurrentStep(1)}
               >
-                ◀ Back to Step 1 (Patient Info)
+                ◀ Back to Step 1 (Edit Registration / Payment)
               </button>
 
-              <button type="submit" className="btn btn-primary" style={{ padding: '12px 30px' }}>
-                ✓ Complete Registration & Generate Token Slip ▶
+              <button type="submit" className="btn btn-emerald" style={{ padding: '13px 32px', fontSize: '0.96rem' }}>
+                🖨️ Complete & Print Registration + Vitals Form ▶
               </button>
             </div>
           </form>

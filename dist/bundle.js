@@ -1381,7 +1381,7 @@ function RegistrationForm({
   doctors,
   onRegisterSuccess
 }) {
-  // Step 1: Demographics & Department | Step 2: Nursing Triage & Vitals
+  // Step 1: Demographics, Department & Payment | Step 2: Nursing Triage & Vitals
   const [currentStep, setCurrentStep] = useState(1);
 
   // Step 1: Patient Information
@@ -1397,7 +1397,17 @@ function RegistrationForm({
     priority: 'Regular'
   });
 
-  // Step 2: Clinical Vitals & Triage
+  // Step 1: Payment Information
+  const [paymentData, setPaymentData] = useState({
+    consultationFee: 700,
+    regFee: 100,
+    paymentMethod: 'UPI',
+    // 'UPI', 'Cash', 'Card', 'Insurance'
+    paymentStatus: 'Paid',
+    transactionId: `TXN-${Math.floor(100000 + Math.random() * 900000)}`
+  });
+
+  // Step 2: Clinical Vitals Entity
   const [vitalsData, setVitalsData] = useState({
     bpSystolic: '120',
     bpDiastolic: '80',
@@ -1413,6 +1423,24 @@ function RegistrationForm({
 
   // Filter doctors based on department selected
   const availableDoctors = doctors.filter(d => d.depCode === formData.departmentCode);
+
+  // Auto-sync consultation fee when department or doctor changes
+  useEffect(() => {
+    const selectedDoc = doctors.find(d => d.name === formData.doctor);
+    if (selectedDoc) {
+      const parsedFee = parseInt(selectedDoc.fee.replace(/\D/g, ''), 10) || 700;
+      setPaymentData(prev => ({
+        ...prev,
+        consultationFee: parsedFee
+      }));
+    } else if (availableDoctors[0]) {
+      const parsedFee = parseInt(availableDoctors[0].fee.replace(/\D/g, ''), 10) || 700;
+      setPaymentData(prev => ({
+        ...prev,
+        consultationFee: parsedFee
+      }));
+    }
+  }, [formData.departmentCode, formData.doctor]);
   const handleChange = e => {
     const {
       name,
@@ -1432,6 +1460,13 @@ function RegistrationForm({
       }));
     }
   };
+  const handlePaymentMethodSelect = method => {
+    setPaymentData(prev => ({
+      ...prev,
+      paymentMethod: method,
+      transactionId: `TXN-${Math.floor(100000 + Math.random() * 900000)}`
+    }));
+  };
   const handleVitalsChange = e => {
     const {
       name,
@@ -1449,18 +1484,18 @@ function RegistrationForm({
     }));
   };
 
-  // Calculate BMI dynamically from height & weight
+  // Calculate BMI dynamically
   const calculateBMI = (wt, ht) => {
     const w = parseFloat(wt);
-    const h = parseFloat(ht) / 100; // cm to meters
-    if (!w || !h || h <= 0) return '22.8 (Normal)';
+    const h = parseFloat(ht) / 100;
+    if (!w || !h || h <= 0) return '23.0 (Normal)';
     const bmiVal = (w / (h * h)).toFixed(1);
     let category = 'Normal';
     if (bmiVal < 18.5) category = 'Underweight';else if (bmiVal < 25) category = 'Normal';else if (bmiVal < 30) category = 'Overweight';else category = 'Obese';
     return `${bmiVal} (${category})`;
   };
 
-  // Quick Vitals Presets for Demo
+  // Quick Vitals Presets
   const applyVitalsPreset = preset => {
     if (preset === 'normal') {
       setVitalsData({
@@ -1501,7 +1536,7 @@ function RegistrationForm({
     }
   };
 
-  // Validate Step 1
+  // Validate Step 1 (Registration + Payment)
   const handleProceedToVitals = e => {
     e.preventDefault();
     const newErrors = {};
@@ -1515,7 +1550,7 @@ function RegistrationForm({
     setCurrentStep(2);
   };
 
-  // Final Submission on Step 2
+  // Final Submission on Step 2 (Vitals complete -> Print Registration & Vitals Form)
   const handleFinalSubmit = e => {
     e.preventDefault();
     const selectedDep = departments.find(d => d.code === formData.departmentCode) || departments[0];
@@ -1526,18 +1561,25 @@ function RegistrationForm({
       spo2: `${vitalsData.spo2}%`,
       temp: `${vitalsData.temp} °F`,
       weight: `${vitalsData.weight} kg`,
+      height: `${vitalsData.height} cm`,
       bmi: calculateBMI(vitalsData.weight, vitalsData.height),
       bloodSugar: `${vitalsData.bloodSugar} mg/dL`,
       triageNotes: vitalsData.triageNotes
     };
+    const totalAmount = paymentData.consultationFee + paymentData.regFee;
     onRegisterSuccess({
       ...formData,
       departmentName: selectedDep.name,
       doctor: assignedDoc,
       room: selectedDep.room,
+      payment: {
+        ...paymentData,
+        totalAmount: totalAmount
+      },
       vitals: formattedVitals
     });
   };
+  const totalPayable = paymentData.consultationFee + paymentData.regFee;
   return /*#__PURE__*/React.createElement("div", {
     className: "registration-section"
   }, /*#__PURE__*/React.createElement("div", {
@@ -1548,14 +1590,14 @@ function RegistrationForm({
       flexDirection: 'column',
       alignItems: 'center'
     }
-  }, /*#__PURE__*/React.createElement("h2", null, "\uD83D\uDCDD Outpatient (OP) Intake & Nursing Triage"), /*#__PURE__*/React.createElement("p", null, "2-Step OPD Registration: Patient Intake followed by Clinical Vitals Check.")), /*#__PURE__*/React.createElement("div", {
+  }, /*#__PURE__*/React.createElement("h2", null, "\uD83D\uDCDD Outpatient (OP) Registration, Payment & Vitals Intake"), /*#__PURE__*/React.createElement("p", null, "Step 1: Patient Details & Payment \u2794 Step 2: Clinical Vitals Check \u2794 Step 3: Print Form")), /*#__PURE__*/React.createElement("div", {
     style: {
-      maxWidth: '650px',
+      maxWidth: '700px',
       margin: '0 auto 24px',
       display: 'flex',
       alignItems: 'center',
       justifyContent: 'center',
-      gap: '16px'
+      gap: '14px'
     }
   }, /*#__PURE__*/React.createElement("div", {
     onClick: () => setCurrentStep(1),
@@ -1564,14 +1606,14 @@ function RegistrationForm({
       alignItems: 'center',
       gap: '8px',
       cursor: 'pointer',
-      padding: '8px 16px',
+      padding: '8px 18px',
       borderRadius: 'var(--radius-full)',
       background: currentStep === 1 ? 'var(--primary)' : 'var(--emerald-light)',
       color: currentStep === 1 ? 'white' : '#065f46',
       fontWeight: 700,
       fontSize: '0.88rem'
     }
-  }, /*#__PURE__*/React.createElement("span", null, currentStep > 1 ? '✓' : '1'), /*#__PURE__*/React.createElement("span", null, "Step 1: Patient Registration")), /*#__PURE__*/React.createElement("span", {
+  }, /*#__PURE__*/React.createElement("span", null, currentStep > 1 ? '✓' : '1'), /*#__PURE__*/React.createElement("span", null, "Step 1: Patient Info & Payment")), /*#__PURE__*/React.createElement("span", {
     style: {
       color: 'var(--text-muted)'
     }
@@ -1580,7 +1622,7 @@ function RegistrationForm({
       display: 'flex',
       alignItems: 'center',
       gap: '8px',
-      padding: '8px 16px',
+      padding: '8px 18px',
       borderRadius: 'var(--radius-full)',
       background: currentStep === 2 ? 'var(--primary)' : 'var(--bg-alt)',
       color: currentStep === 2 ? 'white' : 'var(--text-muted)',
@@ -1588,7 +1630,7 @@ function RegistrationForm({
       fontWeight: 700,
       fontSize: '0.88rem'
     }
-  }, /*#__PURE__*/React.createElement("span", null, "2"), /*#__PURE__*/React.createElement("span", null, "Step 2: Clinical Vitals & Triage"))), /*#__PURE__*/React.createElement("div", {
+  }, /*#__PURE__*/React.createElement("span", null, "2"), /*#__PURE__*/React.createElement("span", null, "Step 2: Add Clinical Vitals Entity"))), /*#__PURE__*/React.createElement("div", {
     className: "form-card"
   }, currentStep === 1 && /*#__PURE__*/React.createElement("form", {
     onSubmit: handleProceedToVitals
@@ -1669,7 +1711,7 @@ function RegistrationForm({
     className: "form-group"
   }, /*#__PURE__*/React.createElement("label", {
     className: "form-label"
-  }, "Contact Number ", /*#__PURE__*/React.createElement("span", {
+  }, "Contact Mobile ", /*#__PURE__*/React.createElement("span", {
     className: "req"
   }, "*")), /*#__PURE__*/React.createElement("input", {
     type: "tel",
@@ -1712,7 +1754,7 @@ function RegistrationForm({
     className: "form-group"
   }, /*#__PURE__*/React.createElement("label", {
     className: "form-label"
-  }, "Select OPD Department ", /*#__PURE__*/React.createElement("span", {
+  }, "OPD Department ", /*#__PURE__*/React.createElement("span", {
     className: "req"
   }, "*")), /*#__PURE__*/React.createElement("select", {
     name: "departmentCode",
@@ -1726,7 +1768,7 @@ function RegistrationForm({
     className: "form-group"
   }, /*#__PURE__*/React.createElement("label", {
     className: "form-label"
-  }, "Consulting Doctor (Optional)"), /*#__PURE__*/React.createElement("select", {
+  }, "Consulting Doctor"), /*#__PURE__*/React.createElement("select", {
     name: "doctor",
     className: "form-select",
     value: formData.doctor,
@@ -1736,17 +1778,149 @@ function RegistrationForm({
   }, "Any Available Specialist"), availableDoctors.map(doc => /*#__PURE__*/React.createElement("option", {
     key: doc.id,
     value: doc.name
-  }, doc.name, " - ", doc.degrees.split(',')[0], " (", doc.fee, ")")))), /*#__PURE__*/React.createElement("div", {
+  }, doc.name, " (", doc.fee, ")")))), /*#__PURE__*/React.createElement("div", {
     className: "form-group full-width"
   }, /*#__PURE__*/React.createElement("label", {
     className: "form-label"
-  }, "Chief Complaint / Symptoms"), /*#__PURE__*/React.createElement("textarea", {
+  }, "Chief Complaint / Symptoms"), /*#__PURE__*/React.createElement("input", {
+    type: "text",
     name: "symptoms",
-    className: "form-textarea",
-    placeholder: "Briefly describe symptoms (e.g. Chest tightness, joint pain, fever, cough since 2 days)...",
+    className: "form-input",
+    placeholder: "e.g. Chest tightness, fever, joint pain, general checkup...",
     value: formData.symptoms,
     onChange: handleChange
   }))), /*#__PURE__*/React.createElement("div", {
+    style: {
+      marginTop: '24px',
+      background: '#f8fafc',
+      border: '2px solid #e2e8f0',
+      borderRadius: 'var(--radius-lg)',
+      padding: '20px 24px'
+    }
+  }, /*#__PURE__*/React.createElement("div", {
+    style: {
+      display: 'flex',
+      justifyContent: 'space-between',
+      alignItems: 'center',
+      marginBottom: '14px'
+    }
+  }, /*#__PURE__*/React.createElement("div", {
+    style: {
+      display: 'flex',
+      alignItems: 'center',
+      gap: '8px'
+    }
+  }, /*#__PURE__*/React.createElement("span", {
+    style: {
+      fontSize: '1.25rem'
+    }
+  }, "\uD83D\uDCB3"), /*#__PURE__*/React.createElement("div", null, /*#__PURE__*/React.createElement("h3", {
+    style: {
+      fontSize: '1.05rem',
+      fontWeight: 800,
+      color: 'var(--dark)'
+    }
+  }, "OP Consultation Billing & Registration Fee"), /*#__PURE__*/React.createElement("p", {
+    style: {
+      fontSize: '0.78rem',
+      color: 'var(--text-muted)'
+    }
+  }, "Mandatory outpatient registration counter payment."))), /*#__PURE__*/React.createElement("span", {
+    style: {
+      background: 'var(--emerald-light)',
+      color: '#065f46',
+      padding: '3px 10px',
+      borderRadius: 'var(--radius-full)',
+      fontSize: '0.76rem',
+      fontWeight: 800
+    }
+  }, "READY FOR COLLECTION")), /*#__PURE__*/React.createElement("div", {
+    style: {
+      display: 'grid',
+      gridTemplateColumns: 'repeat(3, 1fr)',
+      gap: '14px',
+      marginBottom: '16px',
+      background: 'white',
+      padding: '12px 16px',
+      borderRadius: 'var(--radius-md)',
+      border: '1px solid var(--border)'
+    }
+  }, /*#__PURE__*/React.createElement("div", null, /*#__PURE__*/React.createElement("div", {
+    style: {
+      fontSize: '0.74rem',
+      color: 'var(--text-muted)',
+      fontWeight: 600
+    }
+  }, "Doctor Consultation Fee:"), /*#__PURE__*/React.createElement("div", {
+    style: {
+      fontSize: '1.1rem',
+      fontWeight: 800,
+      color: 'var(--dark)'
+    }
+  }, "\u20B9", paymentData.consultationFee)), /*#__PURE__*/React.createElement("div", null, /*#__PURE__*/React.createElement("div", {
+    style: {
+      fontSize: '0.74rem',
+      color: 'var(--text-muted)',
+      fontWeight: 600
+    }
+  }, "One-Time OP Registration Card:"), /*#__PURE__*/React.createElement("div", {
+    style: {
+      fontSize: '1.1rem',
+      fontWeight: 800,
+      color: 'var(--dark)'
+    }
+  }, "\u20B9", paymentData.regFee)), /*#__PURE__*/React.createElement("div", {
+    style: {
+      borderLeft: '2px solid var(--border)',
+      paddingLeft: '14px'
+    }
+  }, /*#__PURE__*/React.createElement("div", {
+    style: {
+      fontSize: '0.74rem',
+      color: 'var(--text-muted)',
+      fontWeight: 700
+    }
+  }, "TOTAL AMOUNT PAYABLE:"), /*#__PURE__*/React.createElement("div", {
+    style: {
+      fontSize: '1.3rem',
+      fontWeight: 800,
+      color: 'var(--primary)'
+    }
+  }, "\u20B9", totalPayable))), /*#__PURE__*/React.createElement("div", null, /*#__PURE__*/React.createElement("label", {
+    className: "form-label",
+    style: {
+      marginBottom: '8px',
+      display: 'block'
+    }
+  }, "Select Counter Payment Method:"), /*#__PURE__*/React.createElement("div", {
+    style: {
+      display: 'grid',
+      gridTemplateColumns: 'repeat(4, 1fr)',
+      gap: '10px'
+    }
+  }, /*#__PURE__*/React.createElement("div", {
+    className: `priority-btn ${paymentData.paymentMethod === 'UPI' ? 'active' : ''}`,
+    onClick: () => handlePaymentMethodSelect('UPI')
+  }, "\uD83D\uDCF1 UPI / QR (GPay)"), /*#__PURE__*/React.createElement("div", {
+    className: `priority-btn ${paymentData.paymentMethod === 'Cash' ? 'active' : ''}`,
+    onClick: () => handlePaymentMethodSelect('Cash')
+  }, "\uD83D\uDCB5 Cash Counter"), /*#__PURE__*/React.createElement("div", {
+    className: `priority-btn ${paymentData.paymentMethod === 'Card' ? 'active' : ''}`,
+    onClick: () => handlePaymentMethodSelect('Card')
+  }, "\uD83D\uDCB3 Debit / Credit Card"), /*#__PURE__*/React.createElement("div", {
+    className: `priority-btn ${paymentData.paymentMethod === 'Insurance' ? 'active' : ''}`,
+    onClick: () => handlePaymentMethodSelect('Insurance')
+  }, "\uD83D\uDEE1\uFE0F TPA Insurance")), /*#__PURE__*/React.createElement("div", {
+    style: {
+      fontSize: '0.75rem',
+      color: '#64748b',
+      marginTop: '8px'
+    }
+  }, "Receipt Ref: ", /*#__PURE__*/React.createElement("strong", null, paymentData.transactionId), " \u2022 Status: ", /*#__PURE__*/React.createElement("strong", {
+    style: {
+      color: '#059669'
+    }
+  }, "Payment Verified & Settled \u2713")))), /*#__PURE__*/React.createElement("div", {
     style: {
       marginTop: '28px',
       display: 'flex',
@@ -1771,9 +1945,10 @@ function RegistrationForm({
     type: "submit",
     className: "btn btn-primary",
     style: {
-      padding: '12px 28px'
+      padding: '13px 30px',
+      fontSize: '0.96rem'
     }
-  }, "Proceed to Vitals Check (Step 2) \u25B6"))), currentStep === 2 && /*#__PURE__*/React.createElement("form", {
+  }, "Collect Payment (\u20B9", totalPayable, ") & Proceed to Vitals Entry (Step 2) \u25B6"))), currentStep === 2 && /*#__PURE__*/React.createElement("form", {
     onSubmit: handleFinalSubmit
   }, /*#__PURE__*/React.createElement("div", {
     style: {
@@ -1788,12 +1963,12 @@ function RegistrationForm({
     }
   }, /*#__PURE__*/React.createElement("div", null, /*#__PURE__*/React.createElement("span", {
     style: {
-      fontSize: '0.78rem',
+      fontSize: '0.76rem',
       color: 'var(--text-muted)',
       textTransform: 'uppercase',
       fontWeight: 700
     }
-  }, "Active Patient:"), /*#__PURE__*/React.createElement("div", {
+  }, "Patient Registration & Payment Confirmed:"), /*#__PURE__*/React.createElement("div", {
     style: {
       fontSize: '1.05rem',
       fontWeight: 800,
@@ -1805,23 +1980,54 @@ function RegistrationForm({
       color: 'var(--primary)',
       fontWeight: 600
     }
-  }, "Dept: ", departments.find(d => d.code === formData.departmentCode)?.name, " \u2022 Priority: ", formData.priority)), /*#__PURE__*/React.createElement("div", {
+  }, "Dept: ", departments.find(d => d.code === formData.departmentCode)?.name, " \u2022 Doctor: ", formData.doctor || 'Assigned')), /*#__PURE__*/React.createElement("div", {
     style: {
       textAlign: 'right'
     }
   }, /*#__PURE__*/React.createElement("div", {
     style: {
-      fontSize: '0.76rem',
-      color: 'var(--text-muted)',
-      fontWeight: 700,
-      marginBottom: '4px'
+      background: '#dcfce7',
+      color: '#15803d',
+      padding: '4px 12px',
+      borderRadius: 'var(--radius-full)',
+      fontWeight: 800,
+      fontSize: '0.82rem'
     }
-  }, "QUICK VITALS PRESETS:"), /*#__PURE__*/React.createElement("div", {
+  }, "PAID: \u20B9", totalPayable, " via ", paymentData.paymentMethod, " \u2713"), /*#__PURE__*/React.createElement("div", {
+    style: {
+      fontSize: '0.72rem',
+      color: 'var(--text-muted)',
+      marginTop: '2px'
+    }
+  }, "Ref: ", paymentData.transactionId))), /*#__PURE__*/React.createElement("div", {
     style: {
       display: 'flex',
-      gap: '6px'
+      justifyContent: 'space-between',
+      alignItems: 'center',
+      marginBottom: '16px'
     }
-  }, /*#__PURE__*/React.createElement("button", {
+  }, /*#__PURE__*/React.createElement("h3", {
+    style: {
+      fontSize: '1.05rem',
+      fontWeight: 800,
+      color: 'var(--dark)',
+      display: 'flex',
+      alignItems: 'center',
+      gap: '8px'
+    }
+  }, /*#__PURE__*/React.createElement("span", null, "\uD83E\uDE7A"), " Nursing Triage Station \u2014 Add Clinical Vitals Entity"), /*#__PURE__*/React.createElement("div", {
+    style: {
+      display: 'flex',
+      gap: '6px',
+      alignItems: 'center'
+    }
+  }, /*#__PURE__*/React.createElement("span", {
+    style: {
+      fontSize: '0.75rem',
+      fontWeight: 700,
+      color: 'var(--text-muted)'
+    }
+  }, "QUICK PRESET:"), /*#__PURE__*/React.createElement("button", {
     type: "button",
     className: "btn btn-secondary btn-sm",
     onClick: () => applyVitalsPreset('normal'),
@@ -1847,17 +2053,7 @@ function RegistrationForm({
       padding: '4px 8px',
       color: '#d97706'
     }
-  }, "Fever")))), /*#__PURE__*/React.createElement("h3", {
-    style: {
-      fontSize: '1.05rem',
-      fontWeight: 800,
-      color: 'var(--dark)',
-      marginBottom: '16px',
-      display: 'flex',
-      alignItems: 'center',
-      gap: '8px'
-    }
-  }, /*#__PURE__*/React.createElement("span", null, "\uD83E\uDE7A"), " Triage Nurse Station \u2014 Clinical Vitals Measurement"), /*#__PURE__*/React.createElement("div", {
+  }, "Fever"))), /*#__PURE__*/React.createElement("div", {
     className: "form-grid"
   }, /*#__PURE__*/React.createElement("div", {
     className: "form-group"
@@ -1997,7 +2193,7 @@ function RegistrationForm({
     type: "text",
     name: "triageNotes",
     className: "form-input",
-    placeholder: "e.g. Patient conscious, oriented. No respiratory distress.",
+    placeholder: "e.g. Patient conscious, oriented. No acute respiratory distress.",
     value: vitalsData.triageNotes,
     onChange: handleVitalsChange
   }))), /*#__PURE__*/React.createElement("div", {
@@ -2011,13 +2207,14 @@ function RegistrationForm({
     type: "button",
     className: "btn btn-secondary",
     onClick: () => setCurrentStep(1)
-  }, "\u25C0 Back to Step 1 (Patient Info)"), /*#__PURE__*/React.createElement("button", {
+  }, "\u25C0 Back to Step 1 (Edit Registration / Payment)"), /*#__PURE__*/React.createElement("button", {
     type: "submit",
-    className: "btn btn-primary",
+    className: "btn btn-emerald",
     style: {
-      padding: '12px 30px'
+      padding: '13px 32px',
+      fontSize: '0.96rem'
     }
-  }, "\u2713 Complete Registration & Generate Token Slip \u25B6")))));
+  }, "\uD83D\uDDA8\uFE0F Complete & Print Registration + Vitals Form \u25B6")))));
 }
 
 // --- src/components/TokenSlip.jsx ---
@@ -2031,6 +2228,24 @@ function TokenSlip({
   const handlePrint = () => {
     window.print();
   };
+  const payment = tokenData.payment || {
+    consultationFee: 700,
+    regFee: 100,
+    totalAmount: 800,
+    paymentMethod: 'UPI',
+    transactionId: 'TXN-884910'
+  };
+  const vitals = tokenData.vitals || {
+    bp: '120/80 mmHg',
+    pulse: '74 bpm',
+    spo2: '99%',
+    temp: '98.6 °F',
+    weight: '68 kg',
+    height: '172 cm',
+    bmi: '23.0 (Normal)',
+    bloodSugar: '110 mg/dL',
+    triageNotes: 'Vitals stable. Patient conscious and alert.'
+  };
   return /*#__PURE__*/React.createElement("div", {
     className: "token-slip-wrapper"
   }, /*#__PURE__*/React.createElement("div", {
@@ -2042,14 +2257,17 @@ function TokenSlip({
     style: {
       background: 'var(--emerald-light)',
       color: '#065f46',
-      padding: '6px 16px',
+      padding: '6px 18px',
       borderRadius: 'var(--radius-full)',
-      fontWeight: 700,
-      fontSize: '0.85rem'
+      fontWeight: 800,
+      fontSize: '0.88rem'
     }
-  }, "\u2713 Registration Completed Successfully")), /*#__PURE__*/React.createElement("div", {
+  }, "\u2713 Registration, Payment & Clinical Vitals Recorded Successfully")), /*#__PURE__*/React.createElement("div", {
     className: "token-slip-container",
-    id: "printable-slip"
+    id: "printable-slip",
+    style: {
+      maxWidth: '640px'
+    }
   }, /*#__PURE__*/React.createElement("div", {
     className: "token-slip-header"
   }, /*#__PURE__*/React.createElement("div", {
@@ -2079,24 +2297,30 @@ function TokenSlip({
     className: "slip-hospital-title"
   }, "PULSECARE HEALTH CITY")), /*#__PURE__*/React.createElement("p", {
     className: "slip-tagline"
-  }, "NABH Accredited Tertiary Care Center \u2022 Outpatient Department (OPD)"), /*#__PURE__*/React.createElement("p", {
+  }, "Outpatient Department (OPD) \u2022 Registration, Billing & Clinical Vitals Slip"), /*#__PURE__*/React.createElement("p", {
     style: {
       fontSize: '0.72rem',
       color: '#94a3b8',
       marginTop: '2px'
     }
-  }, "Central OPD Wing, Level 1 \u2022 Helpdesk: +91 80 2400 1100")), /*#__PURE__*/React.createElement("div", {
-    className: "token-hero-badge"
+  }, "NABH Accredited \u2022 Helpdesk: +91 80 2400 1100 \u2022 Campus Block A, Level 1")), /*#__PURE__*/React.createElement("div", {
+    className: "token-hero-badge",
+    style: {
+      padding: '18px 24px'
+    }
   }, /*#__PURE__*/React.createElement("div", {
     style: {
-      fontSize: '0.78rem',
+      fontSize: '0.74rem',
       fontWeight: 700,
       color: 'var(--text-muted)',
       textTransform: 'uppercase',
       letterSpacing: '0.08em'
     }
   }, "OUTPATIENT CONSULTATION TOKEN"), /*#__PURE__*/React.createElement("div", {
-    className: "token-number-hero"
+    className: "token-number-hero",
+    style: {
+      margin: '4px 0'
+    }
   }, tokenData.token), /*#__PURE__*/React.createElement("div", {
     style: {
       display: 'flex',
@@ -2121,9 +2345,20 @@ function TokenSlip({
       fontSize: '0.75rem',
       fontWeight: 600
     }
-  }, "Est. Time: ", tokenData.estimatedTime || '15-20 Mins'))), /*#__PURE__*/React.createElement("div", {
-    className: "token-slip-body"
+  }, "Est. Consultation Wait: ", tokenData.estimatedTime || '15-20 Mins'))), /*#__PURE__*/React.createElement("div", {
+    className: "token-slip-body",
+    style: {
+      padding: '20px 24px'
+    }
   }, /*#__PURE__*/React.createElement("div", {
+    style: {
+      fontSize: '0.75rem',
+      fontWeight: 800,
+      color: 'var(--primary)',
+      letterSpacing: '0.05em',
+      marginBottom: '8px'
+    }
+  }, "1. PATIENT REGISTRATION PARTICULARS"), /*#__PURE__*/React.createElement("div", {
     className: "slip-detail-row"
   }, /*#__PURE__*/React.createElement("span", {
     className: "slip-label"
@@ -2133,8 +2368,11 @@ function TokenSlip({
     className: "slip-detail-row"
   }, /*#__PURE__*/React.createElement("span", {
     className: "slip-label"
-  }, "Patient Name:"), /*#__PURE__*/React.createElement("span", {
-    className: "slip-val"
+  }, "Patient Full Name:"), /*#__PURE__*/React.createElement("span", {
+    className: "slip-val",
+    style: {
+      fontSize: '0.95rem'
+    }
   }, tokenData.patientName)), /*#__PURE__*/React.createElement("div", {
     className: "slip-detail-row"
   }, /*#__PURE__*/React.createElement("span", {
@@ -2145,15 +2383,18 @@ function TokenSlip({
     className: "slip-detail-row"
   }, /*#__PURE__*/React.createElement("span", {
     className: "slip-label"
-  }, "Contact Mobile:"), /*#__PURE__*/React.createElement("span", {
+  }, "Contact Phone:"), /*#__PURE__*/React.createElement("span", {
     className: "slip-val"
   }, tokenData.phone)), /*#__PURE__*/React.createElement("div", {
     className: "slip-detail-row"
   }, /*#__PURE__*/React.createElement("span", {
     className: "slip-label"
-  }, "Department:"), /*#__PURE__*/React.createElement("span", {
-    className: "slip-val"
-  }, tokenData.departmentName)), /*#__PURE__*/React.createElement("div", {
+  }, "Department & Cabin:"), /*#__PURE__*/React.createElement("span", {
+    className: "slip-val",
+    style: {
+      color: 'var(--primary)'
+    }
+  }, tokenData.departmentName, " \u2014 ", tokenData.room)), /*#__PURE__*/React.createElement("div", {
     className: "slip-detail-row"
   }, /*#__PURE__*/React.createElement("span", {
     className: "slip-label"
@@ -2163,59 +2404,134 @@ function TokenSlip({
     className: "slip-detail-row"
   }, /*#__PURE__*/React.createElement("span", {
     className: "slip-label"
-  }, "Assigned Room:"), /*#__PURE__*/React.createElement("span", {
+  }, "Chief Complaint / Symptoms:"), /*#__PURE__*/React.createElement("span", {
     className: "slip-val",
     style: {
-      color: 'var(--primary)'
+      fontStyle: 'italic',
+      fontWeight: 600
     }
-  }, tokenData.room)), /*#__PURE__*/React.createElement("div", {
-    className: "slip-detail-row"
-  }, /*#__PURE__*/React.createElement("span", {
-    className: "slip-label"
-  }, "Registered At:"), /*#__PURE__*/React.createElement("span", {
-    className: "slip-val"
-  }, new Date().toLocaleTimeString([], {
-    hour: '2-digit',
-    minute: '2-digit'
-  }), " (05-Sep-2026)")), tokenData.vitals && /*#__PURE__*/React.createElement("div", {
+  }, tokenData.symptoms || 'General OP consultation')), /*#__PURE__*/React.createElement("div", {
     style: {
-      marginTop: '14px',
-      background: '#f8fafc',
-      border: '1px solid #e2e8f0',
+      marginTop: '18px',
+      background: '#f0fdf4',
+      border: '1px solid #bbf7d0',
       borderRadius: '8px',
-      padding: '10px 14px'
+      padding: '12px 14px'
     }
   }, /*#__PURE__*/React.createElement("div", {
     style: {
-      fontSize: '0.72rem',
-      fontWeight: 700,
-      color: 'var(--text-muted)',
-      textTransform: 'uppercase',
-      marginBottom: '6px'
+      display: 'flex',
+      justifyContent: 'space-between',
+      alignItems: 'center',
+      marginBottom: '8px'
     }
-  }, "\uD83E\uDE7A Clinical Vitals Recorded at OP Triage:"), /*#__PURE__*/React.createElement("div", {
+  }, /*#__PURE__*/React.createElement("span", {
+    style: {
+      fontSize: '0.74rem',
+      fontWeight: 800,
+      color: '#166534',
+      letterSpacing: '0.05em'
+    }
+  }, "2. OP REGISTRATION & COUNTER PAYMENT RECEIPT"), /*#__PURE__*/React.createElement("span", {
+    style: {
+      background: '#16a34a',
+      color: 'white',
+      fontSize: '0.7rem',
+      padding: '2px 8px',
+      borderRadius: '4px',
+      fontWeight: 800
+    }
+  }, "PAID & VERIFIED \u2713")), /*#__PURE__*/React.createElement("div", {
+    style: {
+      display: 'grid',
+      gridTemplateColumns: 'repeat(3, 1fr)',
+      gap: '8px',
+      fontSize: '0.78rem'
+    }
+  }, /*#__PURE__*/React.createElement("div", null, "Doctor Fee: ", /*#__PURE__*/React.createElement("strong", null, "\u20B9", payment.consultationFee)), /*#__PURE__*/React.createElement("div", null, "OP Card Fee: ", /*#__PURE__*/React.createElement("strong", null, "\u20B9", payment.regFee)), /*#__PURE__*/React.createElement("div", {
+    style: {
+      color: '#15803d',
+      fontWeight: 800
+    }
+  }, "Total Paid: ", /*#__PURE__*/React.createElement("strong", null, "\u20B9", payment.totalAmount))), /*#__PURE__*/React.createElement("div", {
+    style: {
+      fontSize: '0.74rem',
+      color: '#166534',
+      marginTop: '6px',
+      borderTop: '1px dashed #86efac',
+      paddingTop: '6px',
+      display: 'flex',
+      justifyContent: 'space-between'
+    }
+  }, /*#__PURE__*/React.createElement("span", null, "Payment Mode: ", /*#__PURE__*/React.createElement("strong", null, payment.paymentMethod)), /*#__PURE__*/React.createElement("span", null, "Txn Ref: ", /*#__PURE__*/React.createElement("strong", null, payment.transactionId)))), /*#__PURE__*/React.createElement("div", {
+    style: {
+      marginTop: '18px',
+      background: '#f8fafc',
+      border: '1.5px solid var(--border)',
+      borderRadius: '8px',
+      padding: '12px 14px'
+    }
+  }, /*#__PURE__*/React.createElement("div", {
+    style: {
+      display: 'flex',
+      justifyContent: 'space-between',
+      alignItems: 'center',
+      marginBottom: '8px'
+    }
+  }, /*#__PURE__*/React.createElement("span", {
+    style: {
+      fontSize: '0.74rem',
+      fontWeight: 800,
+      color: 'var(--dark)',
+      letterSpacing: '0.05em'
+    }
+  }, "3. CLINICAL TRIAGE VITALS (RECORDED BY NURSING STATION)"), /*#__PURE__*/React.createElement("span", {
+    style: {
+      background: 'var(--primary-light)',
+      color: 'var(--primary)',
+      fontSize: '0.7rem',
+      padding: '2px 8px',
+      borderRadius: '4px',
+      fontWeight: 800
+    }
+  }, "NURSE VERIFIED \u2713")), /*#__PURE__*/React.createElement("div", {
     style: {
       display: 'grid',
       gridTemplateColumns: 'repeat(4, 1fr)',
       gap: '8px',
       fontSize: '0.78rem'
     }
-  }, /*#__PURE__*/React.createElement("div", null, "BP: ", /*#__PURE__*/React.createElement("strong", null, tokenData.vitals.bp)), /*#__PURE__*/React.createElement("div", null, "Pulse: ", /*#__PURE__*/React.createElement("strong", null, tokenData.vitals.pulse)), /*#__PURE__*/React.createElement("div", null, "SpO2: ", /*#__PURE__*/React.createElement("strong", null, tokenData.vitals.spo2)), /*#__PURE__*/React.createElement("div", null, "Temp: ", /*#__PURE__*/React.createElement("strong", null, tokenData.vitals.temp)), /*#__PURE__*/React.createElement("div", null, "Weight: ", /*#__PURE__*/React.createElement("strong", null, tokenData.vitals.weight)), /*#__PURE__*/React.createElement("div", null, "BMI: ", /*#__PURE__*/React.createElement("strong", null, tokenData.vitals.bmi ? tokenData.vitals.bmi.split(' ')[0] : '22.8')), /*#__PURE__*/React.createElement("div", null, "Sugar: ", /*#__PURE__*/React.createElement("strong", null, tokenData.vitals.bloodSugar || '110 mg/dL')), /*#__PURE__*/React.createElement("div", {
+  }, /*#__PURE__*/React.createElement("div", null, "BP: ", /*#__PURE__*/React.createElement("strong", {
     style: {
-      color: '#059669',
-      fontWeight: 700
+      color: 'var(--primary)'
     }
-  }, "Triage: Verified \u2713"))), /*#__PURE__*/React.createElement("div", {
+  }, vitals.bp)), /*#__PURE__*/React.createElement("div", null, "Heart Rate: ", /*#__PURE__*/React.createElement("strong", {
     style: {
-      marginTop: '20px',
+      color: '#10b981'
+    }
+  }, vitals.pulse)), /*#__PURE__*/React.createElement("div", null, "SpO2: ", /*#__PURE__*/React.createElement("strong", {
+    style: {
+      color: '#0d9488'
+    }
+  }, vitals.spo2)), /*#__PURE__*/React.createElement("div", null, "Body Temp: ", /*#__PURE__*/React.createElement("strong", null, vitals.temp)), /*#__PURE__*/React.createElement("div", null, "Weight: ", /*#__PURE__*/React.createElement("strong", null, vitals.weight)), /*#__PURE__*/React.createElement("div", null, "Height: ", /*#__PURE__*/React.createElement("strong", null, vitals.height || '172 cm')), /*#__PURE__*/React.createElement("div", null, "BMI: ", /*#__PURE__*/React.createElement("strong", null, vitals.bmi ? vitals.bmi.split(' ')[0] : '23.0')), /*#__PURE__*/React.createElement("div", null, "Sugar (RBS): ", /*#__PURE__*/React.createElement("strong", null, vitals.bloodSugar || '110 mg/dL'))), vitals.triageNotes && /*#__PURE__*/React.createElement("div", {
+    style: {
+      fontSize: '0.74rem',
+      color: 'var(--text-muted)',
+      marginTop: '8px',
+      borderTop: '1px solid #e2e8f0',
+      paddingTop: '6px'
+    }
+  }, /*#__PURE__*/React.createElement("strong", null, "Nurse Assessment Notes:"), " ", vitals.triageNotes)), /*#__PURE__*/React.createElement("div", {
+    style: {
+      marginTop: '16px',
       textAlign: 'center',
       borderTop: '1px dashed #cbd5e1',
-      paddingTop: '16px'
+      paddingTop: '14px'
     }
   }, /*#__PURE__*/React.createElement("svg", {
-    width: "240",
-    height: "42",
-    viewBox: "0 0 240 42",
+    width: "220",
+    height: "38",
+    viewBox: "0 0 220 38",
     style: {
       display: 'inline-block'
     }
@@ -2223,173 +2539,164 @@ function TokenSlip({
     x: "0",
     y: "0",
     width: "4",
-    height: "40",
+    height: "36",
     fill: "#0f172a"
   }), /*#__PURE__*/React.createElement("rect", {
     x: "8",
     y: "0",
     width: "2",
-    height: "40",
+    height: "36",
     fill: "#0f172a"
   }), /*#__PURE__*/React.createElement("rect", {
     x: "14",
     y: "0",
     width: "6",
-    height: "40",
+    height: "36",
     fill: "#0f172a"
   }), /*#__PURE__*/React.createElement("rect", {
     x: "24",
     y: "0",
     width: "3",
-    height: "40",
+    height: "36",
     fill: "#0f172a"
   }), /*#__PURE__*/React.createElement("rect", {
     x: "32",
     y: "0",
     width: "8",
-    height: "40",
+    height: "36",
     fill: "#0f172a"
   }), /*#__PURE__*/React.createElement("rect", {
     x: "44",
     y: "0",
     width: "3",
-    height: "40",
+    height: "36",
     fill: "#0f172a"
   }), /*#__PURE__*/React.createElement("rect", {
     x: "52",
     y: "0",
     width: "5",
-    height: "40",
+    height: "36",
     fill: "#0f172a"
   }), /*#__PURE__*/React.createElement("rect", {
     x: "62",
     y: "0",
     width: "2",
-    height: "40",
+    height: "36",
     fill: "#0f172a"
   }), /*#__PURE__*/React.createElement("rect", {
     x: "68",
     y: "0",
     width: "7",
-    height: "40",
+    height: "36",
     fill: "#0f172a"
   }), /*#__PURE__*/React.createElement("rect", {
     x: "80",
     y: "0",
     width: "4",
-    height: "40",
+    height: "36",
     fill: "#0f172a"
   }), /*#__PURE__*/React.createElement("rect", {
     x: "90",
     y: "0",
     width: "6",
-    height: "40",
+    height: "36",
     fill: "#0f172a"
   }), /*#__PURE__*/React.createElement("rect", {
     x: "100",
     y: "0",
     width: "2",
-    height: "40",
+    height: "36",
     fill: "#0f172a"
   }), /*#__PURE__*/React.createElement("rect", {
     x: "108",
     y: "0",
     width: "5",
-    height: "40",
+    height: "36",
     fill: "#0f172a"
   }), /*#__PURE__*/React.createElement("rect", {
     x: "118",
     y: "0",
     width: "7",
-    height: "40",
+    height: "36",
     fill: "#0f172a"
   }), /*#__PURE__*/React.createElement("rect", {
     x: "130",
     y: "0",
     width: "3",
-    height: "40",
+    height: "36",
     fill: "#0f172a"
   }), /*#__PURE__*/React.createElement("rect", {
     x: "138",
     y: "0",
     width: "6",
-    height: "40",
+    height: "36",
     fill: "#0f172a"
   }), /*#__PURE__*/React.createElement("rect", {
     x: "150",
     y: "0",
     width: "2",
-    height: "40",
+    height: "36",
     fill: "#0f172a"
   }), /*#__PURE__*/React.createElement("rect", {
     x: "158",
     y: "0",
     width: "8",
-    height: "40",
+    height: "36",
     fill: "#0f172a"
   }), /*#__PURE__*/React.createElement("rect", {
     x: "172",
     y: "0",
     width: "4",
-    height: "40",
+    height: "36",
     fill: "#0f172a"
   }), /*#__PURE__*/React.createElement("rect", {
     x: "182",
     y: "0",
     width: "5",
-    height: "40",
+    height: "36",
     fill: "#0f172a"
   }), /*#__PURE__*/React.createElement("rect", {
     x: "194",
     y: "0",
     width: "3",
-    height: "40",
+    height: "36",
     fill: "#0f172a"
   }), /*#__PURE__*/React.createElement("rect", {
     x: "202",
     y: "0",
     width: "7",
-    height: "40",
+    height: "36",
     fill: "#0f172a"
   }), /*#__PURE__*/React.createElement("rect", {
     x: "214",
     y: "0",
     width: "4",
-    height: "40",
-    fill: "#0f172a"
-  }), /*#__PURE__*/React.createElement("rect", {
-    x: "224",
-    y: "0",
-    width: "6",
-    height: "40",
-    fill: "#0f172a"
-  }), /*#__PURE__*/React.createElement("rect", {
-    x: "234",
-    y: "0",
-    width: "4",
-    height: "40",
+    height: "36",
     fill: "#0f172a"
   })), /*#__PURE__*/React.createElement("div", {
     style: {
-      fontSize: '0.74rem',
+      fontSize: '0.72rem',
       color: 'var(--text-muted)',
       letterSpacing: '0.12em',
-      marginTop: '4px'
+      marginTop: '2px'
     }
   }, "*", tokenData.opId || 'OP-2026-9041', "*"), /*#__PURE__*/React.createElement("p", {
     style: {
-      fontSize: '0.75rem',
+      fontSize: '0.74rem',
       color: '#64748b',
-      marginTop: '10px',
+      marginTop: '6px',
       fontStyle: 'italic'
     }
-  }, "Please be seated in the ", /*#__PURE__*/React.createElement("strong", null, tokenData.departmentName, " Waiting Lounge"), ". When your token is called on the lobby screen, proceed inside."))), /*#__PURE__*/React.createElement("div", {
-    className: "token-slip-footer"
+  }, "Please be seated in the ", /*#__PURE__*/React.createElement("strong", null, tokenData.departmentName, " Waiting Lounge"), ". When Token ", /*#__PURE__*/React.createElement("strong", null, tokenData.token), " is announced on the lobby board, proceed into ", /*#__PURE__*/React.createElement("strong", null, tokenData.room), "."))), /*#__PURE__*/React.createElement("div", {
+    className: "token-slip-footer",
+    style: {
+      padding: '12px 20px'
+    }
   }, /*#__PURE__*/React.createElement("span", null, "Valid for today's OPD consultation only."), /*#__PURE__*/React.createElement("span", {
     style: {
-      fontWeight: 700
+      fontWeight: 800
     }
-  }, "PulseCare OPD Desk"))), /*#__PURE__*/React.createElement("div", {
+  }, "PulseCare Registration Desk"))), /*#__PURE__*/React.createElement("div", {
     style: {
       display: 'flex',
       justifyContent: 'center',
@@ -2398,7 +2705,10 @@ function TokenSlip({
     }
   }, /*#__PURE__*/React.createElement("button", {
     className: "btn btn-primary",
-    onClick: handlePrint
+    onClick: handlePrint,
+    style: {
+      padding: '12px 24px'
+    }
   }, /*#__PURE__*/React.createElement("svg", {
     width: "16",
     height: "16",
@@ -2417,7 +2727,7 @@ function TokenSlip({
     height: "8",
     x: "6",
     y: "14"
-  })), "Print / Save Token Slip"), /*#__PURE__*/React.createElement("button", {
+  })), "\uD83D\uDDA8\uFE0F Print Registration Form & Vitals Slip (PDF)"), /*#__PURE__*/React.createElement("button", {
     className: "btn btn-secondary",
     onClick: onBackToQueue
   }, /*#__PURE__*/React.createElement("svg", {
@@ -2448,7 +2758,7 @@ function TokenSlip({
   })), "Track in Live Queue"), /*#__PURE__*/React.createElement("button", {
     className: "btn btn-secondary",
     onClick: onNewRegistration
-  }, "+ Register Another Patient")));
+  }, "+ Register Next Patient")));
 }
 
 // --- src/components/DoctorDirectory.jsx ---
@@ -4214,6 +4524,7 @@ function App() {
       department: formData.departmentName,
       doctor: formData.doctor,
       room: formData.room,
+      payment: formData.payment,
       visitDate: '05-Sep-2026',
       visitType: formData.priority === 'Emergency' ? 'Emergency Outpatient' : 'OPD Consultation',
       vitals: formData.vitals || {
@@ -4245,7 +4556,7 @@ function App() {
         testName: 'Consultant Clinical Examination',
         status: 'In Waiting Queue'
       }],
-      doctorNotes: `Patient registered at Outpatient Desk. Vitals recorded: BP ${formData.vitals ? formData.vitals.bp : '120/80'}, SpO2 ${formData.vitals ? formData.vitals.spo2 : '99%'}. Awaiting examination in cabin.`
+      doctorNotes: `Patient registered at Outpatient Desk. Vitals recorded: BP ${formData.vitals ? formData.vitals.bp : '120/80'}, SpO2 ${formData.vitals ? formData.vitals.spo2 : '99%'}. Paid ₹${formData.payment ? formData.payment.totalAmount : 800} via ${formData.payment ? formData.payment.paymentMethod : 'UPI'}. Awaiting examination.`
     };
     setRecords(prev => ({
       ...prev,
@@ -4253,6 +4564,7 @@ function App() {
     }));
     const tokenReceiptData = {
       ...formData,
+      payment: formData.payment,
       vitals: formData.vitals,
       token: generatedToken,
       opId: generatedOpId,
