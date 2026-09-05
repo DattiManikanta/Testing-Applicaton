@@ -478,6 +478,251 @@ const mockOPRecords = {
   }
 };
 
+// --- src/data/pharmacyData.js ---
+// Hospital Outpatient Pharmacy & Drugs Catalog Data
+const pharmacyDrugsCatalog = [{
+  id: "DRUG-001",
+  name: "Telmisartan 40mg",
+  genericName: "Telmisartan IP",
+  category: "Cardiovascular & BP",
+  form: "Tablet",
+  strength: "40 mg",
+  manufacturer: "Sun Pharma",
+  batchNo: "TEL-2026-99",
+  expiryDate: "11/2028",
+  price: 94.50,
+  packSize: "Strip of 15 Tablets",
+  stock: 240,
+  rxRequired: true,
+  indication: "Hypertension, Cardiovascular Risk Reduction",
+  dosageAdvice: "Take once daily in morning with or without food."
+}, {
+  id: "DRUG-002",
+  name: "Atorvastatin 10mg",
+  genericName: "Atorvastatin Calcium IP",
+  category: "Cardiovascular & BP",
+  form: "Tablet",
+  strength: "10 mg",
+  manufacturer: "Cipla Ltd",
+  batchNo: "ATV-2026-14",
+  expiryDate: "08/2028",
+  price: 112.00,
+  packSize: "Strip of 10 Tablets",
+  stock: 180,
+  rxRequired: true,
+  indication: "Hyperlipidemia, Cholesterol Control",
+  dosageAdvice: "Take once daily at bedtime after dinner."
+}, {
+  id: "DRUG-003",
+  name: "Ecosprin 75mg",
+  genericName: "Aspirin Gastro-Resistant",
+  category: "Cardiovascular & BP",
+  form: "Capsule",
+  strength: "75 mg",
+  manufacturer: "USV Pvt Ltd",
+  batchNo: "ECO-2026-03",
+  expiryDate: "05/2027",
+  price: 24.00,
+  packSize: "Strip of 14 Tablets",
+  stock: 520,
+  rxRequired: true,
+  indication: "Blood Thinner, Antiplatelet, Heart Attack Prevention",
+  dosageAdvice: "Take after lunch with a full glass of water."
+}, {
+  id: "DRUG-004",
+  name: "Paracetamol 650mg (Dolo 650)",
+  genericName: "Paracetamol IP",
+  category: "Pain & Fever",
+  form: "Tablet",
+  strength: "650 mg",
+  manufacturer: "Micro Labs",
+  batchNo: "DOL-2026-55",
+  expiryDate: "01/2029",
+  price: 33.50,
+  packSize: "Strip of 15 Tablets",
+  stock: 890,
+  rxRequired: false,
+  indication: "Fever, Headache, Mild-Moderate Body Aches",
+  dosageAdvice: "Take SOS as needed; maintain 6 hours gap between doses."
+}, {
+  id: "DRUG-005",
+  name: "Metformin 500mg SR",
+  genericName: "Metformin Hydrochloride Sustained Release",
+  category: "Antidiabetic",
+  form: "Tablet",
+  strength: "500 mg",
+  manufacturer: "Torrent Pharma",
+  batchNo: "MET-2026-71",
+  expiryDate: "12/2027",
+  price: 45.00,
+  packSize: "Strip of 20 Tablets",
+  stock: 310,
+  rxRequired: true,
+  indication: "Type-2 Diabetes Mellitus glycemic control",
+  dosageAdvice: "Take with or immediately after meals to reduce stomach upset."
+}, {
+  id: "DRUG-006",
+  name: "Augmentin 625 Duo",
+  genericName: "Amoxicillin & Potassium Clavulanate",
+  category: "Antibiotics",
+  form: "Tablet",
+  strength: "625 mg (500mg + 125mg)",
+  manufacturer: "GSK Pharmaceuticals",
+  batchNo: "AUG-2026-88",
+  expiryDate: "04/2027",
+  price: 204.00,
+  packSize: "Strip of 10 Tablets",
+  stock: 95,
+  rxRequired: true,
+  indication: "Bacterial infections of chest, ENT, skin, and urinary tract",
+  dosageAdvice: "Complete full 5-day course as prescribed by doctor."
+}, {
+  id: "DRUG-007",
+  name: "Pantocid 40mg",
+  genericName: "Pantoprazole Gastro-Resistant",
+  category: "Gastrointestinal",
+  form: "Tablet",
+  strength: "40 mg",
+  manufacturer: "Sun Pharma",
+  batchNo: "PAN-2026-42",
+  expiryDate: "09/2028",
+  price: 135.00,
+  packSize: "Strip of 15 Tablets",
+  stock: 450,
+  rxRequired: true,
+  indication: "Acid Reflux, GERD, Gastritis, Peptic Ulcer",
+  dosageAdvice: "Take on an empty stomach in the morning 30 mins before breakfast."
+}, {
+  id: "DRUG-008",
+  name: "Levocetirizine 5mg (Levocet)",
+  genericName: "Levocetirizine Dihydrochloride",
+  category: "Respiratory & Allergy",
+  form: "Tablet",
+  strength: "5 mg",
+  manufacturer: "Hetero Healthcare",
+  batchNo: "LCT-2026-19",
+  expiryDate: "06/2028",
+  price: 58.00,
+  packSize: "Strip of 10 Tablets",
+  stock: 620,
+  rxRequired: false,
+  indication: "Allergic Rhinitis, Sneezing, Runny Nose, Skin Itch",
+  dosageAdvice: "Take once daily at bedtime."
+}, {
+  id: "DRUG-009",
+  name: "Diacerein & Glucosamine",
+  genericName: "Diacerein 50mg + Glucosamine 750mg",
+  category: "Orthopedic & Joints",
+  form: "Tablet",
+  strength: "Combo",
+  manufacturer: "Lupin Ltd",
+  batchNo: "DIA-2026-04",
+  expiryDate: "10/2027",
+  price: 280.00,
+  packSize: "Strip of 10 Tablets",
+  stock: 140,
+  rxRequired: true,
+  indication: "Osteoarthritis joint cartilage restoration",
+  dosageAdvice: "Take twice daily after main meals."
+}, {
+  id: "DRUG-010",
+  name: "Etoricoxib 90mg (Nucoxia)",
+  genericName: "Etoricoxib IP",
+  category: "Pain & Orthopedic",
+  form: "Tablet",
+  strength: "90 mg",
+  manufacturer: "Cadila Healthcare",
+  batchNo: "ETO-2026-62",
+  expiryDate: "03/2028",
+  price: 162.00,
+  packSize: "Strip of 10 Tablets",
+  stock: 175,
+  rxRequired: true,
+  indication: "Acute joint pain, Arthritis flare-ups, Spine stiffness",
+  dosageAdvice: "Take once daily after food; do not take on empty stomach."
+}, {
+  id: "DRUG-011",
+  name: "Vitamin C 500mg + Zinc (Limcee)",
+  genericName: "Ascorbic Acid + Zinc Chewable",
+  category: "Vitamins & Supplements",
+  form: "Chewable Tablet",
+  strength: "500 mg",
+  manufacturer: "Abbott Healthcare",
+  batchNo: "LIM-2026-33",
+  expiryDate: "11/2028",
+  price: 42.00,
+  packSize: "Strip of 15 Tablets",
+  stock: 780,
+  rxRequired: false,
+  indication: "Immunity booster, Wound healing, Antioxidant",
+  dosageAdvice: "Chew one tablet daily after breakfast."
+}, {
+  id: "DRUG-012",
+  name: "Diclofenac Sodium Gel 1%",
+  genericName: "Diclofenac Diethylamine + Linseed Oil",
+  category: "Orthopedic & Topical",
+  form: "Ointment / Gel",
+  strength: "30 gm Tube",
+  manufacturer: "Novartis",
+  batchNo: "VOL-2026-11",
+  expiryDate: "07/2027",
+  price: 98.00,
+  packSize: "30 gm Tube",
+  stock: 220,
+  rxRequired: false,
+  indication: "Muscle sprains, Knee pain, Neck strain",
+  dosageAdvice: "Apply 2-3 times daily over affected joint. Do not rub vigorously."
+}, {
+  id: "DRUG-013",
+  name: "Azithromycin 500mg (Azithral)",
+  genericName: "Azithromycin Dihydrate",
+  category: "Antibiotics",
+  form: "Tablet",
+  strength: "500 mg",
+  manufacturer: "Alembic Pharma",
+  batchNo: "AZI-2026-50",
+  expiryDate: "02/2028",
+  price: 125.00,
+  packSize: "Strip of 5 Tablets",
+  stock: 160,
+  rxRequired: true,
+  indication: "Throat infection, Tonsillitis, Chest Bronchitis",
+  dosageAdvice: "Take 1 tablet daily 1 hour before or 2 hours after food for 3-5 days."
+}, {
+  id: "DRUG-014",
+  name: "Oral Rehydration Salts (ORS)",
+  genericName: "WHO Recommended Formula ORS",
+  category: "Vitamins & Electrolytes",
+  form: "Powder Sachet",
+  strength: "21.8 gm Sachet",
+  manufacturer: "FDC Ltd",
+  batchNo: "ORS-2026-90",
+  expiryDate: "12/2028",
+  price: 22.00,
+  packSize: "1 Sachet",
+  stock: 1200,
+  rxRequired: false,
+  indication: "Dehydration, Diarrhea, Heat exhaustion recovery",
+  dosageAdvice: "Dissolve entire sachet in 1 Litre of clean drinking water."
+}, {
+  id: "DRUG-015",
+  name: "Budesonide 0.5mg Respules",
+  genericName: "Budesonide Inhalation Suspension",
+  category: "Respiratory & Allergy",
+  form: "Respule for Nebulizer",
+  strength: "2 ml x 5 Respules",
+  manufacturer: "Cipla Ltd",
+  batchNo: "BUD-2026-28",
+  expiryDate: "09/2027",
+  price: 185.00,
+  packSize: "Pack of 5 Respules",
+  stock: 85,
+  rxRequired: true,
+  indication: "Asthma nebulization, Bronchial spasm, Pediatric wheeze",
+  dosageAdvice: "Use via nebulizer machine twice daily as instructed."
+}];
+const pharmacyCategories = ["All Medications", "Cardiovascular & BP", "Pain & Fever", "Antibiotics", "Antidiabetic", "Gastrointestinal", "Respiratory & Allergy", "Orthopedic & Joints", "Vitamins & Supplements"];
+
 // --- src/utils/audio.js ---
 // Web Audio API Hospital OPD Chime Synthesizer
 // Produces a soothing 2-tone melodic chime (similar to hospital lobby call announcements)
@@ -709,6 +954,25 @@ function Navbar({
   }), /*#__PURE__*/React.createElement("polyline", {
     points: "10 9 9 9 8 9"
   })), "OP Records & Rx"), /*#__PURE__*/React.createElement("button", {
+    className: `nav-item ${activeTab === 'pharmacy' ? 'active' : ''}`,
+    onClick: () => setActiveTab('pharmacy'),
+    style: {
+      color: '#0284c7'
+    }
+  }, /*#__PURE__*/React.createElement("svg", {
+    width: "16",
+    height: "16",
+    viewBox: "0 0 24 24",
+    fill: "none",
+    stroke: "currentColor",
+    strokeWidth: "2",
+    strokeLinecap: "round",
+    strokeLinejoin: "round"
+  }, /*#__PURE__*/React.createElement("path", {
+    d: "m10.5 20.5 10-10a4.95 4.95 0 1 0-7-7l-10 10a4.95 4.95 0 1 0 7 7Z"
+  }), /*#__PURE__*/React.createElement("path", {
+    d: "m8.5 8.5 7 7"
+  })), "Pharmacy & Drugs"), /*#__PURE__*/React.createElement("button", {
     className: `nav-item ${activeTab === 'staff' ? 'active' : ''}`,
     onClick: () => setActiveTab('staff'),
     style: {
@@ -2303,6 +2567,838 @@ function PatientPortal({
   })), "Print OP Prescription"))));
 }
 
+// --- src/components/PharmacyScreen.jsx ---
+
+function PharmacyScreen({
+  records,
+  initialToken
+}) {
+  const [activeSubTab, setActiveSubTab] = useState('catalog'); // 'catalog', 'dispenser', 'cart'
+  const [drugs, setDrugs] = useState(pharmacyDrugsCatalog);
+  const [searchQuery, setSearchQuery] = useState('');
+  const [selectedCategory, setSelectedCategory] = useState('All Medications');
+
+  // Dispenser State
+  const [tokenInput, setTokenInput] = useState(initialToken || 'CAR-104');
+  const [selectedPatientRecord, setSelectedPatientRecord] = useState(records[initialToken || 'CAR-104'] || null);
+  const [dispensedInvoice, setDispensedInvoice] = useState(null);
+
+  // Cart / Counter POS State
+  const [cart, setCart] = useState([]);
+  const [cartSuccessNotice, setCartSuccessNotice] = useState(null);
+
+  // Filter drugs
+  const filteredDrugs = drugs.filter(drug => {
+    const matchesCategory = selectedCategory === 'All Medications' || drug.category === selectedCategory;
+    const matchesSearch = drug.name.toLowerCase().includes(searchQuery.toLowerCase()) || drug.genericName.toLowerCase().includes(searchQuery.toLowerCase()) || drug.indication.toLowerCase().includes(searchQuery.toLowerCase());
+    return matchesCategory && matchesSearch;
+  });
+
+  // Handle Token Lookup for Prescription Dispensation
+  const handleLookupToken = token => {
+    const key = (token || tokenInput).trim().toUpperCase();
+    if (records[key]) {
+      setSelectedPatientRecord(records[key]);
+      setTokenInput(key);
+      setDispensedInvoice(null);
+    } else {
+      alert(`No active OP patient record found for token "${key}". Try demo tokens: CAR-104, GEN-211, or ORT-082.`);
+    }
+  };
+
+  // Add drug to Cart
+  const handleAddToCart = drug => {
+    setCart(prev => {
+      const existing = prev.find(item => item.id === drug.id);
+      if (existing) {
+        return prev.map(item => item.id === drug.id ? {
+          ...item,
+          qty: item.qty + 1
+        } : item);
+      }
+      return [...prev, {
+        ...drug,
+        qty: 1
+      }];
+    });
+    setCartSuccessNotice(`Added ${drug.name} to pharmacy bill.`);
+    setTimeout(() => setCartSuccessNotice(null), 3000);
+  };
+  const handleUpdateCartQty = (id, delta) => {
+    setCart(prev => prev.map(item => {
+      if (item.id === id) {
+        const newQty = item.qty + delta;
+        return newQty > 0 ? {
+          ...item,
+          qty: newQty
+        } : null;
+      }
+      return item;
+    }).filter(Boolean));
+  };
+  const handleClearCart = () => {
+    setCart([]);
+  };
+
+  // Dispense Patient Prescription
+  const handleDispensePrescription = () => {
+    if (!selectedPatientRecord) return;
+
+    // Match prescribed medicines with catalog pricing
+    const dispensedItems = selectedPatientRecord.prescription.map((rxItem, idx) => {
+      // Find matching drug in catalog by partial name
+      const matched = drugs.find(d => rxItem.medicine.toLowerCase().includes(d.name.split(' ')[0].toLowerCase())) || {
+        price: 85.00,
+        batchNo: `BATCH-${idx + 101}`,
+        expiryDate: '12/2028',
+        manufacturer: 'Hospital Formulary'
+      };
+      return {
+        name: rxItem.medicine,
+        timing: rxItem.timing,
+        instruction: rxItem.instruction,
+        duration: rxItem.duration,
+        batchNo: matched.batchNo || 'MED-2026',
+        expiryDate: matched.expiryDate || '2028',
+        price: matched.price || 85.00,
+        qty: rxItem.duration.includes('30') ? 30 : 15
+      };
+    });
+    const subtotal = dispensedItems.reduce((sum, item) => sum + item.price * (item.qty / 10), 0);
+    const tax = subtotal * 0.05; // 5% GST on medicines
+    const grandTotal = Math.round(subtotal + tax);
+    const invoice = {
+      invoiceNo: `PHARM-INV-${Math.floor(10000 + Math.random() * 90000)}`,
+      dispenseDate: new Date().toLocaleDateString([], {
+        day: '2-digit',
+        month: 'short',
+        year: 'numeric'
+      }),
+      dispenseTime: new Date().toLocaleTimeString([], {
+        hour: '2-digit',
+        minute: '2-digit'
+      }),
+      pharmacistName: 'R. K. Verma, Lead Clinical Pharmacist (Reg #PH-88912)',
+      patientName: selectedPatientRecord.patientName,
+      token: selectedPatientRecord.token,
+      opId: selectedPatientRecord.opId,
+      doctor: selectedPatientRecord.doctor,
+      department: selectedPatientRecord.department,
+      items: dispensedItems,
+      subtotal: subtotal.toFixed(2),
+      tax: tax.toFixed(2),
+      grandTotal: grandTotal.toFixed(2)
+    };
+    setDispensedInvoice(invoice);
+  };
+  return /*#__PURE__*/React.createElement("div", {
+    className: "pharmacy-section"
+  }, /*#__PURE__*/React.createElement("div", {
+    className: "section-header"
+  }, /*#__PURE__*/React.createElement("div", null, /*#__PURE__*/React.createElement("h2", null, "\uD83D\uDC8A 24/7 Outpatient Central Pharmacy & Drug Formulary"), /*#__PURE__*/React.createElement("p", null, "Hospital dispensary, patient prescription fulfillment, stock inventory, and digital medicine billing.")), /*#__PURE__*/React.createElement("div", {
+    style: {
+      display: 'flex',
+      gap: '8px',
+      alignItems: 'center'
+    }
+  }, /*#__PURE__*/React.createElement("span", {
+    style: {
+      background: 'var(--emerald-light)',
+      color: '#065f46',
+      padding: '4px 12px',
+      borderRadius: 'var(--radius-full)',
+      fontSize: '0.8rem',
+      fontWeight: 700
+    }
+  }, "Dispensary Counters 1 to 4 Active \u25CF"))), /*#__PURE__*/React.createElement("div", {
+    style: {
+      display: 'grid',
+      gridTemplateColumns: 'repeat(4, 1fr)',
+      gap: '16px',
+      marginBottom: '24px'
+    }
+  }, /*#__PURE__*/React.createElement("div", {
+    className: "vital-tile",
+    style: {
+      borderLeft: '4px solid var(--primary)'
+    }
+  }, /*#__PURE__*/React.createElement("div", {
+    className: "vital-label"
+  }, "Formulary Drugs Listed"), /*#__PURE__*/React.createElement("div", {
+    className: "vital-val",
+    style: {
+      color: 'var(--primary)'
+    }
+  }, drugs.length, "+ Active")), /*#__PURE__*/React.createElement("div", {
+    className: "vital-tile",
+    style: {
+      borderLeft: '4px solid var(--emerald)'
+    }
+  }, /*#__PURE__*/React.createElement("div", {
+    className: "vital-label"
+  }, "In-Stock Availability"), /*#__PURE__*/React.createElement("div", {
+    className: "vital-val",
+    style: {
+      color: 'var(--emerald)'
+    }
+  }, "99.2% Available")), /*#__PURE__*/React.createElement("div", {
+    className: "vital-tile",
+    style: {
+      borderLeft: '4px solid var(--amber)'
+    }
+  }, /*#__PURE__*/React.createElement("div", {
+    className: "vital-label"
+  }, "Prescriptions Dispensed Today"), /*#__PURE__*/React.createElement("div", {
+    className: "vital-val",
+    style: {
+      color: 'var(--amber)'
+    }
+  }, "218 Patients")), /*#__PURE__*/React.createElement("div", {
+    className: "vital-tile",
+    style: {
+      borderLeft: '4px solid #6366f1'
+    }
+  }, /*#__PURE__*/React.createElement("div", {
+    className: "vital-label"
+  }, "Pharmacy Cart Items"), /*#__PURE__*/React.createElement("div", {
+    className: "vital-val",
+    style: {
+      color: '#6366f1'
+    }
+  }, cart.length, " in Order"))), /*#__PURE__*/React.createElement("div", {
+    style: {
+      display: 'flex',
+      gap: '8px',
+      borderBottom: '2px solid var(--border)',
+      paddingBottom: '12px',
+      marginBottom: '24px'
+    }
+  }, /*#__PURE__*/React.createElement("button", {
+    className: `btn ${activeSubTab === 'catalog' ? 'btn-primary' : 'btn-secondary'}`,
+    onClick: () => setActiveSubTab('catalog'),
+    style: {
+      padding: '8px 18px',
+      fontSize: '0.88rem'
+    }
+  }, "\uD83D\uDCE6 Drug Catalog & Stock Inventory"), /*#__PURE__*/React.createElement("button", {
+    className: `btn ${activeSubTab === 'dispenser' ? 'btn-primary' : 'btn-secondary'}`,
+    onClick: () => setActiveSubTab('dispenser'),
+    style: {
+      padding: '8px 18px',
+      fontSize: '0.88rem'
+    }
+  }, "\uD83E\uDDFE OP Prescription Dispenser (Demo)"), /*#__PURE__*/React.createElement("button", {
+    className: `btn ${activeSubTab === 'cart' ? 'btn-primary' : 'btn-secondary'}`,
+    onClick: () => setActiveSubTab('cart'),
+    style: {
+      padding: '8px 18px',
+      fontSize: '0.88rem',
+      position: 'relative'
+    }
+  }, "\uD83D\uDED2 Quick Counter POS / Bill (", cart.length, ")")), cartSuccessNotice && /*#__PURE__*/React.createElement("div", {
+    style: {
+      background: 'var(--emerald-light)',
+      color: '#065f46',
+      padding: '10px 18px',
+      borderRadius: 'var(--radius-md)',
+      marginBottom: '18px',
+      fontSize: '0.86rem',
+      fontWeight: 700
+    }
+  }, "\u2713 ", cartSuccessNotice), activeSubTab === 'catalog' && /*#__PURE__*/React.createElement("div", null, /*#__PURE__*/React.createElement("div", {
+    style: {
+      display: 'flex',
+      justifyContent: 'space-between',
+      gap: '16px',
+      marginBottom: '18px',
+      flexWrap: 'wrap'
+    }
+  }, /*#__PURE__*/React.createElement("input", {
+    type: "text",
+    className: "form-input",
+    placeholder: "Search drug name, generic formula or medical indication...",
+    value: searchQuery,
+    onChange: e => setSearchQuery(e.target.value),
+    style: {
+      width: '380px'
+    }
+  }), /*#__PURE__*/React.createElement("div", {
+    style: {
+      display: 'flex',
+      gap: '6px',
+      flexWrap: 'wrap'
+    }
+  }, pharmacyCategories.map(cat => /*#__PURE__*/React.createElement("button", {
+    key: cat,
+    className: `btn btn-sm ${selectedCategory === cat ? 'btn-primary' : 'btn-secondary'}`,
+    onClick: () => setSelectedCategory(cat),
+    style: {
+      fontSize: '0.78rem'
+    }
+  }, cat)))), /*#__PURE__*/React.createElement("div", {
+    className: "staff-console-card",
+    style: {
+      padding: '20px'
+    }
+  }, /*#__PURE__*/React.createElement("table", {
+    className: "staff-table"
+  }, /*#__PURE__*/React.createElement("thead", null, /*#__PURE__*/React.createElement("tr", null, /*#__PURE__*/React.createElement("th", null, "Drug Name & Formulation"), /*#__PURE__*/React.createElement("th", null, "Generic Formula"), /*#__PURE__*/React.createElement("th", null, "Category"), /*#__PURE__*/React.createElement("th", null, "Batch / Expiry"), /*#__PURE__*/React.createElement("th", null, "Unit MRP"), /*#__PURE__*/React.createElement("th", null, "Current Stock"), /*#__PURE__*/React.createElement("th", null, "Type"), /*#__PURE__*/React.createElement("th", {
+    style: {
+      textAlign: 'right'
+    }
+  }, "Dispensary Action"))), /*#__PURE__*/React.createElement("tbody", null, filteredDrugs.map(drug => /*#__PURE__*/React.createElement("tr", {
+    key: drug.id
+  }, /*#__PURE__*/React.createElement("td", null, /*#__PURE__*/React.createElement("strong", {
+    style: {
+      color: 'var(--dark)'
+    }
+  }, drug.name), /*#__PURE__*/React.createElement("div", {
+    style: {
+      fontSize: '0.75rem',
+      color: 'var(--text-muted)'
+    }
+  }, drug.packSize, " \u2022 ", drug.manufacturer)), /*#__PURE__*/React.createElement("td", {
+    style: {
+      fontSize: '0.82rem',
+      color: '#334155'
+    }
+  }, drug.genericName), /*#__PURE__*/React.createElement("td", null, /*#__PURE__*/React.createElement("span", {
+    style: {
+      background: 'var(--bg-alt)',
+      padding: '2px 8px',
+      borderRadius: '4px',
+      fontSize: '0.75rem',
+      fontWeight: 600,
+      border: '1px solid var(--border)'
+    }
+  }, drug.category)), /*#__PURE__*/React.createElement("td", {
+    style: {
+      fontSize: '0.78rem',
+      color: 'var(--text-muted)'
+    }
+  }, /*#__PURE__*/React.createElement("div", null, drug.batchNo), /*#__PURE__*/React.createElement("div", {
+    style: {
+      color: '#059669',
+      fontWeight: 600
+    }
+  }, "Exp: ", drug.expiryDate)), /*#__PURE__*/React.createElement("td", null, /*#__PURE__*/React.createElement("strong", {
+    style: {
+      color: 'var(--dark)',
+      fontSize: '0.95rem'
+    }
+  }, "\u20B9", drug.price.toFixed(2))), /*#__PURE__*/React.createElement("td", null, /*#__PURE__*/React.createElement("span", {
+    style: {
+      display: 'inline-flex',
+      alignItems: 'center',
+      gap: '4px',
+      fontSize: '0.8rem',
+      fontWeight: 700,
+      color: drug.stock > 100 ? '#059669' : '#d97706'
+    }
+  }, "\u25CF ", drug.stock, " units")), /*#__PURE__*/React.createElement("td", null, drug.rxRequired ? /*#__PURE__*/React.createElement("span", {
+    style: {
+      background: 'var(--rose-light)',
+      color: '#b91c1c',
+      padding: '2px 6px',
+      borderRadius: '4px',
+      fontSize: '0.72rem',
+      fontWeight: 800
+    }
+  }, "Rx Required") : /*#__PURE__*/React.createElement("span", {
+    style: {
+      background: 'var(--emerald-light)',
+      color: '#065f46',
+      padding: '2px 6px',
+      borderRadius: '4px',
+      fontSize: '0.72rem',
+      fontWeight: 700
+    }
+  }, "OTC")), /*#__PURE__*/React.createElement("td", {
+    style: {
+      textAlign: 'right'
+    }
+  }, /*#__PURE__*/React.createElement("button", {
+    className: "btn btn-secondary btn-sm",
+    onClick: () => handleAddToCart(drug),
+    style: {
+      fontSize: '0.78rem',
+      padding: '4px 10px'
+    }
+  }, "+ Add to Bill")))))))), activeSubTab === 'dispenser' && /*#__PURE__*/React.createElement("div", null, /*#__PURE__*/React.createElement("div", {
+    className: "lookup-box"
+  }, /*#__PURE__*/React.createElement("div", {
+    style: {
+      flex: 1
+    }
+  }, /*#__PURE__*/React.createElement("label", {
+    style: {
+      fontSize: '0.82rem',
+      fontWeight: 700,
+      color: 'var(--text-muted)',
+      display: 'block',
+      marginBottom: '6px'
+    }
+  }, "LOAD PATIENT OP TOKEN FOR PHARMACY DISPENSATION:"), /*#__PURE__*/React.createElement("div", {
+    style: {
+      display: 'flex',
+      gap: '10px'
+    }
+  }, /*#__PURE__*/React.createElement("input", {
+    type: "text",
+    className: "form-input",
+    placeholder: "e.g. CAR-104 or GEN-211",
+    value: tokenInput,
+    onChange: e => setTokenInput(e.target.value),
+    style: {
+      fontSize: '1.05rem',
+      fontWeight: 700
+    }
+  }), /*#__PURE__*/React.createElement("button", {
+    className: "btn btn-primary",
+    onClick: () => handleLookupToken(tokenInput)
+  }, "Fetch Prescription \u25B6")), /*#__PURE__*/React.createElement("div", {
+    className: "quick-tokens-list"
+  }, /*#__PURE__*/React.createElement("span", null, "Quick Patients:"), /*#__PURE__*/React.createElement("button", {
+    className: "quick-token-chip",
+    onClick: () => handleLookupToken('CAR-104')
+  }, "CAR-104 (Rajesh Kumar - Cardiology)"), /*#__PURE__*/React.createElement("button", {
+    className: "quick-token-chip",
+    onClick: () => handleLookupToken('GEN-211')
+  }, "GEN-211 (Gopal Krishna - General Med)"), /*#__PURE__*/React.createElement("button", {
+    className: "quick-token-chip",
+    onClick: () => handleLookupToken('ORT-082')
+  }, "ORT-082 (David D'Souza - Ortho)")))), selectedPatientRecord && /*#__PURE__*/React.createElement("div", {
+    className: "prescription-card",
+    style: {
+      marginTop: '20px'
+    }
+  }, /*#__PURE__*/React.createElement("div", {
+    style: {
+      display: 'flex',
+      justifyContent: 'space-between',
+      alignItems: 'center',
+      borderBottom: '1px solid var(--border)',
+      paddingBottom: '16px',
+      marginBottom: '16px'
+    }
+  }, /*#__PURE__*/React.createElement("div", null, /*#__PURE__*/React.createElement("h3", {
+    style: {
+      fontSize: '1.2rem',
+      fontWeight: 800,
+      color: 'var(--dark)'
+    }
+  }, "Patient: ", selectedPatientRecord.patientName), /*#__PURE__*/React.createElement("div", {
+    style: {
+      fontSize: '0.82rem',
+      color: 'var(--text-muted)'
+    }
+  }, "Token: ", /*#__PURE__*/React.createElement("strong", null, selectedPatientRecord.token), " | OP ID: ", /*#__PURE__*/React.createElement("strong", null, selectedPatientRecord.opId), " | Age/Gender: ", selectedPatientRecord.age, " Yrs / ", selectedPatientRecord.gender)), /*#__PURE__*/React.createElement("div", {
+    style: {
+      textAlign: 'right'
+    }
+  }, /*#__PURE__*/React.createElement("div", {
+    style: {
+      fontSize: '0.85rem',
+      fontWeight: 700,
+      color: 'var(--primary)'
+    }
+  }, selectedPatientRecord.doctor), /*#__PURE__*/React.createElement("div", {
+    style: {
+      fontSize: '0.78rem',
+      color: 'var(--text-muted)'
+    }
+  }, selectedPatientRecord.department, " \u2022 ", selectedPatientRecord.room))), /*#__PURE__*/React.createElement("div", {
+    style: {
+      background: '#f0fdf4',
+      border: '1px solid #bbf7d0',
+      padding: '10px 14px',
+      borderRadius: '8px',
+      fontSize: '0.85rem',
+      color: '#166534',
+      marginBottom: '18px'
+    }
+  }, /*#__PURE__*/React.createElement("strong", null, "Clinical Diagnosis:"), " ", selectedPatientRecord.diagnosis), /*#__PURE__*/React.createElement("h4", {
+    style: {
+      fontSize: '0.92rem',
+      fontWeight: 800,
+      color: 'var(--dark)',
+      marginBottom: '12px'
+    }
+  }, "Prescribed Drug Line Items for Fulfillment:"), /*#__PURE__*/React.createElement("table", {
+    className: "rx-table"
+  }, /*#__PURE__*/React.createElement("thead", null, /*#__PURE__*/React.createElement("tr", null, /*#__PURE__*/React.createElement("th", null, "Medicine & Dosage"), /*#__PURE__*/React.createElement("th", null, "Schedule"), /*#__PURE__*/React.createElement("th", null, "Instructions"), /*#__PURE__*/React.createElement("th", null, "Duration"), /*#__PURE__*/React.createElement("th", null, "Dispensary Status"))), /*#__PURE__*/React.createElement("tbody", null, selectedPatientRecord.prescription.map((med, idx) => /*#__PURE__*/React.createElement("tr", {
+    key: idx
+  }, /*#__PURE__*/React.createElement("td", {
+    style: {
+      fontWeight: 700,
+      color: 'var(--dark)'
+    }
+  }, med.medicine), /*#__PURE__*/React.createElement("td", null, /*#__PURE__*/React.createElement("span", {
+    style: {
+      background: 'var(--primary-light)',
+      color: 'var(--primary)',
+      padding: '2px 8px',
+      borderRadius: '4px',
+      fontWeight: 700
+    }
+  }, med.timing)), /*#__PURE__*/React.createElement("td", null, med.instruction), /*#__PURE__*/React.createElement("td", null, med.duration), /*#__PURE__*/React.createElement("td", null, /*#__PURE__*/React.createElement("span", {
+    style: {
+      color: '#059669',
+      fontWeight: 700,
+      fontSize: '0.82rem'
+    }
+  }, "\u2713 In Stock (Cabin Ready)")))))), /*#__PURE__*/React.createElement("div", {
+    style: {
+      display: 'flex',
+      justifyContent: 'flex-end',
+      marginTop: '20px'
+    }
+  }, /*#__PURE__*/React.createElement("button", {
+    className: "btn btn-emerald",
+    onClick: handleDispensePrescription,
+    style: {
+      padding: '12px 28px',
+      fontSize: '0.94rem'
+    }
+  }, "\u2713 Verify Pharmacist Seal & Dispense Medication \u25B6"))), dispensedInvoice && /*#__PURE__*/React.createElement("div", {
+    className: "token-slip-container",
+    style: {
+      maxWidth: '680px',
+      marginTop: '30px'
+    },
+    id: "printable-pharmacy-bill"
+  }, /*#__PURE__*/React.createElement("div", {
+    className: "token-slip-header",
+    style: {
+      background: 'linear-gradient(135deg, #0d9488 0%, #0f172a 100%)'
+    }
+  }, /*#__PURE__*/React.createElement("h3", {
+    className: "slip-hospital-title"
+  }, "PULSECARE CENTRAL PHARMACY"), /*#__PURE__*/React.createElement("p", {
+    className: "slip-tagline"
+  }, "Licensed Hospital Outpatient Drug Dispensary \u2022 Reg #DL-2026-KA-441"), /*#__PURE__*/React.createElement("div", {
+    style: {
+      fontSize: '0.74rem',
+      color: '#94a3b8',
+      marginTop: '4px'
+    }
+  }, "Invoice: ", /*#__PURE__*/React.createElement("strong", null, dispensedInvoice.invoiceNo), " | Date: ", /*#__PURE__*/React.createElement("strong", null, dispensedInvoice.dispenseDate, " ", dispensedInvoice.dispenseTime))), /*#__PURE__*/React.createElement("div", {
+    style: {
+      padding: '20px 24px',
+      background: 'white'
+    }
+  }, /*#__PURE__*/React.createElement("div", {
+    style: {
+      display: 'flex',
+      justifyContent: 'space-between',
+      borderBottom: '1px solid var(--border)',
+      paddingBottom: '12px',
+      fontSize: '0.84rem'
+    }
+  }, /*#__PURE__*/React.createElement("div", null, /*#__PURE__*/React.createElement("div", null, "Patient: ", /*#__PURE__*/React.createElement("strong", null, dispensedInvoice.patientName), " (Token: ", dispensedInvoice.token, ")"), /*#__PURE__*/React.createElement("div", {
+    style: {
+      color: 'var(--text-muted)'
+    }
+  }, "OP ID: ", dispensedInvoice.opId)), /*#__PURE__*/React.createElement("div", {
+    style: {
+      textAlign: 'right'
+    }
+  }, /*#__PURE__*/React.createElement("div", null, "Doctor: ", /*#__PURE__*/React.createElement("strong", null, dispensedInvoice.doctor)), /*#__PURE__*/React.createElement("div", {
+    style: {
+      color: 'var(--text-muted)'
+    }
+  }, dispensedInvoice.department))), /*#__PURE__*/React.createElement("table", {
+    style: {
+      width: '100%',
+      borderCollapse: 'collapse',
+      margin: '14px 0',
+      fontSize: '0.84rem'
+    }
+  }, /*#__PURE__*/React.createElement("thead", null, /*#__PURE__*/React.createElement("tr", {
+    style: {
+      background: 'var(--bg-alt)',
+      borderBottom: '1px solid var(--border)'
+    }
+  }, /*#__PURE__*/React.createElement("th", {
+    style: {
+      padding: '8px',
+      textAlign: 'left'
+    }
+  }, "Item Description"), /*#__PURE__*/React.createElement("th", {
+    style: {
+      padding: '8px',
+      textAlign: 'left'
+    }
+  }, "Batch / Exp"), /*#__PURE__*/React.createElement("th", {
+    style: {
+      padding: '8px',
+      textAlign: 'right'
+    }
+  }, "Qty"), /*#__PURE__*/React.createElement("th", {
+    style: {
+      padding: '8px',
+      textAlign: 'right'
+    }
+  }, "Amount (\u20B9)"))), /*#__PURE__*/React.createElement("tbody", null, dispensedInvoice.items.map((item, idx) => /*#__PURE__*/React.createElement("tr", {
+    key: idx,
+    style: {
+      borderBottom: '1px solid #f1f5f9'
+    }
+  }, /*#__PURE__*/React.createElement("td", {
+    style: {
+      padding: '8px'
+    }
+  }, /*#__PURE__*/React.createElement("strong", null, item.name), /*#__PURE__*/React.createElement("div", {
+    style: {
+      fontSize: '0.72rem',
+      color: 'var(--text-muted)'
+    }
+  }, item.instruction, " (", item.timing, ")")), /*#__PURE__*/React.createElement("td", {
+    style: {
+      padding: '8px',
+      fontSize: '0.76rem',
+      color: 'var(--text-muted)'
+    }
+  }, item.batchNo, " | ", item.expiryDate), /*#__PURE__*/React.createElement("td", {
+    style: {
+      padding: '8px',
+      textAlign: 'right'
+    }
+  }, item.qty, " tabs"), /*#__PURE__*/React.createElement("td", {
+    style: {
+      padding: '8px',
+      textAlign: 'right',
+      fontWeight: 700
+    }
+  }, "\u20B9", (item.price * (item.qty / 10)).toFixed(2)))))), /*#__PURE__*/React.createElement("div", {
+    style: {
+      borderTop: '2px solid var(--border)',
+      paddingTop: '12px',
+      fontSize: '0.86rem'
+    }
+  }, /*#__PURE__*/React.createElement("div", {
+    style: {
+      display: 'flex',
+      justifyContent: 'space-between',
+      marginBottom: '4px'
+    }
+  }, /*#__PURE__*/React.createElement("span", {
+    style: {
+      color: 'var(--text-muted)'
+    }
+  }, "Subtotal:"), /*#__PURE__*/React.createElement("span", null, "\u20B9", dispensedInvoice.subtotal)), /*#__PURE__*/React.createElement("div", {
+    style: {
+      display: 'flex',
+      justifyContent: 'space-between',
+      marginBottom: '6px'
+    }
+  }, /*#__PURE__*/React.createElement("span", {
+    style: {
+      color: 'var(--text-muted)'
+    }
+  }, "GST Tax (5%):"), /*#__PURE__*/React.createElement("span", null, "\u20B9", dispensedInvoice.tax)), /*#__PURE__*/React.createElement("div", {
+    style: {
+      display: 'flex',
+      justifyContent: 'space-between',
+      fontSize: '1.15rem',
+      fontWeight: 800,
+      color: 'var(--dark)',
+      borderTop: '1px solid var(--border)',
+      paddingTop: '8px'
+    }
+  }, /*#__PURE__*/React.createElement("span", null, "Total Amount Paid:"), /*#__PURE__*/React.createElement("span", {
+    style: {
+      color: 'var(--primary)'
+    }
+  }, "\u20B9", dispensedInvoice.grandTotal))), /*#__PURE__*/React.createElement("div", {
+    style: {
+      marginTop: '20px',
+      padding: '12px',
+      background: '#f8fafc',
+      borderRadius: '8px',
+      border: '1px dashed #cbd5e1',
+      display: 'flex',
+      justifyContent: 'space-between',
+      alignItems: 'center',
+      fontSize: '0.78rem'
+    }
+  }, /*#__PURE__*/React.createElement("div", null, /*#__PURE__*/React.createElement("div", {
+    style: {
+      fontWeight: 700,
+      color: 'var(--dark)'
+    }
+  }, "DISPENSED & VERIFIED BY:"), /*#__PURE__*/React.createElement("div", {
+    style: {
+      color: '#0d9488',
+      fontWeight: 600
+    }
+  }, dispensedInvoice.pharmacistName)), /*#__PURE__*/React.createElement("div", {
+    style: {
+      border: '2px solid #059669',
+      color: '#059669',
+      padding: '4px 10px',
+      borderRadius: '6px',
+      fontWeight: 800,
+      letterSpacing: '0.05em'
+    }
+  }, "SEALED & CHECKED \u2713"))), /*#__PURE__*/React.createElement("div", {
+    className: "token-slip-footer"
+  }, /*#__PURE__*/React.createElement("span", null, "Please complete medication course as directed. Keep away from direct sunlight."))), dispensedInvoice && /*#__PURE__*/React.createElement("div", {
+    style: {
+      textAlign: 'center',
+      marginTop: '16px'
+    }
+  }, /*#__PURE__*/React.createElement("button", {
+    className: "btn btn-primary",
+    onClick: () => window.print()
+  }, /*#__PURE__*/React.createElement("svg", {
+    width: "15",
+    height: "15",
+    viewBox: "0 0 24 24",
+    fill: "none",
+    stroke: "currentColor",
+    strokeWidth: "2",
+    strokeLinecap: "round",
+    strokeLinejoin: "round"
+  }, /*#__PURE__*/React.createElement("polyline", {
+    points: "6 9 6 2 18 2 18 9"
+  }), /*#__PURE__*/React.createElement("path", {
+    d: "M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2"
+  }), /*#__PURE__*/React.createElement("rect", {
+    width: "12",
+    height: "8",
+    x: "6",
+    y: "14"
+  })), "Print Pharmacy Receipt / Bill"))), activeSubTab === 'cart' && /*#__PURE__*/React.createElement("div", {
+    className: "staff-console-card",
+    style: {
+      maxWidth: '800px',
+      margin: '0 auto',
+      padding: '28px'
+    }
+  }, /*#__PURE__*/React.createElement("div", {
+    style: {
+      display: 'flex',
+      justifyContent: 'space-between',
+      alignItems: 'center',
+      marginBottom: '20px'
+    }
+  }, /*#__PURE__*/React.createElement("h3", {
+    style: {
+      fontSize: '1.2rem',
+      fontWeight: 800,
+      color: 'var(--dark)'
+    }
+  }, "Pharmacy Counter Billing Cart"), cart.length > 0 && /*#__PURE__*/React.createElement("button", {
+    className: "btn btn-secondary btn-sm",
+    onClick: handleClearCart
+  }, "Clear Cart")), cart.length === 0 ? /*#__PURE__*/React.createElement("div", {
+    style: {
+      textAlign: 'center',
+      padding: '40px 20px',
+      color: 'var(--text-muted)'
+    }
+  }, /*#__PURE__*/React.createElement("div", {
+    style: {
+      fontSize: '2.5rem',
+      marginBottom: '12px'
+    }
+  }, "\uD83D\uDED2"), /*#__PURE__*/React.createElement("h4", null, "Your pharmacy counter cart is currently empty"), /*#__PURE__*/React.createElement("p", {
+    style: {
+      fontSize: '0.85rem',
+      marginTop: '6px'
+    }
+  }, "Go to the Drug Catalog tab and click \"+ Add to Bill\" to add medications."), /*#__PURE__*/React.createElement("button", {
+    className: "btn btn-primary btn-sm",
+    onClick: () => setActiveSubTab('catalog'),
+    style: {
+      marginTop: '16px'
+    }
+  }, "Browse Drug Catalog \u25B6")) : /*#__PURE__*/React.createElement("div", null, /*#__PURE__*/React.createElement("table", {
+    className: "staff-table"
+  }, /*#__PURE__*/React.createElement("thead", null, /*#__PURE__*/React.createElement("tr", null, /*#__PURE__*/React.createElement("th", null, "Medicine"), /*#__PURE__*/React.createElement("th", null, "Unit Price"), /*#__PURE__*/React.createElement("th", {
+    style: {
+      textAlign: 'center'
+    }
+  }, "Quantity"), /*#__PURE__*/React.createElement("th", {
+    style: {
+      textAlign: 'right'
+    }
+  }, "Total"))), /*#__PURE__*/React.createElement("tbody", null, cart.map(item => /*#__PURE__*/React.createElement("tr", {
+    key: item.id
+  }, /*#__PURE__*/React.createElement("td", null, /*#__PURE__*/React.createElement("strong", null, item.name), /*#__PURE__*/React.createElement("div", {
+    style: {
+      fontSize: '0.75rem',
+      color: 'var(--text-muted)'
+    }
+  }, item.genericName)), /*#__PURE__*/React.createElement("td", null, "\u20B9", item.price.toFixed(2)), /*#__PURE__*/React.createElement("td", {
+    style: {
+      textAlign: 'center'
+    }
+  }, /*#__PURE__*/React.createElement("div", {
+    style: {
+      display: 'inline-flex',
+      alignItems: 'center',
+      gap: '8px'
+    }
+  }, /*#__PURE__*/React.createElement("button", {
+    className: "btn btn-secondary btn-sm",
+    onClick: () => handleUpdateCartQty(item.id, -1),
+    style: {
+      padding: '2px 8px',
+      fontSize: '0.8rem'
+    }
+  }, "-"), /*#__PURE__*/React.createElement("span", {
+    style: {
+      fontWeight: 700,
+      minWidth: '24px',
+      textAlign: 'center'
+    }
+  }, item.qty), /*#__PURE__*/React.createElement("button", {
+    className: "btn btn-secondary btn-sm",
+    onClick: () => handleUpdateCartQty(item.id, 1),
+    style: {
+      padding: '2px 8px',
+      fontSize: '0.8rem'
+    }
+  }, "+"))), /*#__PURE__*/React.createElement("td", {
+    style: {
+      textAlign: 'right',
+      fontWeight: 700
+    }
+  }, "\u20B9", (item.price * item.qty).toFixed(2)))))), /*#__PURE__*/React.createElement("div", {
+    style: {
+      borderTop: '2px solid var(--border)',
+      marginTop: '20px',
+      paddingTop: '16px'
+    }
+  }, /*#__PURE__*/React.createElement("div", {
+    style: {
+      display: 'flex',
+      justifyContent: 'space-between',
+      fontSize: '1.25rem',
+      fontWeight: 800
+    }
+  }, /*#__PURE__*/React.createElement("span", null, "Grand Total:"), /*#__PURE__*/React.createElement("span", {
+    style: {
+      color: 'var(--primary)'
+    }
+  }, "\u20B9", cart.reduce((sum, i) => sum + i.price * i.qty, 0).toFixed(2))), /*#__PURE__*/React.createElement("div", {
+    style: {
+      display: 'flex',
+      justifyContent: 'flex-end',
+      gap: '10px',
+      marginTop: '20px'
+    }
+  }, /*#__PURE__*/React.createElement("button", {
+    className: "btn btn-emerald",
+    onClick: () => {
+      alert('Pharmacy Counter Bill Generated & Processed!');
+      handleClearCart();
+    }
+  }, "\u2713 Complete OTC Payment & Print Bill"))))));
+}
+
 // --- src/components/StaffDashboard.jsx ---
 
 function StaffDashboard({
@@ -2846,6 +3942,9 @@ function App() {
     doctors: doctors,
     onSelectDoctorForBooking: handleSelectDoctorForBooking
   }), activeTab === 'records' && /*#__PURE__*/React.createElement(PatientPortal, {
+    records: records,
+    initialToken: lastGeneratedToken ? lastGeneratedToken.token : 'CAR-104'
+  }), activeTab === 'pharmacy' && /*#__PURE__*/React.createElement(PharmacyScreen, {
     records: records,
     initialToken: lastGeneratedToken ? lastGeneratedToken.token : 'CAR-104'
   }), activeTab === 'staff' && /*#__PURE__*/React.createElement(StaffDashboard, {

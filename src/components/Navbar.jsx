@@ -74,6 +74,14 @@ export function Navbar({ activeTab, setActiveTab, onOpenRegister, waitingTotal }
             OP Records & Rx
           </button>
           <button 
+            className={`nav-item ${activeTab === 'pharmacy' ? 'active' : ''}`}
+            onClick={() => setActiveTab('pharmacy')}
+            style={{ color: '#0284c7' }}
+          >
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="m10.5 20.5 10-10a4.95 4.95 0 1 0-7-7l-10 10a4.95 4.95 0 1 0 7 7Z"/><path d="m8.5 8.5 7 7"/></svg>
+            Pharmacy & Drugs
+          </button>
+          <button 
             className={`nav-item ${activeTab === 'staff' ? 'active' : ''}`}
             onClick={() => setActiveTab('staff')}
             style={{ color: '#0d9488' }}

@@ -8,6 +8,7 @@ import { RegistrationForm } from './components/RegistrationForm.jsx';
 import { TokenSlip } from './components/TokenSlip.jsx';
 import { DoctorDirectory } from './components/DoctorDirectory.jsx';
 import { PatientPortal } from './components/PatientPortal.jsx';
+import { PharmacyScreen } from './components/PharmacyScreen.jsx';
 import { StaffDashboard } from './components/StaffDashboard.jsx';
 import { Footer } from './components/Footer.jsx';
 
@@ -279,6 +280,14 @@ export function App() {
         {/* Patient OP Records & E-Prescription Tab */}
         {activeTab === 'records' && (
           <PatientPortal 
+            records={records}
+            initialToken={lastGeneratedToken ? lastGeneratedToken.token : 'CAR-104'}
+          />
+        )}
+
+        {/* Pharmacy & Drug Dispensary Tab */}
+        {activeTab === 'pharmacy' && (
+          <PharmacyScreen 
             records={records}
             initialToken={lastGeneratedToken ? lastGeneratedToken.token : 'CAR-104'}
           />
