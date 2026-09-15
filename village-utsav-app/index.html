@@ -1,0 +1,859 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+  <title>Mana Vooru Utsavam // Village Festival Hub & Chanda Splitter</title>
+  <meta name="description" content="Village Community Festival Portal: Upload festival photos and track Vinayaka Chavithi expenses, Chanda collections, and equal member expense splits.">
+  <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='%23f59e0b'%3E%3Cpath d='M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z'/%3E%3C/svg%3E">
+
+  <!-- Mobile & PWA Configuration -->
+  <link rel="manifest" href="./manifest.json">
+  <meta name="theme-color" content="#0a0d16">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <meta name="apple-mobile-web-app-title" content="Mana Vooru">
+  <link rel="apple-touch-icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 192 192'%3E%3Crect width='192' height='192' rx='40' fill='%230a0d16'/%3E%3Ctext x='96' y='125' font-size='80' text-anchor='middle' fill='%23ffffff'%3E🚩%3C/text%3E%3C/svg%3E">
+
+  <!-- Google Fonts: Outfit & Plus Jakarta Sans & JetBrains Mono -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@500;700&family=Outfit:wght@500;600;700;800;900&family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+
+  <link rel="stylesheet" href="./style.css">
+</head>
+<body>
+
+  <!-- Festive Ambient Glowing Canvases -->
+  <div class="festive-bg-decoration">
+    <div class="festive-glow-1"></div>
+    <div class="festive-glow-2"></div>
+  </div>
+
+  <div class="app-container">
+
+    <!-- ====================================================================
+         Top Header Navigation
+         ==================================================================== -->
+    <header class="header-navbar">
+      <div class="nav-content">
+        
+        <!-- Brand / Emblem -->
+        <a href="#" class="brand-section">
+          <div class="temple-kalash-icon">🚩</div>
+          <div class="brand-text">
+            <h1>MANA VOORU UTSAVAM</h1>
+            <p>గ్రామ ఉత్సవ్ // FESTIVAL &amp; CHANDA SPLITTER</p>
+          </div>
+        </a>
+
+        <!-- Festival Quick Switcher -->
+        <div class="header-center">
+          <div class="festival-select-wrapper">
+            <select id="festivalSelect" class="festival-select">
+              <option value="vinayaka-chavithi-2026">🚩 Vinayaka Chavithi 2026</option>
+              <option value="sankranti-2026">🌾 Sankranti Sambaralu 2026</option>
+              <option value="dasara-utsav-2026">🏹 Dasara Navaratri 2026</option>
+              <option value="diwali-2026">🪔 Deepavali Vedukalu 2026</option>
+              <option value="sri-rama-navami-2026">🏹 Sri Rama Navami 2026</option>
+            </select>
+            <span class="festival-select-icon">▼</span>
+          </div>
+        </div>
+
+        <!-- Right Quick Actions -->
+        <div class="header-actions">
+          <button class="btn btn-secondary btn-sm" id="installPhoneBtn" title="Install App on Phone" style="border-color: var(--festive-gold); color: var(--festive-gold);">
+            <span>📲 Install App</span>
+          </button>
+          <button class="btn-icon" id="themeToggleBtn" title="Toggle Festive Lighting Theme">
+            <span id="themeIcon">☀️</span>
+          </button>
+          <button class="btn btn-gold btn-sm" id="quickAddExpenseBtn">
+            <span>+ Add Expense</span>
+          </button>
+          <button class="btn btn-primary btn-sm" id="quickAddChandaBtn">
+            <span>+ Add Chanda</span>
+          </button>
+        </div>
+
+      </div>
+    </header>
+
+    <!-- ====================================================================
+         Main Navigation Bar (Tabs)
+         ==================================================================== -->
+    <nav class="navigation-bar">
+      <div class="tabs-container">
+        <button class="nav-tab active" data-tab="dashboard">
+          <span>📊 Dashboard</span>
+        </button>
+        <button class="nav-tab" data-tab="expenses">
+          <span>💰 Vinayaka Chavithi Expenses &amp; Split</span>
+          <span class="nav-tab-badge" id="badgeExpenseCount">0</span>
+        </button>
+        <button class="nav-tab" data-tab="chanda">
+          <span>📜 Chanda / Donors Ledger</span>
+          <span class="nav-tab-badge" id="badgeChandaCount">0</span>
+        </button>
+        <button class="nav-tab" data-tab="gallery">
+          <span>📸 Festival Photo Gallery</span>
+          <span class="nav-tab-badge" id="badgePhotoCount">0</span>
+        </button>
+        <button class="nav-tab" data-tab="reports">
+          <span>📢 Notice Board &amp; WhatsApp Report</span>
+        </button>
+      </div>
+    </nav>
+
+    <!-- ====================================================================
+         Main Dynamic Stage
+         ==================================================================== -->
+    <main class="main-stage">
+
+      <!-- Festival Banner Hero -->
+      <section class="festival-hero-banner">
+        <div class="banner-content">
+          <h2 id="heroFestivalTitle">Vinayaka Chavithi 2026 Utsavam</h2>
+          <p id="heroFestivalSub">Complete financial transparency and photo memories for our village celebration. Track total chanda collection, every rupee spent, and automatically split dues among committee members.</p>
+        </div>
+        <div class="banner-actions">
+          <button class="btn btn-whatsapp" id="heroShareWhatsAppBtn">
+            <span>📲 Share WhatsApp Summary</span>
+          </button>
+          <button class="btn btn-secondary" id="heroUploadPhotoBtn">
+            <span>📷 Upload Photos</span>
+          </button>
+        </div>
+      </section>
+
+      <!-- Key KPI Metrics Cards -->
+      <section class="metrics-grid">
+        <div class="metric-card">
+          <div class="metric-card-header">
+            <span class="metric-title">Total Chanda Collected</span>
+            <div class="metric-icon-box gold">₹</div>
+          </div>
+          <div class="metric-value" id="kpiTotalChanda">₹0</div>
+          <div class="metric-sub">
+            <span id="kpiChandaDonorsCount">0 Donors</span> • <span id="kpiChandaPendingAmount" style="color: #f43f5e;">₹0 Pending</span>
+          </div>
+        </div>
+
+        <div class="metric-card">
+          <div class="metric-card-header">
+            <span class="metric-title">Total Expenses Spent</span>
+            <div class="metric-icon-box crimson">📉</div>
+          </div>
+          <div class="metric-value" id="kpiTotalExpenses">₹0</div>
+          <div class="metric-sub">
+            <span id="kpiExpenseItemsCount">0 Items</span> • Across 8 categories
+          </div>
+        </div>
+
+        <div class="metric-card">
+          <div class="metric-card-header">
+            <span class="metric-title">Net Balance (Surplus/Deficit)</span>
+            <div class="metric-icon-box emerald" id="kpiBalanceIcon">⚖️</div>
+          </div>
+          <div class="metric-value" id="kpiNetBalance">₹0</div>
+          <div class="metric-sub" id="kpiBalanceStatus">
+            Surplus funds safely in hand
+          </div>
+        </div>
+
+        <div class="metric-card">
+          <div class="metric-card-header">
+            <span class="metric-title">Smart Split Per Member</span>
+            <div class="metric-icon-box purple">👥</div>
+          </div>
+          <div class="metric-value" id="kpiPerPersonShare">₹0</div>
+          <div class="metric-sub">
+            Split across <span id="kpiCommitteeMembersCount">0</span> committee members
+          </div>
+        </div>
+      </section>
+
+      <!-- ==================================================================
+           TAB 1: DASHBOARD
+           ================================================================== -->
+      <section class="tab-pane active" id="pane-dashboard">
+        <div class="split-dashboard-grid">
+          
+          <!-- Category Expenditure Breakdown -->
+          <div class="split-card">
+            <div class="split-card-header">
+              <h4>🎯 Expense Categories Breakdown</h4>
+              <button class="btn btn-secondary btn-sm" id="dashViewAllExpensesBtn">View All</button>
+            </div>
+            <div class="category-bars-list" id="dashboardCategoryBars">
+              <!-- Rendered via JS -->
+            </div>
+          </div>
+
+          <!-- Recent Chanda Collections -->
+          <div class="split-card">
+            <div class="split-card-header">
+              <h4>🌟 Recent Chanda Contributors</h4>
+              <button class="btn btn-secondary btn-sm" id="dashViewAllChandaBtn">Full List</button>
+            </div>
+            <div id="dashboardRecentChandaList" class="settlement-list">
+              <!-- Rendered via JS -->
+            </div>
+          </div>
+
+        </div>
+
+        <!-- Recent Photos Highlight -->
+        <div style="margin-top: 28px;">
+          <div class="section-header-bar">
+            <div class="section-title-group">
+              <h3>📸 Recent Festival Memories</h3>
+              <p>Moments captured during pooja, mandapam decoration, and procession</p>
+            </div>
+            <button class="btn btn-secondary btn-sm" id="dashViewAllPhotosBtn">View Full Gallery</button>
+          </div>
+          <div class="photo-grid" id="dashboardPhotoGrid">
+            <!-- Rendered via JS -->
+          </div>
+        </div>
+      </section>
+
+      <!-- ==================================================================
+           TAB 2: VINAYAKA CHAVITHI EXPENSES & SMART SPLITTER
+           ================================================================== -->
+      <section class="tab-pane" id="pane-expenses">
+        
+        <div class="section-header-bar">
+          <div class="section-title-group">
+            <h3>💰 Festival Expenditure Register</h3>
+            <p>Every single rupee spent with vendor name, category, and bill receipt</p>
+          </div>
+          <div class="search-filter-row">
+            <div class="search-input-wrapper">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3"/></svg>
+              <input type="text" id="expenseSearchInput" placeholder="Search expense or vendor...">
+            </div>
+            <select id="expenseCategoryFilter" class="filter-select">
+              <option value="ALL">All Categories</option>
+              <option value="Vigraham">Vinayaka Vigraham (Idol)</option>
+              <option value="Mandapam">Mandapam &amp; Decoration</option>
+              <option value="Sound & DJ">Sound (DJ/Mike) &amp; Lights</option>
+              <option value="Pooja & Pandit">Pooja &amp; Pandit Ji</option>
+              <option value="Prasadam & Food">Prasadam &amp; Annadanam</option>
+              <option value="Laddu Auction">Laddu Preparation/Auction</option>
+              <option value="Nimajjanam">Nimajjanam &amp; Tractor</option>
+              <option value="Misc">Miscellaneous</option>
+            </select>
+            <button class="btn btn-gold" id="openAddExpenseModalBtn">+ Add Expense</button>
+          </div>
+        </div>
+
+        <!-- Expenses Table -->
+        <div class="table-card">
+          <div class="responsive-table-container">
+            <table class="data-table">
+              <thead>
+                <tr>
+                  <th>Date</th>
+                  <th>Category</th>
+                  <th>Description / Item</th>
+                  <th>Paid By</th>
+                  <th>Amount</th>
+                  <th>Receipt</th>
+                  <th>Actions</th>
+                </tr>
+              </thead>
+              <tbody id="expensesTableBody">
+                <!-- Rendered via JS -->
+              </tbody>
+            </table>
+          </div>
+        </div>
+
+        <!-- Smart Splitter Section -->
+        <div style="margin-top: 36px;">
+          <div class="section-header-bar">
+            <div class="section-title-group">
+              <h3>👥 Committee Member Smart Splitter</h3>
+              <p>Calculates exact per-person share and who owes whom for zero confusion</p>
+            </div>
+            <button class="btn btn-secondary btn-sm" id="manageMembersBtn">Manage Committee Members</button>
+          </div>
+
+          <div class="split-dashboard-grid">
+            
+            <!-- Member Balances Card -->
+            <div class="split-card">
+              <div class="split-card-header">
+                <h4>Individual Member Share Ledger</h4>
+                <span class="badge badge-category" id="splitCountBadge">0 Members</span>
+              </div>
+
+              <div class="split-summary-box">
+                <div class="split-summary-stat">
+                  <h5>Total Incurred</h5>
+                  <div class="amount" id="splitTotalIncurred">₹0</div>
+                </div>
+                <div class="split-summary-stat" style="text-align: right;">
+                  <h5>Per Person Share</h5>
+                  <div class="amount" id="splitPerPersonAmount">₹0</div>
+                </div>
+              </div>
+
+              <div id="memberShareList" class="settlement-list">
+                <!-- Rendered via JS -->
+              </div>
+            </div>
+
+            <!-- Settlement Solutions Card -->
+            <div class="split-card">
+              <div class="split-card-header">
+                <h4>⚡ Direct Settlement Matrix</h4>
+                <span style="font-size: 0.8rem; color: var(--text-secondary);">Minimal payment transfers</span>
+              </div>
+
+              <div id="settlementMatrixList" class="settlement-list">
+                <!-- Rendered via JS -->
+              </div>
+
+              <!-- Vinayaka Laddu Special Auction Highlight -->
+              <div style="margin-top: 24px; padding: 18px; border-radius: var(--radius-md); background: linear-gradient(135deg, rgba(245, 158, 11, 0.15), rgba(225, 29, 72, 0.1)); border: 1px solid var(--border-glow);">
+                <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 8px;">
+                  <h5 style="font-family: var(--font-heading); color: var(--festive-gold); font-size: 0.95rem;">🏆 Vinayaka Laddu Auction</h5>
+                  <button class="btn btn-secondary btn-sm" id="editLadduBtn">Edit</button>
+                </div>
+                <div style="display: flex; justify-content: space-between; align-items: baseline;">
+                  <div>
+                    <div style="font-size: 1.1rem; font-weight: 800;" id="ladduWinnerName">Sri Rama Rao</div>
+                    <div style="font-size: 0.78rem; color: var(--text-secondary);">Winning Bidder</div>
+                  </div>
+                  <div style="text-align: right;">
+                    <div style="font-size: 1.4rem; font-weight: 900; color: var(--festive-gold);" id="ladduBidAmount">₹25,000</div>
+                    <span class="badge badge-paid" id="ladduStatusBadge">PAID</span>
+                  </div>
+                </div>
+              </div>
+
+            </div>
+
+          </div>
+        </div>
+
+      </section>
+
+      <!-- ==================================================================
+           TAB 3: CHANDA / DONORS LEDGER
+           ================================================================== -->
+      <section class="tab-pane" id="pane-chanda">
+        
+        <div class="section-header-bar">
+          <div class="section-title-group">
+            <h3>📜 Village Chanda &amp; Donations Register</h3>
+            <p>Complete record of contributions by families, youths, and sponsors</p>
+          </div>
+          <div class="search-filter-row">
+            <div class="search-input-wrapper">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3"/></svg>
+              <input type="text" id="chandaSearchInput" placeholder="Search name or house no...">
+            </div>
+            <select id="chandaStatusFilter" class="filter-select">
+              <option value="ALL">All Status</option>
+              <option value="PAID">Paid Only</option>
+              <option value="PARTIAL">Partial</option>
+              <option value="PENDING">Pending Dues</option>
+            </select>
+            <button class="btn btn-primary" id="openAddChandaModalBtn">+ Add Donor Record</button>
+          </div>
+        </div>
+
+        <!-- Chanda Table -->
+        <div class="table-card">
+          <div class="responsive-table-container">
+            <table class="data-table">
+              <thead>
+                <tr>
+                  <th>S.No</th>
+                  <th>Villager / Family Name</th>
+                  <th>House / Street</th>
+                  <th>Phone</th>
+                  <th>Pledged</th>
+                  <th>Paid Amount</th>
+                  <th>Payment Mode</th>
+                  <th>Status</th>
+                  <th>Receipt</th>
+                  <th>Actions</th>
+                </tr>
+              </thead>
+              <tbody id="chandaTableBody">
+                <!-- Rendered via JS -->
+              </tbody>
+            </table>
+          </div>
+        </div>
+
+      </section>
+
+      <!-- ==================================================================
+           TAB 4: FESTIVAL PHOTO GALLERY
+           ================================================================== -->
+      <section class="tab-pane" id="pane-gallery">
+        
+        <div class="gallery-controls-bar">
+          <div class="gallery-filter-chips" id="galleryFilterChips">
+            <button class="chip-btn active" data-filter="ALL">All Photos</button>
+            <button class="chip-btn" data-filter="Pooja">Pooja &amp; Mandapam</button>
+            <button class="chip-btn" data-filter="Laddu">Laddu Auction</button>
+            <button class="chip-btn" data-filter="Annadanam">Annadanam</button>
+            <button class="chip-btn" data-filter="Nimajjanam">Nimajjanam Procession</button>
+          </div>
+          <button class="btn btn-gold" id="openUploadPhotoModalBtn">
+            <span>📷 Upload New Photos</span>
+          </button>
+        </div>
+
+        <!-- Photo Grid -->
+        <div class="photo-grid" id="mainPhotoGrid">
+          <!-- Rendered via JS -->
+        </div>
+
+      </section>
+
+      <!-- ==================================================================
+           TAB 5: NOTICE BOARD & WHATSAPP REPORT
+           ================================================================== -->
+      <section class="tab-pane" id="pane-reports">
+        
+        <div class="section-header-bar">
+          <div class="section-title-group">
+            <h3>📢 Village Notice Board &amp; WhatsApp Reports</h3>
+            <p>1-click transparency reports ready to copy for WhatsApp groups or print for temple notice boards</p>
+          </div>
+          <div style="display: flex; gap: 10px;">
+            <button class="btn btn-secondary" id="exportBackupJsonBtn">💾 Backup Data (JSON)</button>
+            <label class="btn btn-secondary" style="cursor: pointer;">
+              📂 Restore Backup
+              <input type="file" id="importBackupJsonInput" style="display: none;" accept=".json">
+            </label>
+          </div>
+        </div>
+
+        <!-- WhatsApp Quick Message Box -->
+        <div class="report-preview-box">
+          <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 12px;">
+            <h4 style="font-family: var(--font-heading); color: #25d366; display: flex; align-items: center; gap: 8px;">
+              <span>📲 WhatsApp Group Statement</span>
+            </h4>
+            <div style="display: flex; gap: 10px;">
+              <button class="btn btn-whatsapp btn-sm" id="copyWhatsAppTextBtn">📋 Copy WhatsApp Text</button>
+              <button class="btn btn-whatsapp btn-sm" id="openWhatsAppDirectBtn">💬 Open WhatsApp</button>
+            </div>
+          </div>
+          <textarea id="whatsappReportTextArea" class="whatsapp-text-area" readonly></textarea>
+        </div>
+
+        <!-- Printable Village Notice Board Layout -->
+        <div class="section-header-bar" style="margin-top: 32px;">
+          <div class="section-title-group">
+            <h3>🏛️ Temple Notice Board Printable Statement</h3>
+            <p>Print on A4 paper and stick on village temple or community hall notice board</p>
+          </div>
+          <button class="btn btn-gold" id="printNoticeBoardBtn">🖨️ Print Notice Board Slip</button>
+        </div>
+
+        <div class="notice-board-printable" id="printableNoticeBoard">
+          <div class="notice-header">
+            <div style="font-size: 2.2rem; margin-bottom: 4px;">🚩 ॐ గం గణపతయే నమః 🚩</div>
+            <h2>మన ఊరు వినాయక చవితి ఉత్సవాల ఆదాయ-వ్యయ నివేదిక</h2>
+            <p id="noticeFestivalDate">Mana Vooru Vinayaka Chavithi Utsav Financial Statement &amp; Audit</p>
+          </div>
+
+          <div class="notice-stats-row">
+            <div class="notice-stat-box">
+              <div class="lbl">మొత్తం చందా (Income)</div>
+              <div class="val" id="noticeStatChanda">₹0</div>
+            </div>
+            <div class="notice-stat-box">
+              <div class="lbl">మొత్తం ఖర్చులు (Expenses)</div>
+              <div class="val" id="noticeStatExpense">₹0</div>
+            </div>
+            <div class="notice-stat-box">
+              <div class="lbl">మిగిలిన నిల్వ (Net Balance)</div>
+              <div class="val" id="noticeStatBalance">₹0</div>
+            </div>
+            <div class="notice-stat-box">
+              <div class="lbl">లడ్డు వేలం (Laddu Auction)</div>
+              <div class="val" id="noticeStatLaddu">₹0</div>
+            </div>
+          </div>
+
+          <div class="notice-tables-split">
+            <!-- Expenses List -->
+            <div>
+              <h4 style="font-family: var(--font-heading); color: #b91c1c; margin-bottom: 8px;">ఖర్చుల వివరాలు (Expenditures)</h4>
+              <table class="notice-table">
+                <thead>
+                  <tr>
+                    <th>వివరణ (Category/Item)</th>
+                    <th>ఖర్చు చేసిన వారు</th>
+                    <th>మొత్తం (₹)</th>
+                  </tr>
+                </thead>
+                <tbody id="noticeExpenseTableBody">
+                  <!-- Rendered via JS -->
+                </tbody>
+              </table>
+            </div>
+
+            <!-- Top Donors List -->
+            <div>
+              <h4 style="font-family: var(--font-heading); color: #b45309; margin-bottom: 8px;">దాతల వివరాలు (Major Chanda Contributors)</h4>
+              <table class="notice-table">
+                <thead>
+                  <tr>
+                    <th>పేరు (Name)</th>
+                    <th>ఇంటి నెం / వీధి</th>
+                    <th>మొత్తం (₹)</th>
+                  </tr>
+                </thead>
+                <tbody id="noticeChandaTableBody">
+                  <!-- Rendered via JS -->
+                </tbody>
+              </table>
+            </div>
+          </div>
+
+          <div style="margin-top: 30px; border-top: 1px dashed #d1d5db; padding-top: 16px; display: flex; justify-content: space-between; font-size: 0.85rem; color: #4b5563;">
+            <div>గ్రామ యువజన సంఘం &amp; ఉత్సవ కమిటీ</div>
+            <div>తేదీ: <span id="noticePrintDate">2026</span></div>
+            <div>సంతకం: ____________________</div>
+          </div>
+        </div>
+
+      </section>
+
+    </main>
+  </div>
+
+  <!-- ====================================================================
+       MODAL: Add / Edit Chanda Donor
+       ==================================================================== -->
+  <div class="modal-overlay" id="modalChanda">
+    <div class="modal-dialog">
+      <div class="modal-header">
+        <h3 id="modalChandaTitle">Add Chanda / Donor Record</h3>
+        <button class="btn-icon" data-close="modalChanda">✕</button>
+      </div>
+      <form id="formChanda">
+        <div class="modal-body">
+          <input type="hidden" id="chandaId">
+          <div class="form-group">
+            <label>Villager / Family Name *</label>
+            <input type="text" id="chandaName" class="form-control" required placeholder="e.g. Ramakrishna Raju">
+          </div>
+          <div class="form-row">
+            <div class="form-group">
+              <label>House No. / Street</label>
+              <input type="text" id="chandaHouse" class="form-control" placeholder="e.g. 2-45, Main Road">
+            </div>
+            <div class="form-group">
+              <label>Phone Number</label>
+              <input type="tel" id="chandaPhone" class="form-control" placeholder="e.g. 9876543210">
+            </div>
+          </div>
+          <div class="form-row">
+            <div class="form-group">
+              <label>Pledged Amount (₹) *</label>
+              <input type="number" id="chandaPledged" class="form-control" required min="1" placeholder="1000">
+            </div>
+            <div class="form-group">
+              <label>Amount Paid (₹) *</label>
+              <input type="number" id="chandaPaid" class="form-control" required min="0" placeholder="1000">
+            </div>
+          </div>
+          <div class="form-row">
+            <div class="form-group">
+              <label>Payment Mode</label>
+              <select id="chandaPaymentMode" class="form-control">
+                <option value="Cash">Cash (చేతికి ఇచ్చినారు)</option>
+                <option value="UPI / PhonePe">UPI / PhonePe / GPay</option>
+                <option value="Bank Transfer">Bank Transfer</option>
+              </select>
+            </div>
+            <div class="form-group">
+              <label>Date</label>
+              <input type="date" id="chandaDate" class="form-control">
+            </div>
+          </div>
+          <div class="form-group">
+            <label>Remarks / Notes</label>
+            <input type="text" id="chandaNotes" class="form-control" placeholder="Optional notes...">
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-close="modalChanda">Cancel</button>
+          <button type="submit" class="btn btn-primary">Save Donor Record</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- ====================================================================
+       MODAL: Add / Edit Expense
+       ==================================================================== -->
+  <div class="modal-overlay" id="modalExpense">
+    <div class="modal-dialog">
+      <div class="modal-header">
+        <h3 id="modalExpenseTitle">Record Festival Expense</h3>
+        <button class="btn-icon" data-close="modalExpense">✕</button>
+      </div>
+      <form id="formExpense">
+        <div class="modal-body">
+          <input type="hidden" id="expenseId">
+          <div class="form-group">
+            <label>Expense Category *</label>
+            <select id="expenseCategory" class="form-control" required>
+              <option value="Vigraham">Vinayaka Vigraham (Idol purchase &amp; transport)</option>
+              <option value="Mandapam">Mandapam, Stage &amp; Floral Decoration</option>
+              <option value="Sound & DJ">Sound (DJ/Mike) &amp; Lights Generator</option>
+              <option value="Pooja & Pandit">Pandit Ji Dakshina &amp; Pooja Samagri</option>
+              <option value="Prasadam & Food">Prasadam, Fruits &amp; Annadanam</option>
+              <option value="Laddu Auction">Special Laddu Preparation</option>
+              <option value="Nimajjanam">Nimajjanam Procession (Tractor/Dappu/Colors)</option>
+              <option value="Misc">Miscellaneous / Electrical / Permits</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label>Description / Item Name *</label>
+            <input type="text" id="expenseTitle" class="form-control" required placeholder="e.g. 8ft Clay Vinayaka Vigraham">
+          </div>
+          <div class="form-row">
+            <div class="form-group">
+              <label>Amount (₹) *</label>
+              <input type="number" id="expenseAmount" class="form-control" required min="1" placeholder="18000">
+            </div>
+            <div class="form-group">
+              <label>Paid By (Member Name) *</label>
+              <input type="text" id="expensePaidBy" class="form-control" required placeholder="e.g. Ramesh">
+            </div>
+          </div>
+          <div class="form-row">
+            <div class="form-group">
+              <label>Date</label>
+              <input type="date" id="expenseDate" class="form-control">
+            </div>
+            <div class="form-group">
+              <label>Vendor / Shop Name</label>
+              <input type="text" id="expenseVendor" class="form-control" placeholder="e.g. Lakshmi Arts">
+            </div>
+          </div>
+          <div class="form-group">
+            <label>Bill / Receipt Photo (Optional)</label>
+            <input type="file" id="expenseReceiptFile" class="form-control" accept="image/*">
+            <div id="expenseReceiptPreview" style="margin-top: 8px; display: none;"></div>
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-close="modalExpense">Cancel</button>
+          <button type="submit" class="btn btn-gold">Save Expense</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- ====================================================================
+       MODAL: Upload Festival Photo
+       ==================================================================== -->
+  <div class="modal-overlay" id="modalPhoto">
+    <div class="modal-dialog">
+      <div class="modal-header">
+        <h3>Upload Festival Photos</h3>
+        <button class="btn-icon" data-close="modalPhoto">✕</button>
+      </div>
+      <form id="formPhoto">
+        <div class="modal-body">
+          <div class="dropzone-box" id="photoDropzone">
+            <div class="dropzone-icon">📷</div>
+            <div style="font-weight: 700; font-size: 1rem;">Click or drag festival photos here</div>
+            <div style="font-size: 0.78rem; color: var(--text-muted); margin-top: 4px;">Supports JPG, PNG, WEBP from your phone or camera</div>
+            <input type="file" id="photoFileInput" multiple accept="image/*" style="display: none;">
+          </div>
+          <div id="photoPreviewContainer" style="display: flex; gap: 8px; overflow-x: auto; padding: 4px 0;"></div>
+          
+          <div class="form-group">
+            <label>Festival Tag *</label>
+            <select id="photoTagFestival" class="form-control">
+              <option value="vinayaka-chavithi-2026">Vinayaka Chavithi 2026</option>
+              <option value="sankranti-2026">Sankranti 2026</option>
+              <option value="dasara-utsav-2026">Dasara 2026</option>
+              <option value="diwali-2026">Deepavali 2026</option>
+            </select>
+          </div>
+          <div class="form-row">
+            <div class="form-group">
+              <label>Event Category</label>
+              <select id="photoCategory" class="form-control">
+                <option value="Pooja">Pooja &amp; Mandapam</option>
+                <option value="Laddu">Laddu Auction</option>
+                <option value="Annadanam">Annadanam</option>
+                <option value="Nimajjanam">Nimajjanam Procession</option>
+              </select>
+            </div>
+            <div class="form-group">
+              <label>Uploader Name</label>
+              <input type="text" id="photoUploader" class="form-control" placeholder="e.g. Suresh Kumar">
+            </div>
+          </div>
+          <div class="form-group">
+            <label>Caption / Memory Title</label>
+            <input type="text" id="photoCaption" class="form-control" placeholder="e.g. Grand Aarti at Main Mandapam">
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-close="modalPhoto">Cancel</button>
+          <button type="submit" class="btn btn-primary" id="savePhotoSubmitBtn">Upload to Gallery</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- ====================================================================
+       MODAL: Manage Committee Members (For Splitting)
+       ==================================================================== -->
+  <div class="modal-overlay" id="modalMembers">
+    <div class="modal-dialog">
+      <div class="modal-header">
+        <h3>Youth / Committee Members</h3>
+        <button class="btn-icon" data-close="modalMembers">✕</button>
+      </div>
+      <div class="modal-body">
+        <p style="font-size: 0.85rem; color: var(--text-secondary);">
+          These are the active committee members among whom festival expenses are divided equally.
+        </p>
+        <div style="display: flex; gap: 8px;">
+          <input type="text" id="newMemberNameInput" class="form-control" placeholder="Enter member name (e.g. Ravi)">
+          <button class="btn btn-gold btn-sm" id="addMemberBtn">+ Add</button>
+        </div>
+        <div id="committeeMembersList" style="display: flex; flex-direction: column; gap: 8px; margin-top: 12px; max-height: 250px; overflow-y: auto;">
+          <!-- Rendered via JS -->
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-primary" data-close="modalMembers">Done</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ====================================================================
+       MODAL: Edit Laddu Auction
+       ==================================================================== -->
+  <div class="modal-overlay" id="modalLaddu">
+    <div class="modal-dialog">
+      <div class="modal-header">
+        <h3>Edit Vinayaka Laddu Auction</h3>
+        <button class="btn-icon" data-close="modalLaddu">✕</button>
+      </div>
+      <form id="formLaddu">
+        <div class="modal-body">
+          <div class="form-group">
+            <label>Winning Bidder Name</label>
+            <input type="text" id="inputLadduWinner" class="form-control" required placeholder="e.g. Sri Rama Rao">
+          </div>
+          <div class="form-group">
+            <label>Winning Bid Amount (₹)</label>
+            <input type="number" id="inputLadduAmount" class="form-control" required min="1" placeholder="25000">
+          </div>
+          <div class="form-group">
+            <label>Payment Status</label>
+            <select id="inputLadduStatus" class="form-control">
+              <option value="PAID">PAID (డబ్బులు అందినవి)</option>
+              <option value="PENDING">PENDING (ఇంకా అందలేదు)</option>
+            </select>
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-close="modalLaddu">Cancel</button>
+          <button type="submit" class="btn btn-gold">Update Laddu Auction</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- ====================================================================
+       MODAL: Download & Install on Phone
+       ==================================================================== -->
+  <div class="modal-overlay" id="modalInstall">
+    <div class="modal-dialog">
+      <div class="modal-header">
+        <h3>📲 Install App on Your Phone</h3>
+        <button class="btn-icon" data-close="modalInstall">✕</button>
+      </div>
+      <div class="modal-body">
+        <div style="text-align: center; margin-bottom: 16px;">
+          <div style="font-size: 3rem; margin-bottom: 8px;">🚩</div>
+          <h4 style="font-family: var(--font-heading); font-size: 1.2rem; color: var(--festive-gold);">Mana Vooru Utsavam</h4>
+          <p style="font-size: 0.85rem; color: var(--text-secondary);">Install as a full mobile app on Android or iPhone</p>
+        </div>
+
+        <!-- Direct Install Button if supported -->
+        <div style="text-align: center; margin-bottom: 20px;">
+          <button class="btn btn-primary" id="pwaTriggerInstallBtn" style="width: 100%; padding: 14px; font-size: 1rem;">
+            ⚡ 1-Click Install App on Device
+          </button>
+        </div>
+
+        <div style="background: var(--bg-surface-elevated); border: 1px solid var(--border-color); border-radius: var(--radius-md); padding: 16px; margin-bottom: 16px;">
+          <h5 style="color: var(--festive-gold); font-size: 0.9rem; margin-bottom: 8px;">🌐 How to Open from Your Phone:</h5>
+          <ol style="font-size: 0.85rem; color: var(--text-primary); padding-left: 20px; line-height: 1.8;">
+            <li>Connect your phone to the <strong>same Wi-Fi or Mobile Hotspot</strong> as this computer.</li>
+            <li>Open your phone's browser (Chrome on Android or Safari on iPhone).</li>
+            <li>Type this exact address in the browser bar:
+              <div style="font-family: var(--font-mono); background: #000; color: #00f5ff; padding: 8px 12px; border-radius: 6px; margin-top: 6px; word-break: break-all; font-weight: bold; text-align: center; font-size: 1rem;" id="phoneAccessUrlDisplay">
+                http://10.150.250.111:4000
+              </div>
+            </li>
+          </ol>
+        </div>
+
+        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 12px; font-size: 0.82rem;">
+          <div style="background: rgba(37, 211, 102, 0.08); border: 1px solid rgba(37, 211, 102, 0.25); border-radius: 8px; padding: 12px;">
+            <strong style="color: #25d366; display: block; margin-bottom: 4px;">🤖 Android (Chrome):</strong>
+            1. Tap the <strong>3 dots (⋮)</strong> top-right.<br>
+            2. Tap <strong>"Install App"</strong> or <strong>"Add to Home Screen"</strong>.<br>
+            3. The App icon appears on your home screen!
+          </div>
+
+          <div style="background: rgba(56, 189, 248, 0.08); border: 1px solid rgba(56, 189, 248, 0.25); border-radius: 8px; padding: 12px;">
+            <strong style="color: #38bdf8; display: block; margin-bottom: 4px;">🍏 iPhone (Safari):</strong>
+            1. Tap the <strong>Share (⎋)</strong> button bottom-center.<br>
+            2. Tap <strong>"Add to Home Screen"</strong>.<br>
+            3. Tap <strong>"Add"</strong> top-right!
+          </div>
+        </div>
+
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-close="modalInstall">Close</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ====================================================================
+       LIGHTBOX VIEWER
+       ==================================================================== -->
+  <div class="lightbox-modal" id="lightboxModal">
+    <div class="lightbox-content">
+      <button class="lightbox-close-btn" id="lightboxCloseBtn">✕</button>
+      <img id="lightboxImage" class="lightbox-image" src="" alt="Festival Photo">
+      <div class="lightbox-caption" id="lightboxCaption">Caption goes here</div>
+      <div style="margin-top: 10px; display: flex; gap: 12px;">
+        <button class="btn btn-secondary btn-sm" id="lightboxDownloadBtn">⬇ Download</button>
+        <button class="btn btn-secondary btn-sm" style="color: #f43f5e;" id="lightboxDeleteBtn">🗑 Delete Photo</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- JavaScript Controller -->
+  <script src="./app.js"></script>
+</body>
+</html>
