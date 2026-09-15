@@ -17,9 +17,13 @@
   const KEY_LADDU = STORAGE_PREFIX + 'laddu_';
   const KEY_PHOTOS = STORAGE_PREFIX + 'photos_';
   const KEY_THEME = STORAGE_PREFIX + 'theme';
+  const KEY_USERS = STORAGE_PREFIX + 'registered_users';
+  const KEY_CURRENT_USER = STORAGE_PREFIX + 'current_user';
 
   // --- STATE ---
   let currentFestival = localStorage.getItem(KEY_FESTIVAL) || 'vinayaka-chavithi-2026';
+  let currentUser = null;
+  let registeredUsers = [];
   let expenses = [];
   let chandaList = [];
   let committeeMembers = [];
@@ -133,6 +137,27 @@
     inputLadduAmount: document.getElementById('inputLadduAmount'),
     inputLadduStatus: document.getElementById('inputLadduStatus'),
 
+    // Auth Elements
+    authOverlayScreen: document.getElementById('authOverlayScreen'),
+    authAlertMsg: document.getElementById('authAlertMsg'),
+    authTabRegisterBtn: document.getElementById('authTabRegisterBtn'),
+    authTabLoginBtn: document.getElementById('authTabLoginBtn'),
+    authRegisterForm: document.getElementById('authRegisterForm'),
+    authLoginForm: document.getElementById('authLoginForm'),
+    regFullName: document.getElementById('regFullName'),
+    regMobile: document.getElementById('regMobile'),
+    regStreet: document.getElementById('regStreet'),
+    regRole: document.getElementById('regRole'),
+    regPin: document.getElementById('regPin'),
+    loginMobile: document.getElementById('loginMobile'),
+    loginPin: document.getElementById('loginPin'),
+    quickDemoLoginBtn: document.getElementById('quickDemoLoginBtn'),
+    userProfileBadge: document.getElementById('userProfileBadge'),
+    headerUserAvatar: document.getElementById('headerUserAvatar'),
+    headerUserName: document.getElementById('headerUserName'),
+    headerUserRole: document.getElementById('headerUserRole'),
+    logoutBtn: document.getElementById('logoutBtn'),
+
     // PWA Install Elements
     installPhoneBtn: document.getElementById('installPhoneBtn'),
     modalInstall: document.getElementById('modalInstall'),
@@ -153,10 +178,188 @@
   // --- INITIALIZATION ---
   function init() {
     initTheme();
+    initAuth();
     initPWA();
     loadFestivalData();
     setupEventListeners();
     renderAll();
+  }
+
+  // --- AUTHENTICATION (REGISTER & LOGIN) ---
+  function initAuth() {
+    // Load registered users from storage
+    const savedUsers = localStorage.getItem(KEY_USERS);
+    if (savedUsers) {
+      try { registeredUsers = JSON.parse(savedUsers); } catch(e) { registeredUsers = []; }
+    } else {
+      registeredUsers = [
+        { name: 'Manikanta', phone: '9876543210', street: 'Main Road', role: 'Committee Organizer', pin: '1234' }
+      ];
+      localStorage.setItem(KEY_USERS, JSON.stringify(registeredUsers));
+    }
+
+    // Load current logged-in user
+    const savedCurrentUser = localStorage.getItem(KEY_CURRENT_USER);
+    if (savedCurrentUser) {
+      try { currentUser = JSON.parse(savedCurrentUser); } catch(e) { currentUser = null; }
+    }
+
+    // Check auth state
+    if (currentUser) {
+      showAuthenticatedUI(currentUser);
+    } else {
+      showAuthOverlay();
+    }
+
+    // Tab Switcher: Register
+    el.authTabRegisterBtn.addEventListener('click', () => {
+      el.authTabRegisterBtn.classList.add('active');
+      el.authTabLoginBtn.classList.remove('active');
+      el.authRegisterForm.style.display = 'flex';
+      el.authLoginForm.style.display = 'none';
+      hideAuthAlert();
+    });
+
+    // Tab Switcher: Login
+    el.authTabLoginBtn.addEventListener('click', () => {
+      el.authTabLoginBtn.classList.add('active');
+      el.authTabRegisterBtn.classList.remove('active');
+      el.authLoginForm.style.display = 'flex';
+      el.authRegisterForm.style.display = 'none';
+      hideAuthAlert();
+    });
+
+    // Handle Register Form Submit
+    el.authRegisterForm.addEventListener('submit', (e) => {
+      e.preventDefault();
+      const name = el.regFullName.value.trim();
+      const phone = el.regMobile.value.trim();
+      const street = el.regStreet.value.trim();
+      const role = el.regRole.value;
+      const pin = el.regPin.value.trim();
+
+      if (!phone || phone.length !== 10) {
+        showAuthAlert('Please enter a valid 10-digit mobile number.', 'error');
+        return;
+      }
+      if (!pin || pin.length !== 4) {
+        showAuthAlert('Please create a 4-digit security PIN.', 'error');
+        return;
+      }
+
+      // Check duplicate
+      const existing = registeredUsers.find(u => u.phone === phone);
+      if (existing) {
+        showAuthAlert('This mobile number is already registered! Please click "Sign In".', 'error');
+        return;
+      }
+
+      const newUser = {
+        name,
+        phone,
+        street,
+        role,
+        pin,
+        registeredAt: new Date().toISOString()
+      };
+
+      registeredUsers.push(newUser);
+      localStorage.setItem(KEY_USERS, JSON.stringify(registeredUsers));
+
+      // Also add to committee members if organizer
+      if (role.includes('Committee') && !committeeMembers.includes(name)) {
+        committeeMembers.push(name);
+        saveMembers();
+      }
+
+      showAuthAlert('Registration successful! Entering festival portal...', 'success');
+      setTimeout(() => {
+        setCurrentUser(newUser);
+        el.authRegisterForm.reset();
+        hideAuthAlert();
+      }, 700);
+    });
+
+    // Handle Login Form Submit
+    el.authLoginForm.addEventListener('submit', (e) => {
+      e.preventDefault();
+      const phone = el.loginMobile.value.trim();
+      const pin = el.loginPin.value.trim();
+
+      const matched = registeredUsers.find(u => u.phone === phone && u.pin === pin);
+      if (matched) {
+        showAuthAlert('Login successful! Welcome back, ' + matched.name, 'success');
+        setTimeout(() => {
+          setCurrentUser(matched);
+          el.authLoginForm.reset();
+          hideAuthAlert();
+        }, 500);
+      } else {
+        showAuthAlert('Incorrect Mobile Number or 4-Digit PIN. Please try again or Register.', 'error');
+      }
+    });
+
+    // 1-Click Demo Login
+    el.quickDemoLoginBtn.addEventListener('click', () => {
+      const demoUser = registeredUsers[0] || {
+        name: 'Manikanta',
+        phone: '9876543210',
+        street: 'Main Road',
+        role: 'Committee Organizer',
+        pin: '1234'
+      };
+      setCurrentUser(demoUser);
+    });
+
+    // Logout
+    el.logoutBtn.addEventListener('click', () => {
+      if (confirm('Are you sure you want to sign out?')) {
+        currentUser = null;
+        localStorage.removeItem(KEY_CURRENT_USER);
+        showAuthOverlay();
+      }
+    });
+  }
+
+  function setCurrentUser(user) {
+    currentUser = user;
+    localStorage.setItem(KEY_CURRENT_USER, JSON.stringify(user));
+    showAuthenticatedUI(user);
+
+    // Auto-fill forms with user's name
+    const expensePayer = document.getElementById('expensePaidBy');
+    if (expensePayer) expensePayer.value = user.name;
+    const photoUploader = document.getElementById('photoUploader');
+    if (photoUploader) photoUploader.value = user.name;
+    const chandaName = document.getElementById('chandaName');
+    if (chandaName && !chandaName.value) chandaName.value = user.name;
+    const chandaPhone = document.getElementById('chandaPhone');
+    if (chandaPhone && !chandaPhone.value) chandaPhone.value = user.phone;
+    const chandaHouse = document.getElementById('chandaHouse');
+    if (chandaHouse && !chandaHouse.value) chandaHouse.value = user.street;
+  }
+
+  function showAuthenticatedUI(user) {
+    el.authOverlayScreen.classList.add('hidden');
+    el.userProfileBadge.style.display = 'flex';
+    el.headerUserName.textContent = user.name.split(' ')[0] || 'User';
+    el.headerUserRole.textContent = user.role.includes('Committee') ? 'Organizer' : (user.role.includes('Youth') ? 'Youth' : 'Resident');
+    el.headerUserAvatar.textContent = (user.name.charAt(0) || 'M').toUpperCase();
+  }
+
+  function showAuthOverlay() {
+    el.authOverlayScreen.classList.remove('hidden');
+    el.userProfileBadge.style.display = 'none';
+  }
+
+  function showAuthAlert(msg, type) {
+    el.authAlertMsg.textContent = msg;
+    el.authAlertMsg.className = 'auth-alert-msg ' + type;
+  }
+
+  function hideAuthAlert() {
+    el.authAlertMsg.textContent = '';
+    el.authAlertMsg.className = 'auth-alert-msg';
   }
 
   // --- PWA (PROGRESSIVE WEB APP) INSTALLATION ---

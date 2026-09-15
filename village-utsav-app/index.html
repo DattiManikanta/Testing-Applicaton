@@ -24,6 +24,90 @@
 </head>
 <body>
 
+  <!-- ====================================================================
+       FULLSCREEN AUTHENTICATION (REGISTER & LOGIN) OVERLAY
+       ==================================================================== -->
+  <div class="auth-overlay-screen" id="authOverlayScreen">
+    <div class="auth-card-container">
+      
+      <div class="auth-brand-header">
+        <div class="auth-logo-kalash">🚩</div>
+        <h2>MANA VOORU UTSAVAM</h2>
+        <p>గ్రామ ఉత్సవ్ // FESTIVAL, EXPENSES &amp; CHANDA PORTAL</p>
+      </div>
+
+      <!-- Auth Alert Banner -->
+      <div id="authAlertMsg" class="auth-alert-msg"></div>
+
+      <!-- Tab Switcher: Register First / Sign In -->
+      <div class="auth-tab-switch">
+        <button class="auth-tab-btn active" id="authTabRegisterBtn">📝 New Registration</button>
+        <button class="auth-tab-btn" id="authTabLoginBtn">🔑 Sign In</button>
+      </div>
+
+      <!-- Registration Form (Default) -->
+      <form id="authRegisterForm" class="auth-form-box">
+        <div class="form-group">
+          <label>Full Name (మీ పూర్తి పేరు) *</label>
+          <input type="text" id="regFullName" class="form-control" required placeholder="e.g. Manikanta / Ramesh">
+        </div>
+
+        <div class="form-group">
+          <label>Mobile Number (ఫోన్ నెంబర్) *</label>
+          <input type="tel" id="regMobile" class="form-control" required pattern="[0-9]{10}" placeholder="10-digit mobile number">
+        </div>
+
+        <div class="form-group">
+          <label>Village Street / Ward (వీధి / ఇంటి నెం) *</label>
+          <input type="text" id="regStreet" class="form-control" required placeholder="e.g. Main Road, Mandapam Street">
+        </div>
+
+        <div class="form-group">
+          <label>Your Role in Festival (మీ పాత్ర) *</label>
+          <select id="regRole" class="form-control" required>
+            <option value="Committee Organizer">👑 Committee Organizer (కమిటీ సభ్యులు)</option>
+            <option value="Youth Volunteer">🚩 Youth Volunteer (యువజన సంఘం)</option>
+            <option value="Village Resident">🏡 Village Resident (గ్రామస్థులు)</option>
+          </select>
+        </div>
+
+        <div class="form-group">
+          <label>Create 4-Digit Security PIN (4 అంకెల పిన్) *</label>
+          <input type="password" id="regPin" class="form-control" required maxlength="4" pattern="[0-9]{4}" placeholder="e.g. 1234">
+        </div>
+
+        <button type="submit" class="btn btn-primary" style="width: 100%; padding: 12px; margin-top: 6px;">
+          🚩 Register &amp; Open Village Portal
+        </button>
+      </form>
+
+      <!-- Login Form (Hidden by default) -->
+      <form id="authLoginForm" class="auth-form-box" style="display: none;">
+        <div class="form-group">
+          <label>Registered Mobile Number (ఫోన్ నెంబర్) *</label>
+          <input type="tel" id="loginMobile" class="form-control" required pattern="[0-9]{10}" placeholder="Enter 10-digit mobile number">
+        </div>
+
+        <div class="form-group">
+          <label>4-Digit Security PIN (4 అంకెల పిన్) *</label>
+          <input type="password" id="loginPin" class="form-control" required maxlength="4" pattern="[0-9]{4}" placeholder="Enter 4-digit PIN">
+        </div>
+
+        <button type="submit" class="btn btn-gold" style="width: 100%; padding: 12px; margin-top: 6px;">
+          🔑 Sign In to Portal
+        </button>
+      </form>
+
+      <!-- Quick Demo Access / Bypass for testing -->
+      <div style="margin-top: 18px; text-align: center; border-top: 1px dashed var(--border-color); padding-top: 14px;">
+        <button type="button" id="quickDemoLoginBtn" class="btn btn-secondary btn-sm" style="width: 100%;">
+          ⚡ 1-Click Quick Demo Login (Committee Member)
+        </button>
+      </div>
+
+    </div>
+  </div>
+
   <!-- Festive Ambient Glowing Canvases -->
   <div class="festive-bg-decoration">
     <div class="festive-glow-1"></div>
@@ -63,6 +147,16 @@
 
         <!-- Right Quick Actions -->
         <div class="header-actions">
+          <!-- User Profile Pill -->
+          <div class="user-profile-badge" id="userProfileBadge" style="display: none;">
+            <div class="user-avatar-circle" id="headerUserAvatar">M</div>
+            <div class="user-text-info">
+              <span class="user-text-name" id="headerUserName">Villager</span>
+              <span class="user-text-role" id="headerUserRole">Member</span>
+            </div>
+            <button class="logout-icon-btn" id="logoutBtn" title="Logout (లాగౌట్)">🚪</button>
+          </div>
+
           <button class="btn btn-secondary btn-sm" id="installPhoneBtn" title="Install App on Phone" style="border-color: var(--festive-gold); color: var(--festive-gold);">
             <span>📲 Install App</span>
           </button>
