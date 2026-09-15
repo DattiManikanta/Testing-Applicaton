@@ -339,17 +339,43 @@
     if (chandaHouse && !chandaHouse.value) chandaHouse.value = user.street;
   }
 
+  function isUserOrganizer() {
+    return currentUser && currentUser.role && (currentUser.role.includes('Committee') || currentUser.role.includes('Organizer'));
+  }
+
+  function applyRolePermissions() {
+    const isOrg = isUserOrganizer();
+    if (el.quickAddExpenseBtn) el.quickAddExpenseBtn.style.display = isOrg ? 'inline-flex' : 'none';
+    if (el.quickAddChandaBtn) el.quickAddChandaBtn.style.display = isOrg ? 'inline-flex' : 'none';
+    if (el.openAddExpenseModalBtn) el.openAddExpenseModalBtn.style.display = isOrg ? 'inline-flex' : 'none';
+    if (el.openAddChandaModalBtn) el.openAddChandaModalBtn.style.display = isOrg ? 'inline-flex' : 'none';
+    if (el.manageMembersBtn) el.manageMembersBtn.style.display = isOrg ? 'inline-flex' : 'none';
+    if (el.editLadduBtn) el.editLadduBtn.style.display = isOrg ? 'inline-flex' : 'none';
+
+    const resExp = document.getElementById('residentExpenseNotice');
+    if (resExp) resExp.style.display = isOrg ? 'none' : 'block';
+    const resChanda = document.getElementById('residentChandaNotice');
+    if (resChanda) resChanda.style.display = isOrg ? 'none' : 'block';
+  }
+
   function showAuthenticatedUI(user) {
     el.authOverlayScreen.classList.add('hidden');
     el.userProfileBadge.style.display = 'flex';
     el.headerUserName.textContent = user.name.split(' ')[0] || 'User';
-    el.headerUserRole.textContent = user.role.includes('Committee') ? 'Organizer' : (user.role.includes('Youth') ? 'Youth' : 'Resident');
+    const isOrg = isUserOrganizer();
+    el.headerUserRole.textContent = isOrg ? 'Organizer' : (user.role.includes('Youth') ? 'Youth' : 'Resident');
     el.headerUserAvatar.textContent = (user.name.charAt(0) || 'M').toUpperCase();
+
+    // Enforce role permissions
+    applyRolePermissions();
+    renderExpenses();
+    renderChanda();
   }
 
   function showAuthOverlay() {
     el.authOverlayScreen.classList.remove('hidden');
     el.userProfileBadge.style.display = 'none';
+    applyRolePermissions();
   }
 
   function showAuthAlert(msg, type) {
@@ -796,9 +822,11 @@
             ${exp.receiptUrl ? `<a href="${exp.receiptUrl}" target="_blank" class="badge badge-paid">Receipt 📄</a>` : `<span style="color: var(--text-muted); font-size: 0.78rem;">No bill</span>`}
           </td>
           <td>
-            <button class="btn btn-secondary btn-sm" style="color: #f43f5e; padding: 4px 8px;" onclick="window.manaUtsav.deleteExpense('${exp.id}')">
-              🗑 Delete
-            </button>
+            ${isUserOrganizer() ? `
+              <button class="btn btn-secondary btn-sm" style="color: #f43f5e; padding: 4px 8px;" onclick="window.manaUtsav.deleteExpense('${exp.id}')">
+                🗑 Delete
+              </button>
+            ` : `<span style="color: var(--festive-emerald); font-size: 0.75rem; font-weight: 700;">Verified ✓</span>`}
           </td>
         </tr>
       `;
@@ -992,9 +1020,11 @@
             </button>
           </td>
           <td>
-            <button class="btn btn-secondary btn-sm" style="color: #f43f5e; padding: 4px 8px;" onclick="window.manaUtsav.deleteChanda('${donor.id}')">
-              🗑
-            </button>
+            ${isUserOrganizer() ? `
+              <button class="btn btn-secondary btn-sm" style="color: #f43f5e; padding: 4px 8px;" onclick="window.manaUtsav.deleteChanda('${donor.id}')">
+                🗑
+              </button>
+            ` : `<span style="color: var(--text-muted); font-size: 0.75rem;">-</span>`}
           </td>
         </tr>
       `;
@@ -1274,6 +1304,11 @@
   // --- SUBMISSIONS ---
   function handleExpenseSubmit(e) {
     e.preventDefault();
+    if (!isUserOrganizer()) {
+      alert('🔒 Access Restricted: Only Committee Organizers (కమిటీ సభ్యులు) have permission to record expenses.');
+      closeModal(el.modalExpense);
+      return;
+    }
     const newExpense = {
       id: 'exp_' + Date.now(),
       festival: currentFestival,
@@ -1301,6 +1336,11 @@
 
   function handleChandaSubmit(e) {
     e.preventDefault();
+    if (!isUserOrganizer()) {
+      alert('🔒 Access Restricted: Only Committee Organizers (కమిటీ సభ్యులు) have permission to record chanda contributions.');
+      closeModal(el.modalChanda);
+      return;
+    }
     const newChanda = {
       id: 'ch_' + Date.now(),
       festival: currentFestival,
@@ -1502,6 +1542,10 @@
 
   // --- HELPERS ---
   function openModal(modal) {
+    if ((modal === el.modalExpense || modal === el.modalChanda || modal === el.modalMembers || modal === el.modalLaddu) && !isUserOrganizer()) {
+      alert('🔒 Access Restricted: Only Committee Organizers (కమిటీ సభ్యులు) have permission to add or modify financial records.');
+      return;
+    }
     modal.classList.add('active');
   }
 
@@ -1538,6 +1582,10 @@
   // --- GLOBAL EXPORTS FOR INLINE ONCLICK HANDLERS ---
   window.manaUtsav = {
     deleteExpense: (id) => {
+      if (!isUserOrganizer()) {
+        alert('🔒 Access Restricted: Only Committee Organizers can delete expenses.');
+        return;
+      }
       if (confirm('Are you sure you want to delete this expense entry?')) {
         expenses = expenses.filter(e => e.id !== id);
         saveExpenses();
@@ -1545,6 +1593,10 @@
       }
     },
     deleteChanda: (id) => {
+      if (!isUserOrganizer()) {
+        alert('🔒 Access Restricted: Only Committee Organizers can delete donor records.');
+        return;
+      }
       if (confirm('Are you sure you want to delete this donor record?')) {
         chandaList = chandaList.filter(c => c.id !== id);
         saveChanda();
@@ -1552,6 +1604,10 @@
       }
     },
     removeMember: (idx) => {
+      if (!isUserOrganizer()) {
+        alert('🔒 Access Restricted: Only Committee Organizers can modify committee members.');
+        return;
+      }
       committeeMembers.splice(idx, 1);
       saveMembers();
       renderMembersList();

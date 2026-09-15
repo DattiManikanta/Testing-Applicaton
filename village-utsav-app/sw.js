@@ -1,4 +1,4 @@
-const CACHE_NAME = 'mana-utsav-v3';
+const CACHE_NAME = 'mana-utsav-v4';
 
 self.addEventListener('install', (event) => {
   self.skipWaiting();

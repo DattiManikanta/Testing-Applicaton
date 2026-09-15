@@ -11,6 +11,7 @@ if not exist "%GIT_CMD%" set "GIT_CMD=git"
 %GIT_CMD% add .
 %GIT_CMD% commit -m "update: festival records, expenses and photos"
 %GIT_CMD% push origin main
+%GIT_CMD% push origin main:gh-pages --force
 
 if %ERRORLEVEL% EQU 0 (
   echo.
