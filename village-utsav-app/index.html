@@ -20,7 +20,16 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@500;700&family=Outfit:wght@500;600;700;800;900&family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
 
-  <link rel="stylesheet" href="./style.css">
+  <link rel="stylesheet" href="./style.css?v=3.0">
+
+  <!-- Force Service Worker Update on Mobile Browsers -->
+  <script>
+    if ('serviceWorker' in navigator) {
+      navigator.serviceWorker.getRegistrations().then(function(regs) {
+        for (var r of regs) { r.update(); }
+      });
+    }
+  </script>
 </head>
 <body>
 
@@ -948,6 +957,6 @@
   </div>
 
   <!-- JavaScript Controller -->
-  <script src="./app.js"></script>
+  <script src="./app.js?v=3.0"></script>
 </body>
 </html>
