@@ -848,6 +848,26 @@ function LoginPage({
   return /*#__PURE__*/React.createElement("div", {
     className: "atri-login-screen"
   }, /*#__PURE__*/React.createElement("div", {
+    className: "atri-bg-hospital-wrap"
+  }, /*#__PURE__*/React.createElement("div", {
+    className: "atri-hospital-card"
+  }, /*#__PURE__*/React.createElement("div", {
+    className: "atri-hospital-img-container"
+  }, /*#__PURE__*/React.createElement("img", {
+    src: "./hospital_building.jpg",
+    alt: "Hospital Campus Building",
+    className: "atri-hospital-img"
+  }), /*#__PURE__*/React.createElement("div", {
+    className: "atri-hospital-glass-overlay"
+  })), /*#__PURE__*/React.createElement("div", {
+    className: "atri-hospital-badge"
+  }, /*#__PURE__*/React.createElement("div", {
+    className: "atri-hospital-badge-title"
+  }, /*#__PURE__*/React.createElement("span", {
+    className: "atri-pulse-dot"
+  }), /*#__PURE__*/React.createElement("span", null, "Indus Hospital")), /*#__PURE__*/React.createElement("div", {
+    className: "atri-hospital-badge-subtitle"
+  }, "Super Specialty Health City")))), /*#__PURE__*/React.createElement("div", {
     className: "atri-bg-doctor-wrap"
   }, /*#__PURE__*/React.createElement("img", {
     src: "./doctor_profile.jpg",
@@ -1242,12 +1262,28 @@ function HIMSHomeDashboard({
   }, /*#__PURE__*/React.createElement("div", {
     className: "hims-content-wrapper"
   }, /*#__PURE__*/React.createElement("div", {
+    className: "hims-header-row"
+  }, /*#__PURE__*/React.createElement("div", {
     className: "hims-headline-banner"
   }, /*#__PURE__*/React.createElement("h1", {
     className: "hims-headline-title"
   }, "ATRI'S FUTURE READY", /*#__PURE__*/React.createElement("br", null), "INTEGRATED HIMS"), /*#__PURE__*/React.createElement("p", {
     className: "hims-headline-desc"
   }, "is designed to help organizations achieve IT resiliency,", /*#__PURE__*/React.createElement("br", null), "be cost-efficient and drive business alignment.")), /*#__PURE__*/React.createElement("div", {
+    className: "hims-campus-card"
+  }, /*#__PURE__*/React.createElement("img", {
+    src: "./hospital_building.jpg",
+    alt: "Indus Hospital Building",
+    className: "hims-campus-img"
+  }), /*#__PURE__*/React.createElement("div", {
+    className: "hims-campus-info"
+  }, /*#__PURE__*/React.createElement("span", {
+    className: "hims-campus-tag"
+  }, /*#__PURE__*/React.createElement("span", {
+    className: "atri-pulse-dot"
+  }), " Indus Hospital"), /*#__PURE__*/React.createElement("span", {
+    className: "hims-campus-sub"
+  }, "Super Specialty Campus")))), /*#__PURE__*/React.createElement("div", {
     className: "hims-tile-grid"
   }, /*#__PURE__*/React.createElement("div", {
     className: "hims-tile-spacer-row1"

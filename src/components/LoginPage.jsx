@@ -94,12 +94,33 @@ export function LoginPage({ onLogin }) {
 
   return (
     <div className="atri-login-screen">
-      {/* Background Doctor Photo on the Right */}
+      {/* Left: Hospital Building Architectural Showcase */}
+      <div className="atri-bg-hospital-wrap">
+        <div className="atri-hospital-card">
+          <div className="atri-hospital-img-container">
+            <img 
+              src="./hospital_building.jpg" 
+              alt="Hospital Campus Building" 
+              className="atri-hospital-img" 
+            />
+            <div className="atri-hospital-glass-overlay"></div>
+          </div>
+          <div className="atri-hospital-badge">
+            <div className="atri-hospital-badge-title">
+              <span className="atri-pulse-dot"></span>
+              <span>Indus Hospital</span>
+            </div>
+            <div className="atri-hospital-badge-subtitle">Super Specialty Health City</div>
+          </div>
+        </div>
+      </div>
+
+      {/* Right: Doctor Photo */}
       <div className="atri-bg-doctor-wrap">
         <img src="./doctor_profile.jpg" alt="Doctor" className="atri-bg-doctor-img" />
       </div>
 
-      {/* Background Subtle Constellation / Plexus SVG Lines */}
+      {/* Subtle Constellation / Plexus SVG Lines */}
       <svg className="atri-bg-plexus" viewBox="0 0 1000 800" fill="none" preserveAspectRatio="none">
         <circle cx="150" cy="200" r="4" fill="#38bdf8" opacity="0.6" />
         <circle cx="320" cy="180" r="5" fill="#38bdf8" opacity="0.7" />

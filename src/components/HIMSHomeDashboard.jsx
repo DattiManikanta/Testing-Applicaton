@@ -75,16 +75,29 @@ export function HIMSHomeDashboard({ onSelectModule, onLogout }) {
       {/* Main Center Area with Headline & Metro Tile Grid */}
       <main className="hims-main-area">
         <div className="hims-content-wrapper">
-          {/* Headline Text Banner */}
-          <div className="hims-headline-banner">
-            <h1 className="hims-headline-title">
-              ATRI'S FUTURE READY<br />
-              INTEGRATED HIMS
-            </h1>
-            <p className="hims-headline-desc">
-              is designed to help organizations achieve IT resiliency,<br />
-              be cost-efficient and drive business alignment.
-            </p>
+          {/* Header Row: Headline + Hospital Building Badge */}
+          <div className="hims-header-row">
+            <div className="hims-headline-banner">
+              <h1 className="hims-headline-title">
+                ATRI'S FUTURE READY<br />
+                INTEGRATED HIMS
+              </h1>
+              <p className="hims-headline-desc">
+                is designed to help organizations achieve IT resiliency,<br />
+                be cost-efficient and drive business alignment.
+              </p>
+            </div>
+
+            {/* Hospital Building Feature Pill */}
+            <div className="hims-campus-card">
+              <img src="./hospital_building.jpg" alt="Indus Hospital Building" className="hims-campus-img" />
+              <div className="hims-campus-info">
+                <span className="hims-campus-tag">
+                  <span className="atri-pulse-dot"></span> Indus Hospital
+                </span>
+                <span className="hims-campus-sub">Super Specialty Campus</span>
+              </div>
+            </div>
           </div>
 
           {/* 6-Column Metro / Windows Flat Grid */}
