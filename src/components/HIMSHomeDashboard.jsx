@@ -14,31 +14,42 @@ export function HIMSHomeDashboard({ onSelectModule, onLogout }) {
 
   return (
     <div className="hims-home-screen">
-      {/* Background Doctor Photo on the Right */}
-      <div className="atri-bg-doctor-wrap">
-        <img src="./doctor_profile.jpg" alt="Doctor" className="atri-bg-doctor-img" />
+      {/* Left Scenery: Indus Hospital Building */}
+      <div className="atri-scenery-hospital">
+        <img 
+          src="./hospital_building.jpg" 
+          alt="Indus Hospital Building" 
+          className="atri-scenery-hospital-img" 
+        />
+        <div className="atri-scenery-hospital-label">
+          <span className="atri-pulse-dot"></span>
+          <span>Indus Hospital</span>
+        </div>
+      </div>
+
+      {/* Right Scenery: Doctor Photo */}
+      <div className="atri-scenery-doctor">
+        <img 
+          src="./doctor_profile.jpg" 
+          alt="Doctor" 
+          className="atri-scenery-doctor-img" 
+        />
       </div>
 
       {/* Background Subtle Constellation / Plexus SVG Lines */}
       <svg className="atri-bg-plexus" viewBox="0 0 1000 800" fill="none" preserveAspectRatio="none">
-        <circle cx="150" cy="200" r="4" fill="#38bdf8" opacity="0.6" />
-        <circle cx="320" cy="180" r="5" fill="#38bdf8" opacity="0.7" />
-        <circle cx="240" cy="360" r="4" fill="#38bdf8" opacity="0.5" />
-        <circle cx="120" cy="480" r="4" fill="#38bdf8" opacity="0.6" />
-        <circle cx="280" cy="580" r="5" fill="#38bdf8" opacity="0.7" />
-        <circle cx="420" cy="450" r="4" fill="#38bdf8" opacity="0.5" />
-        <circle cx="500" cy="280" r="5" fill="#38bdf8" opacity="0.6" />
-        <circle cx="580" cy="520" r="4" fill="#38bdf8" opacity="0.4" />
-        <line x1="150" y1="200" x2="320" y2="180" stroke="#38bdf8" strokeWidth="1" opacity="0.25" />
-        <line x1="320" y1="180" x2="500" y2="280" stroke="#38bdf8" strokeWidth="1" opacity="0.25" />
-        <line x1="320" y1="180" x2="240" y2="360" stroke="#38bdf8" strokeWidth="1" opacity="0.25" />
-        <line x1="240" y1="360" x2="420" y2="450" stroke="#38bdf8" strokeWidth="1" opacity="0.25" />
-        <line x1="150" y1="200" x2="240" y2="360" stroke="#38bdf8" strokeWidth="1" opacity="0.25" />
-        <line x1="240" y1="360" x2="120" y2="480" stroke="#38bdf8" strokeWidth="1" opacity="0.25" />
-        <line x1="120" y1="480" x2="280" y2="580" stroke="#38bdf8" strokeWidth="1" opacity="0.25" />
-        <line x1="280" y1="580" x2="420" y2="450" stroke="#38bdf8" strokeWidth="1" opacity="0.25" />
-        <line x1="420" y1="450" x2="580" y2="520" stroke="#38bdf8" strokeWidth="1" opacity="0.25" />
-        <line x1="500" y1="280" x2="580" y2="520" stroke="#38bdf8" strokeWidth="1" opacity="0.25" />
+        <circle cx="200" cy="220" r="4" fill="#38bdf8" opacity="0.5" />
+        <circle cx="340" cy="180" r="5" fill="#38bdf8" opacity="0.6" />
+        <circle cx="260" cy="380" r="4" fill="#38bdf8" opacity="0.4" />
+        <circle cx="480" cy="280" r="5" fill="#38bdf8" opacity="0.5" />
+        <circle cx="520" cy="460" r="4" fill="#38bdf8" opacity="0.4" />
+        <circle cx="680" cy="260" r="4" fill="#38bdf8" opacity="0.5" />
+        <circle cx="760" cy="420" r="5" fill="#38bdf8" opacity="0.4" />
+        <line x1="200" y1="220" x2="340" y2="180" stroke="#38bdf8" strokeWidth="1" opacity="0.2" />
+        <line x1="340" y1="180" x2="480" y2="280" stroke="#38bdf8" strokeWidth="1" opacity="0.2" />
+        <line x1="260" y1="380" x2="520" y2="460" stroke="#38bdf8" strokeWidth="1" opacity="0.2" />
+        <line x1="480" y1="280" x2="680" y2="260" stroke="#38bdf8" strokeWidth="1" opacity="0.2" />
+        <line x1="680" y1="260" x2="760" y2="420" stroke="#38bdf8" strokeWidth="1" opacity="0.2" />
       </svg>
 
       {/* Top Header Bar */}
@@ -75,29 +86,16 @@ export function HIMSHomeDashboard({ onSelectModule, onLogout }) {
       {/* Main Center Area with Headline & Metro Tile Grid */}
       <main className="hims-main-area">
         <div className="hims-content-wrapper">
-          {/* Header Row: Headline + Hospital Building Badge */}
-          <div className="hims-header-row">
-            <div className="hims-headline-banner">
-              <h1 className="hims-headline-title">
-                ATRI'S FUTURE READY<br />
-                INTEGRATED HIMS
-              </h1>
-              <p className="hims-headline-desc">
-                is designed to help organizations achieve IT resiliency,<br />
-                be cost-efficient and drive business alignment.
-              </p>
-            </div>
-
-            {/* Hospital Building Feature Pill */}
-            <div className="hims-campus-card">
-              <img src="./hospital_building.jpg" alt="Indus Hospital Building" className="hims-campus-img" />
-              <div className="hims-campus-info">
-                <span className="hims-campus-tag">
-                  <span className="atri-pulse-dot"></span> Indus Hospital
-                </span>
-                <span className="hims-campus-sub">Super Specialty Campus</span>
-              </div>
-            </div>
+          {/* Headline Text Banner */}
+          <div className="hims-headline-banner">
+            <h1 className="hims-headline-title">
+              ATRI'S FUTURE READY<br />
+              INTEGRATED HIMS
+            </h1>
+            <p className="hims-headline-desc">
+              is designed to help organizations achieve IT resiliency,<br />
+              be cost-efficient and drive business alignment.
+            </p>
           </div>
 
           {/* 6-Column Metro / Windows Flat Grid */}

@@ -2507,3 +2507,239 @@ body {
     gap: 14px;
   }
 }
+
+/* ==========================================================================
+   PERFECT FIT TO SCREEN: INTEGRATED HOSPITAL & DOCTOR SCENERY
+   ========================================================================== */
+
+.atri-login-screen,
+.hims-home-screen {
+  height: 100vh !important;
+  max-height: 100vh !important;
+  width: 100vw !important;
+  position: relative !important;
+  overflow: hidden !important;
+  background: radial-gradient(circle at 50% 50%, #ffffff 0%, #edf3f8 50%, #e2ebf4 100%) !important;
+  margin: 0 !important;
+  padding: 0 !important;
+}
+
+/* Left Scenery: Indus Hospital Building */
+.atri-scenery-hospital {
+  position: absolute;
+  left: 0;
+  bottom: 32px;
+  top: 0;
+  width: 33vw;
+  max-width: 440px;
+  z-index: 3;
+  pointer-events: none;
+  display: flex;
+  align-items: flex-end;
+}
+
+.atri-scenery-hospital-img {
+  height: 92vh;
+  width: 100%;
+  object-fit: cover;
+  object-position: top center;
+  -webkit-mask-image: linear-gradient(to right, rgba(0,0,0,1) 55%, rgba(0,0,0,0) 100%);
+  mask-image: linear-gradient(to right, rgba(0,0,0,1) 55%, rgba(0,0,0,0) 100%);
+  filter: drop-shadow(4px 0 16px rgba(15, 23, 42, 0.08));
+}
+
+.atri-scenery-hospital-label {
+  position: absolute;
+  bottom: 24px;
+  left: 24px;
+  background: rgba(15, 23, 42, 0.78);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  color: #ffffff;
+  padding: 6px 14px;
+  border-radius: 20px;
+  font-size: 12px;
+  font-weight: 700;
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+  z-index: 4;
+}
+
+/* Right Scenery: Doctor Photo */
+.atri-scenery-doctor {
+  position: absolute;
+  right: 0;
+  bottom: 32px;
+  height: 93vh;
+  width: 34vw;
+  max-width: 460px;
+  z-index: 3;
+  pointer-events: none;
+  display: flex;
+  align-items: flex-end;
+  justify-content: flex-end;
+}
+
+.atri-scenery-doctor-img {
+  height: 100%;
+  width: auto;
+  object-fit: contain;
+  object-position: right bottom;
+  -webkit-mask-image: linear-gradient(to left, rgba(0,0,0,1) 65%, rgba(0,0,0,0) 100%);
+  mask-image: linear-gradient(to left, rgba(0,0,0,1) 65%, rgba(0,0,0,0) 100%);
+  filter: drop-shadow(-8px 0 20px rgba(15, 23, 42, 0.08));
+}
+
+/* Top-Left Floating ATRIBIZ "AB" Logo */
+.atri-top-logo {
+  position: absolute;
+  top: 20px;
+  left: 36px;
+  z-index: 30;
+  filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.06));
+}
+
+/* Perfectly Centered Login Container */
+.atri-login-container {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  z-index: 25;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  width: 320px;
+  max-width: 90vw;
+  margin: 0;
+  filter: drop-shadow(0 15px 35px rgba(15, 23, 42, 0.35));
+}
+
+/* Top Plate (Silvery curved cap with AB logo) */
+.atri-card-top-cap {
+  width: 100%;
+  background: linear-gradient(180deg, #edf2f7 0%, #cbd5e1 100%);
+  border: 1px solid rgba(255, 255, 255, 0.9);
+  border-bottom: none;
+  border-radius: 26px 26px 0 0;
+  padding: 12px 20px 8px 20px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1), inset 0 1px 2px rgba(255, 255, 255, 0.9);
+}
+
+/* Circular Dark Slate Pod */
+.atri-card-dark-pod {
+  width: 100%;
+  background: linear-gradient(155deg, #4f5d6e 0%, #3a4755 100%);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  border-top: none;
+  border-radius: 0 0 160px 160px;
+  padding: 22px 32px 40px 32px;
+  box-shadow: inset 0 2px 4px rgba(255, 255, 255, 0.2), inset 0 -3px 6px rgba(0, 0, 0, 0.3);
+}
+
+/* Responsive adjustment for Mobile and Tablets */
+@media (max-width: 960px) {
+  .atri-scenery-hospital {
+    width: 40vw;
+    opacity: 0.35;
+  }
+  .atri-scenery-doctor {
+    width: 40vw;
+    opacity: 0.35;
+  }
+}
+
+@media (max-width: 640px) {
+  .atri-scenery-hospital {
+    display: none;
+  }
+  .atri-scenery-doctor {
+    opacity: 0.2;
+    width: 60vw;
+  }
+  .atri-login-container {
+    width: 90vw;
+  }
+}
+
+/* Home Tile Dashboard Fit Screen Optimization */
+.hims-home-screen {
+  display: flex;
+  flex-direction: column;
+}
+
+.hims-top-bar {
+  height: 60px;
+  padding: 10px 36px;
+  flex-shrink: 0;
+}
+
+.hims-main-area {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0 36px;
+  overflow: hidden;
+}
+
+.hims-content-wrapper {
+  margin: auto;
+  z-index: 20;
+}
+
+.hims-headline-banner {
+  margin-bottom: 12px;
+}
+
+.hims-headline-title {
+  font-size: 1.85rem;
+  line-height: 1.15;
+  margin-bottom: 6px;
+}
+
+.hims-headline-desc {
+  font-size: 0.85rem;
+  line-height: 1.35;
+}
+
+.hims-tile-grid {
+  grid-template-columns: repeat(6, 108px);
+  grid-template-rows: repeat(3, 108px);
+}
+
+.hims-tile {
+  width: 108px;
+  height: 108px;
+}
+
+.hims-tile-spacer-row1 {
+  width: 324px;
+  height: 108px;
+}
+
+@media (max-height: 750px) {
+  .hims-tile-grid {
+    grid-template-columns: repeat(6, 90px);
+    grid-template-rows: repeat(3, 90px);
+  }
+  .hims-tile {
+    width: 90px;
+    height: 90px;
+  }
+  .hims-tile-spacer-row1 {
+    width: 270px;
+    height: 90px;
+  }
+  .hims-headline-title {
+    font-size: 1.5rem;
+  }
+  .hims-headline-desc {
+    font-size: 0.78rem;
+  }
+}

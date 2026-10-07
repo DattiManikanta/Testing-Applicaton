@@ -94,52 +94,42 @@ export function LoginPage({ onLogin }) {
 
   return (
     <div className="atri-login-screen">
-      {/* Left: Hospital Building Architectural Showcase */}
-      <div className="atri-bg-hospital-wrap">
-        <div className="atri-hospital-card">
-          <div className="atri-hospital-img-container">
-            <img 
-              src="./hospital_building.jpg" 
-              alt="Hospital Campus Building" 
-              className="atri-hospital-img" 
-            />
-            <div className="atri-hospital-glass-overlay"></div>
-          </div>
-          <div className="atri-hospital-badge">
-            <div className="atri-hospital-badge-title">
-              <span className="atri-pulse-dot"></span>
-              <span>Indus Hospital</span>
-            </div>
-            <div className="atri-hospital-badge-subtitle">Super Specialty Health City</div>
-          </div>
+      {/* Left Scenery: Indus Hospital Building */}
+      <div className="atri-scenery-hospital">
+        <img 
+          src="./hospital_building.jpg" 
+          alt="Indus Hospital Building" 
+          className="atri-scenery-hospital-img" 
+        />
+        <div className="atri-scenery-hospital-label">
+          <span className="atri-pulse-dot"></span>
+          <span>Indus Hospital</span>
         </div>
       </div>
 
-      {/* Right: Doctor Photo */}
-      <div className="atri-bg-doctor-wrap">
-        <img src="./doctor_profile.jpg" alt="Doctor" className="atri-bg-doctor-img" />
+      {/* Right Scenery: Doctor Photo */}
+      <div className="atri-scenery-doctor">
+        <img 
+          src="./doctor_profile.jpg" 
+          alt="Doctor" 
+          className="atri-scenery-doctor-img" 
+        />
       </div>
 
-      {/* Subtle Constellation / Plexus SVG Lines */}
+      {/* Background Subtle Constellation / Plexus Lines */}
       <svg className="atri-bg-plexus" viewBox="0 0 1000 800" fill="none" preserveAspectRatio="none">
-        <circle cx="150" cy="200" r="4" fill="#38bdf8" opacity="0.6" />
-        <circle cx="320" cy="180" r="5" fill="#38bdf8" opacity="0.7" />
-        <circle cx="240" cy="360" r="4" fill="#38bdf8" opacity="0.5" />
-        <circle cx="120" cy="480" r="4" fill="#38bdf8" opacity="0.6" />
-        <circle cx="280" cy="580" r="5" fill="#38bdf8" opacity="0.7" />
-        <circle cx="420" cy="450" r="4" fill="#38bdf8" opacity="0.5" />
-        <circle cx="500" cy="280" r="5" fill="#38bdf8" opacity="0.6" />
-        <circle cx="580" cy="520" r="4" fill="#38bdf8" opacity="0.4" />
-        <line x1="150" y1="200" x2="320" y2="180" stroke="#38bdf8" strokeWidth="1" opacity="0.25" />
-        <line x1="320" y1="180" x2="500" y2="280" stroke="#38bdf8" strokeWidth="1" opacity="0.25" />
-        <line x1="320" y1="180" x2="240" y2="360" stroke="#38bdf8" strokeWidth="1" opacity="0.25" />
-        <line x1="240" y1="360" x2="420" y2="450" stroke="#38bdf8" strokeWidth="1" opacity="0.25" />
-        <line x1="150" y1="200" x2="240" y2="360" stroke="#38bdf8" strokeWidth="1" opacity="0.25" />
-        <line x1="240" y1="360" x2="120" y2="480" stroke="#38bdf8" strokeWidth="1" opacity="0.25" />
-        <line x1="120" y1="480" x2="280" y2="580" stroke="#38bdf8" strokeWidth="1" opacity="0.25" />
-        <line x1="280" y1="580" x2="420" y2="450" stroke="#38bdf8" strokeWidth="1" opacity="0.25" />
-        <line x1="420" y1="450" x2="580" y2="520" stroke="#38bdf8" strokeWidth="1" opacity="0.25" />
-        <line x1="500" y1="280" x2="580" y2="520" stroke="#38bdf8" strokeWidth="1" opacity="0.25" />
+        <circle cx="200" cy="220" r="4" fill="#38bdf8" opacity="0.5" />
+        <circle cx="340" cy="180" r="5" fill="#38bdf8" opacity="0.6" />
+        <circle cx="260" cy="380" r="4" fill="#38bdf8" opacity="0.4" />
+        <circle cx="480" cy="280" r="5" fill="#38bdf8" opacity="0.5" />
+        <circle cx="520" cy="460" r="4" fill="#38bdf8" opacity="0.4" />
+        <circle cx="680" cy="260" r="4" fill="#38bdf8" opacity="0.5" />
+        <circle cx="760" cy="420" r="5" fill="#38bdf8" opacity="0.4" />
+        <line x1="200" y1="220" x2="340" y2="180" stroke="#38bdf8" strokeWidth="1" opacity="0.2" />
+        <line x1="340" y1="180" x2="480" y2="280" stroke="#38bdf8" strokeWidth="1" opacity="0.2" />
+        <line x1="260" y1="380" x2="520" y2="460" stroke="#38bdf8" strokeWidth="1" opacity="0.2" />
+        <line x1="480" y1="280" x2="680" y2="260" stroke="#38bdf8" strokeWidth="1" opacity="0.2" />
+        <line x1="680" y1="260" x2="760" y2="420" stroke="#38bdf8" strokeWidth="1" opacity="0.2" />
       </svg>
 
       {/* Top-Left Floating ATRIBIZ "AB" Logo */}
@@ -157,7 +147,6 @@ export function LoginPage({ onLogin }) {
         {/* Circular / Rounded Dark Slate Pod */}
         <div className="atri-card-dark-pod">
           <form onSubmit={handleSubmit} className="atri-form">
-            {/* Username / Admin input */}
             <div className="atri-input-box">
               <input
                 type="text"
@@ -170,7 +159,6 @@ export function LoginPage({ onLogin }) {
               />
             </div>
 
-            {/* Password input */}
             <div className="atri-input-box">
               <input
                 type="password"
@@ -182,7 +170,6 @@ export function LoginPage({ onLogin }) {
               />
             </div>
 
-            {/* Forgot Password Link */}
             <div className="atri-forgot-row">
               <button
                 type="button"
@@ -193,14 +180,12 @@ export function LoginPage({ onLogin }) {
               </button>
             </div>
 
-            {/* Forgot Password Helper Popover */}
             {showForgotMsg && (
               <div className="atri-forgot-popover">
                 <span>Contact IT Support: <strong>+91 7995881582</strong> or <strong>info@atribiz.com</strong></span>
               </div>
             )}
 
-            {/* LOGIN Pill Button */}
             <div className="atri-btn-row">
               <button 
                 type="submit" 

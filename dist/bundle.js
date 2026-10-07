@@ -848,164 +848,108 @@ function LoginPage({
   return /*#__PURE__*/React.createElement("div", {
     className: "atri-login-screen"
   }, /*#__PURE__*/React.createElement("div", {
-    className: "atri-bg-hospital-wrap"
-  }, /*#__PURE__*/React.createElement("div", {
-    className: "atri-hospital-card"
-  }, /*#__PURE__*/React.createElement("div", {
-    className: "atri-hospital-img-container"
+    className: "atri-scenery-hospital"
   }, /*#__PURE__*/React.createElement("img", {
     src: "./hospital_building.jpg",
-    alt: "Hospital Campus Building",
-    className: "atri-hospital-img"
+    alt: "Indus Hospital Building",
+    className: "atri-scenery-hospital-img"
   }), /*#__PURE__*/React.createElement("div", {
-    className: "atri-hospital-glass-overlay"
-  })), /*#__PURE__*/React.createElement("div", {
-    className: "atri-hospital-badge"
-  }, /*#__PURE__*/React.createElement("div", {
-    className: "atri-hospital-badge-title"
+    className: "atri-scenery-hospital-label"
   }, /*#__PURE__*/React.createElement("span", {
     className: "atri-pulse-dot"
-  }), /*#__PURE__*/React.createElement("span", null, "Indus Hospital")), /*#__PURE__*/React.createElement("div", {
-    className: "atri-hospital-badge-subtitle"
-  }, "Super Specialty Health City")))), /*#__PURE__*/React.createElement("div", {
-    className: "atri-bg-doctor-wrap"
+  }), /*#__PURE__*/React.createElement("span", null, "Indus Hospital"))), /*#__PURE__*/React.createElement("div", {
+    className: "atri-scenery-doctor"
   }, /*#__PURE__*/React.createElement("img", {
     src: "./doctor_profile.jpg",
     alt: "Doctor",
-    className: "atri-bg-doctor-img"
+    className: "atri-scenery-doctor-img"
   })), /*#__PURE__*/React.createElement("svg", {
     className: "atri-bg-plexus",
     viewBox: "0 0 1000 800",
     fill: "none",
     preserveAspectRatio: "none"
   }, /*#__PURE__*/React.createElement("circle", {
-    cx: "150",
-    cy: "200",
+    cx: "200",
+    cy: "220",
     r: "4",
     fill: "#38bdf8",
-    opacity: "0.6"
+    opacity: "0.5"
   }), /*#__PURE__*/React.createElement("circle", {
-    cx: "320",
+    cx: "340",
     cy: "180",
     r: "5",
     fill: "#38bdf8",
-    opacity: "0.7"
-  }), /*#__PURE__*/React.createElement("circle", {
-    cx: "240",
-    cy: "360",
-    r: "4",
-    fill: "#38bdf8",
-    opacity: "0.5"
-  }), /*#__PURE__*/React.createElement("circle", {
-    cx: "120",
-    cy: "480",
-    r: "4",
-    fill: "#38bdf8",
     opacity: "0.6"
   }), /*#__PURE__*/React.createElement("circle", {
-    cx: "280",
-    cy: "580",
-    r: "5",
-    fill: "#38bdf8",
-    opacity: "0.7"
-  }), /*#__PURE__*/React.createElement("circle", {
-    cx: "420",
-    cy: "450",
-    r: "4",
-    fill: "#38bdf8",
-    opacity: "0.5"
-  }), /*#__PURE__*/React.createElement("circle", {
-    cx: "500",
-    cy: "280",
-    r: "5",
-    fill: "#38bdf8",
-    opacity: "0.6"
-  }), /*#__PURE__*/React.createElement("circle", {
-    cx: "580",
-    cy: "520",
+    cx: "260",
+    cy: "380",
     r: "4",
     fill: "#38bdf8",
     opacity: "0.4"
+  }), /*#__PURE__*/React.createElement("circle", {
+    cx: "480",
+    cy: "280",
+    r: "5",
+    fill: "#38bdf8",
+    opacity: "0.5"
+  }), /*#__PURE__*/React.createElement("circle", {
+    cx: "520",
+    cy: "460",
+    r: "4",
+    fill: "#38bdf8",
+    opacity: "0.4"
+  }), /*#__PURE__*/React.createElement("circle", {
+    cx: "680",
+    cy: "260",
+    r: "4",
+    fill: "#38bdf8",
+    opacity: "0.5"
+  }), /*#__PURE__*/React.createElement("circle", {
+    cx: "760",
+    cy: "420",
+    r: "5",
+    fill: "#38bdf8",
+    opacity: "0.4"
   }), /*#__PURE__*/React.createElement("line", {
-    x1: "150",
-    y1: "200",
-    x2: "320",
+    x1: "200",
+    y1: "220",
+    x2: "340",
     y2: "180",
     stroke: "#38bdf8",
     strokeWidth: "1",
-    opacity: "0.25"
+    opacity: "0.2"
   }), /*#__PURE__*/React.createElement("line", {
-    x1: "320",
+    x1: "340",
     y1: "180",
-    x2: "500",
+    x2: "480",
     y2: "280",
     stroke: "#38bdf8",
     strokeWidth: "1",
-    opacity: "0.25"
+    opacity: "0.2"
   }), /*#__PURE__*/React.createElement("line", {
-    x1: "320",
-    y1: "180",
-    x2: "240",
-    y2: "360",
+    x1: "260",
+    y1: "380",
+    x2: "520",
+    y2: "460",
     stroke: "#38bdf8",
     strokeWidth: "1",
-    opacity: "0.25"
+    opacity: "0.2"
   }), /*#__PURE__*/React.createElement("line", {
-    x1: "240",
-    y1: "360",
-    x2: "420",
-    y2: "450",
-    stroke: "#38bdf8",
-    strokeWidth: "1",
-    opacity: "0.25"
-  }), /*#__PURE__*/React.createElement("line", {
-    x1: "150",
-    y1: "200",
-    x2: "240",
-    y2: "360",
-    stroke: "#38bdf8",
-    strokeWidth: "1",
-    opacity: "0.25"
-  }), /*#__PURE__*/React.createElement("line", {
-    x1: "240",
-    y1: "360",
-    x2: "120",
-    y2: "480",
-    stroke: "#38bdf8",
-    strokeWidth: "1",
-    opacity: "0.25"
-  }), /*#__PURE__*/React.createElement("line", {
-    x1: "120",
-    y1: "480",
-    x2: "280",
-    y2: "580",
-    stroke: "#38bdf8",
-    strokeWidth: "1",
-    opacity: "0.25"
-  }), /*#__PURE__*/React.createElement("line", {
-    x1: "280",
-    y1: "580",
-    x2: "420",
-    y2: "450",
-    stroke: "#38bdf8",
-    strokeWidth: "1",
-    opacity: "0.25"
-  }), /*#__PURE__*/React.createElement("line", {
-    x1: "420",
-    y1: "450",
-    x2: "580",
-    y2: "520",
-    stroke: "#38bdf8",
-    strokeWidth: "1",
-    opacity: "0.25"
-  }), /*#__PURE__*/React.createElement("line", {
-    x1: "500",
+    x1: "480",
     y1: "280",
-    x2: "580",
-    y2: "520",
+    x2: "680",
+    y2: "260",
     stroke: "#38bdf8",
     strokeWidth: "1",
-    opacity: "0.25"
+    opacity: "0.2"
+  }), /*#__PURE__*/React.createElement("line", {
+    x1: "680",
+    y1: "260",
+    x2: "760",
+    y2: "420",
+    stroke: "#38bdf8",
+    strokeWidth: "1",
+    opacity: "0.2"
   })), /*#__PURE__*/React.createElement("div", {
     className: "atri-top-logo"
   }, /*#__PURE__*/React.createElement(AtriBizLogo, {
@@ -1081,144 +1025,108 @@ function HIMSHomeDashboard({
   return /*#__PURE__*/React.createElement("div", {
     className: "hims-home-screen"
   }, /*#__PURE__*/React.createElement("div", {
-    className: "atri-bg-doctor-wrap"
+    className: "atri-scenery-hospital"
+  }, /*#__PURE__*/React.createElement("img", {
+    src: "./hospital_building.jpg",
+    alt: "Indus Hospital Building",
+    className: "atri-scenery-hospital-img"
+  }), /*#__PURE__*/React.createElement("div", {
+    className: "atri-scenery-hospital-label"
+  }, /*#__PURE__*/React.createElement("span", {
+    className: "atri-pulse-dot"
+  }), /*#__PURE__*/React.createElement("span", null, "Indus Hospital"))), /*#__PURE__*/React.createElement("div", {
+    className: "atri-scenery-doctor"
   }, /*#__PURE__*/React.createElement("img", {
     src: "./doctor_profile.jpg",
     alt: "Doctor",
-    className: "atri-bg-doctor-img"
+    className: "atri-scenery-doctor-img"
   })), /*#__PURE__*/React.createElement("svg", {
     className: "atri-bg-plexus",
     viewBox: "0 0 1000 800",
     fill: "none",
     preserveAspectRatio: "none"
   }, /*#__PURE__*/React.createElement("circle", {
-    cx: "150",
-    cy: "200",
+    cx: "200",
+    cy: "220",
     r: "4",
     fill: "#38bdf8",
-    opacity: "0.6"
+    opacity: "0.5"
   }), /*#__PURE__*/React.createElement("circle", {
-    cx: "320",
+    cx: "340",
     cy: "180",
     r: "5",
     fill: "#38bdf8",
-    opacity: "0.7"
-  }), /*#__PURE__*/React.createElement("circle", {
-    cx: "240",
-    cy: "360",
-    r: "4",
-    fill: "#38bdf8",
-    opacity: "0.5"
-  }), /*#__PURE__*/React.createElement("circle", {
-    cx: "120",
-    cy: "480",
-    r: "4",
-    fill: "#38bdf8",
     opacity: "0.6"
   }), /*#__PURE__*/React.createElement("circle", {
-    cx: "280",
-    cy: "580",
-    r: "5",
-    fill: "#38bdf8",
-    opacity: "0.7"
-  }), /*#__PURE__*/React.createElement("circle", {
-    cx: "420",
-    cy: "450",
-    r: "4",
-    fill: "#38bdf8",
-    opacity: "0.5"
-  }), /*#__PURE__*/React.createElement("circle", {
-    cx: "500",
-    cy: "280",
-    r: "5",
-    fill: "#38bdf8",
-    opacity: "0.6"
-  }), /*#__PURE__*/React.createElement("circle", {
-    cx: "580",
-    cy: "520",
+    cx: "260",
+    cy: "380",
     r: "4",
     fill: "#38bdf8",
     opacity: "0.4"
+  }), /*#__PURE__*/React.createElement("circle", {
+    cx: "480",
+    cy: "280",
+    r: "5",
+    fill: "#38bdf8",
+    opacity: "0.5"
+  }), /*#__PURE__*/React.createElement("circle", {
+    cx: "520",
+    cy: "460",
+    r: "4",
+    fill: "#38bdf8",
+    opacity: "0.4"
+  }), /*#__PURE__*/React.createElement("circle", {
+    cx: "680",
+    cy: "260",
+    r: "4",
+    fill: "#38bdf8",
+    opacity: "0.5"
+  }), /*#__PURE__*/React.createElement("circle", {
+    cx: "760",
+    cy: "420",
+    r: "5",
+    fill: "#38bdf8",
+    opacity: "0.4"
   }), /*#__PURE__*/React.createElement("line", {
-    x1: "150",
-    y1: "200",
-    x2: "320",
+    x1: "200",
+    y1: "220",
+    x2: "340",
     y2: "180",
     stroke: "#38bdf8",
     strokeWidth: "1",
-    opacity: "0.25"
+    opacity: "0.2"
   }), /*#__PURE__*/React.createElement("line", {
-    x1: "320",
+    x1: "340",
     y1: "180",
-    x2: "500",
+    x2: "480",
     y2: "280",
     stroke: "#38bdf8",
     strokeWidth: "1",
-    opacity: "0.25"
+    opacity: "0.2"
   }), /*#__PURE__*/React.createElement("line", {
-    x1: "320",
-    y1: "180",
-    x2: "240",
-    y2: "360",
+    x1: "260",
+    y1: "380",
+    x2: "520",
+    y2: "460",
     stroke: "#38bdf8",
     strokeWidth: "1",
-    opacity: "0.25"
+    opacity: "0.2"
   }), /*#__PURE__*/React.createElement("line", {
-    x1: "240",
-    y1: "360",
-    x2: "420",
-    y2: "450",
-    stroke: "#38bdf8",
-    strokeWidth: "1",
-    opacity: "0.25"
-  }), /*#__PURE__*/React.createElement("line", {
-    x1: "150",
-    y1: "200",
-    x2: "240",
-    y2: "360",
-    stroke: "#38bdf8",
-    strokeWidth: "1",
-    opacity: "0.25"
-  }), /*#__PURE__*/React.createElement("line", {
-    x1: "240",
-    y1: "360",
-    x2: "120",
-    y2: "480",
-    stroke: "#38bdf8",
-    strokeWidth: "1",
-    opacity: "0.25"
-  }), /*#__PURE__*/React.createElement("line", {
-    x1: "120",
-    y1: "480",
-    x2: "280",
-    y2: "580",
-    stroke: "#38bdf8",
-    strokeWidth: "1",
-    opacity: "0.25"
-  }), /*#__PURE__*/React.createElement("line", {
-    x1: "280",
-    y1: "580",
-    x2: "420",
-    y2: "450",
-    stroke: "#38bdf8",
-    strokeWidth: "1",
-    opacity: "0.25"
-  }), /*#__PURE__*/React.createElement("line", {
-    x1: "420",
-    y1: "450",
-    x2: "580",
-    y2: "520",
-    stroke: "#38bdf8",
-    strokeWidth: "1",
-    opacity: "0.25"
-  }), /*#__PURE__*/React.createElement("line", {
-    x1: "500",
+    x1: "480",
     y1: "280",
-    x2: "580",
-    y2: "520",
+    x2: "680",
+    y2: "260",
     stroke: "#38bdf8",
     strokeWidth: "1",
-    opacity: "0.25"
+    opacity: "0.2"
+  }), /*#__PURE__*/React.createElement("line", {
+    x1: "680",
+    y1: "260",
+    x2: "760",
+    y2: "420",
+    stroke: "#38bdf8",
+    strokeWidth: "1",
+    opacity: "0.2"
   })), /*#__PURE__*/React.createElement("header", {
     className: "hims-top-bar"
   }, /*#__PURE__*/React.createElement("div", {
@@ -1262,28 +1170,12 @@ function HIMSHomeDashboard({
   }, /*#__PURE__*/React.createElement("div", {
     className: "hims-content-wrapper"
   }, /*#__PURE__*/React.createElement("div", {
-    className: "hims-header-row"
-  }, /*#__PURE__*/React.createElement("div", {
     className: "hims-headline-banner"
   }, /*#__PURE__*/React.createElement("h1", {
     className: "hims-headline-title"
   }, "ATRI'S FUTURE READY", /*#__PURE__*/React.createElement("br", null), "INTEGRATED HIMS"), /*#__PURE__*/React.createElement("p", {
     className: "hims-headline-desc"
   }, "is designed to help organizations achieve IT resiliency,", /*#__PURE__*/React.createElement("br", null), "be cost-efficient and drive business alignment.")), /*#__PURE__*/React.createElement("div", {
-    className: "hims-campus-card"
-  }, /*#__PURE__*/React.createElement("img", {
-    src: "./hospital_building.jpg",
-    alt: "Indus Hospital Building",
-    className: "hims-campus-img"
-  }), /*#__PURE__*/React.createElement("div", {
-    className: "hims-campus-info"
-  }, /*#__PURE__*/React.createElement("span", {
-    className: "hims-campus-tag"
-  }, /*#__PURE__*/React.createElement("span", {
-    className: "atri-pulse-dot"
-  }), " Indus Hospital"), /*#__PURE__*/React.createElement("span", {
-    className: "hims-campus-sub"
-  }, "Super Specialty Campus")))), /*#__PURE__*/React.createElement("div", {
     className: "hims-tile-grid"
   }, /*#__PURE__*/React.createElement("div", {
     className: "hims-tile-spacer-row1"
