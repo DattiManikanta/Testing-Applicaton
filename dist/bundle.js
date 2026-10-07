@@ -764,13 +764,529 @@ function playHospitalChime() {
   }
 }
 
+// --- src/components/LoginPage.jsx ---
+
+// AtriBiz AB Logo Vector Component (Matching the screenshot precisely)
+function AtriBizLogo({
+  width = 120,
+  height = 62
+}) {
+  return /*#__PURE__*/React.createElement("svg", {
+    width: width,
+    height: height,
+    viewBox: "0 0 170 85",
+    fill: "none",
+    xmlns: "http://www.w3.org/2000/svg",
+    style: {
+      display: 'block',
+      margin: '0 auto'
+    }
+  }, /*#__PURE__*/React.createElement("path", {
+    d: "M 18 42 C 16 18, 52 8, 96 8 C 132 8, 156 18, 158 32",
+    stroke: "#0284c7",
+    strokeWidth: "3.6",
+    strokeLinecap: "round",
+    fill: "none"
+  }), /*#__PURE__*/React.createElement("path", {
+    d: "M 154 44 C 154 66, 118 76, 76 76 C 36 76, 16 66, 14 52",
+    stroke: "#dc2626",
+    strokeWidth: "3.6",
+    strokeLinecap: "round",
+    fill: "none"
+  }), /*#__PURE__*/React.createElement("text", {
+    x: "42",
+    y: "58",
+    fontFamily: "'Arial Black', Impact, sans-serif",
+    fontSize: "48",
+    fontWeight: "900",
+    fontStyle: "italic",
+    fill: "#dc2626",
+    letterSpacing: "-2"
+  }, "A"), /*#__PURE__*/React.createElement("text", {
+    x: "80",
+    y: "58",
+    fontFamily: "'Arial Black', Impact, sans-serif",
+    fontSize: "48",
+    fontWeight: "900",
+    fontStyle: "italic",
+    fill: "#0284c7"
+  }, "B"), /*#__PURE__*/React.createElement("path", {
+    d: "M 32 46 L 55 64 L 126 18",
+    stroke: "#0f172a",
+    strokeWidth: "6.5",
+    strokeLinecap: "round",
+    strokeLinejoin: "round",
+    fill: "none"
+  }));
+}
+function LoginPage({
+  onLogin
+}) {
+  const [username, setUsername] = useState('admin');
+  const [password, setPassword] = useState('admin');
+  const [showForgotMsg, setShowForgotMsg] = useState(false);
+  const [loading, setLoading] = useState(false);
+  const handleSubmit = e => {
+    if (e) e.preventDefault();
+    setLoading(true);
+    setTimeout(() => {
+      setLoading(false);
+      onLogin({
+        id: 'ADMIN-ATRIBIZ-01',
+        role: 'admin',
+        roleName: 'System Administrator (Pharmacy / HIMS)',
+        badgeColor: '#0284c7',
+        icon: '🏥',
+        name: username || 'Administrator',
+        qualification: 'HIMS Master Controller',
+        department: 'Central Pharmacy & OPD',
+        initialTab: 'overview',
+        email: 'info@atribiz.com'
+      });
+    }, 400);
+  };
+  return /*#__PURE__*/React.createElement("div", {
+    className: "atri-login-screen"
+  }, /*#__PURE__*/React.createElement("div", {
+    className: "atri-top-logo"
+  }, /*#__PURE__*/React.createElement(AtriBizLogo, {
+    width: 135,
+    height: 70
+  })), /*#__PURE__*/React.createElement("div", {
+    className: "atri-login-container"
+  }, /*#__PURE__*/React.createElement("div", {
+    className: "atri-card-top-cap"
+  }, /*#__PURE__*/React.createElement(AtriBizLogo, {
+    width: 120,
+    height: 60
+  })), /*#__PURE__*/React.createElement("div", {
+    className: "atri-card-dark-pod"
+  }, /*#__PURE__*/React.createElement("form", {
+    onSubmit: handleSubmit,
+    className: "atri-form"
+  }, /*#__PURE__*/React.createElement("div", {
+    className: "atri-input-box"
+  }, /*#__PURE__*/React.createElement("input", {
+    type: "text",
+    value: username,
+    onChange: e => setUsername(e.target.value),
+    placeholder: "Username",
+    className: "atri-field",
+    autoFocus: true,
+    required: true
+  })), /*#__PURE__*/React.createElement("div", {
+    className: "atri-input-box"
+  }, /*#__PURE__*/React.createElement("input", {
+    type: "password",
+    value: password,
+    onChange: e => setPassword(e.target.value),
+    placeholder: "Password",
+    className: "atri-field",
+    required: true
+  })), /*#__PURE__*/React.createElement("div", {
+    className: "atri-forgot-row"
+  }, /*#__PURE__*/React.createElement("button", {
+    type: "button",
+    className: "atri-forgot-link",
+    onClick: () => setShowForgotMsg(!showForgotMsg)
+  }, "Forgot Password ?")), showForgotMsg && /*#__PURE__*/React.createElement("div", {
+    className: "atri-forgot-popover"
+  }, /*#__PURE__*/React.createElement("span", null, "Contact IT Support: ", /*#__PURE__*/React.createElement("strong", null, "+91 7995881582"), " or ", /*#__PURE__*/React.createElement("strong", null, "info@atribiz.com"))), /*#__PURE__*/React.createElement("div", {
+    className: "atri-btn-row"
+  }, /*#__PURE__*/React.createElement("button", {
+    type: "submit",
+    className: "atri-login-btn",
+    disabled: loading
+  }, loading ? 'LOGGING IN...' : 'LOGIN'))))), /*#__PURE__*/React.createElement("footer", {
+    className: "atri-footer-bar"
+  }, /*#__PURE__*/React.createElement("span", null, "Developed and Supported by : "), /*#__PURE__*/React.createElement("a", {
+    href: "mailto:info@atribiz.com",
+    className: "atri-footer-highlight"
+  }, "AtriBiz Solutions LLP"), /*#__PURE__*/React.createElement("span", null, ", info@atribiz.com, Phone: +91 7995881582.")));
+}
+
+// --- src/components/HIMSHomeDashboard.jsx ---
+
+function HIMSHomeDashboard({
+  onSelectModule,
+  onLogout
+}) {
+  const [loginTime, setLoginTime] = useState('');
+  useEffect(() => {
+    // Format timestamp like: 2026-10-07 11:40:27
+    const now = new Date();
+    const pad = n => String(n).padStart(2, '0');
+    const formatted = `${now.getFullYear()}-${pad(now.getMonth() + 1)}-${pad(now.getDate())} ${pad(now.getHours())}:${pad(now.getMinutes())}:${pad(now.getSeconds())}`;
+    setLoginTime(formatted);
+  }, []);
+  return /*#__PURE__*/React.createElement("div", {
+    className: "hims-home-screen"
+  }, /*#__PURE__*/React.createElement("header", {
+    className: "hims-top-bar"
+  }, /*#__PURE__*/React.createElement("div", {
+    className: "hims-top-logo"
+  }, /*#__PURE__*/React.createElement(AtriBizLogo, {
+    width: 125,
+    height: 60
+  })), /*#__PURE__*/React.createElement("div", {
+    className: "hims-login-time"
+  }, "LogInTime: ", /*#__PURE__*/React.createElement("span", {
+    className: "time-val"
+  }, loginTime || '2026-10-07 11:40:27')), /*#__PURE__*/React.createElement("div", {
+    className: "hims-top-actions"
+  }, /*#__PURE__*/React.createElement("button", {
+    type: "button",
+    className: "hims-logout-circle-btn",
+    onClick: onLogout,
+    title: "Logout from ATRI HIMS"
+  }, /*#__PURE__*/React.createElement("div", {
+    className: "hims-power-icon"
+  }, /*#__PURE__*/React.createElement("svg", {
+    width: "24",
+    height: "24",
+    viewBox: "0 0 24 24",
+    fill: "none",
+    stroke: "currentColor",
+    strokeWidth: "2.5",
+    strokeLinecap: "round",
+    strokeLinejoin: "round"
+  }, /*#__PURE__*/React.createElement("path", {
+    d: "M18.36 6.64a9 9 0 1 1-12.73 0"
+  }), /*#__PURE__*/React.createElement("line", {
+    x1: "12",
+    y1: "2",
+    x2: "12",
+    y2: "12"
+  }))), /*#__PURE__*/React.createElement("span", {
+    className: "hims-logout-text"
+  }, "LOGOUT")))), /*#__PURE__*/React.createElement("main", {
+    className: "hims-main-area"
+  }, /*#__PURE__*/React.createElement("div", {
+    className: "hims-content-wrapper"
+  }, /*#__PURE__*/React.createElement("div", {
+    className: "hims-headline-banner"
+  }, /*#__PURE__*/React.createElement("h1", {
+    className: "hims-headline-title"
+  }, "ATRI'S FUTURE READY", /*#__PURE__*/React.createElement("br", null), "INTEGRATED HIMS"), /*#__PURE__*/React.createElement("p", {
+    className: "hims-headline-desc"
+  }, "is designed to help organizations achieve IT resiliency,", /*#__PURE__*/React.createElement("br", null), "be cost-efficient and drive business alignment.")), /*#__PURE__*/React.createElement("div", {
+    className: "hims-tile-grid"
+  }, /*#__PURE__*/React.createElement("div", {
+    className: "hims-tile-spacer-row1"
+  }), /*#__PURE__*/React.createElement("div", {
+    className: "hims-tile hims-tile-green",
+    onClick: () => onSelectModule('staff'),
+    title: "Click to open Admin & OPD Desk Control"
+  }, /*#__PURE__*/React.createElement("div", {
+    className: "hims-tile-icon-wrap"
+  }, /*#__PURE__*/React.createElement("svg", {
+    width: "44",
+    height: "44",
+    viewBox: "0 0 24 24",
+    fill: "none",
+    stroke: "#0284c7",
+    strokeWidth: "2.2"
+  }, /*#__PURE__*/React.createElement("circle", {
+    cx: "12",
+    cy: "12",
+    r: "10"
+  }), /*#__PURE__*/React.createElement("circle", {
+    cx: "12",
+    cy: "12",
+    r: "6"
+  }), /*#__PURE__*/React.createElement("circle", {
+    cx: "12",
+    cy: "9",
+    r: "2",
+    fill: "#0284c7"
+  }), /*#__PURE__*/React.createElement("path", {
+    d: "M8.5 16a3.5 3.5 0 0 1 7 0",
+    fill: "#0284c7"
+  }), /*#__PURE__*/React.createElement("line", {
+    x1: "12",
+    y1: "2",
+    x2: "12",
+    y2: "5"
+  }), /*#__PURE__*/React.createElement("line", {
+    x1: "12",
+    y1: "19",
+    x2: "12",
+    y2: "22"
+  }), /*#__PURE__*/React.createElement("line", {
+    x1: "2",
+    y1: "12",
+    x2: "5",
+    y2: "12"
+  }), /*#__PURE__*/React.createElement("line", {
+    x1: "19",
+    y1: "12",
+    x2: "22",
+    y2: "12"
+  }))), /*#__PURE__*/React.createElement("span", {
+    className: "hims-tile-label"
+  }, "ADMIN")), /*#__PURE__*/React.createElement("div", {
+    className: "hims-tile hims-tile-img",
+    onClick: () => onSelectModule('doctors'),
+    title: "Hospital Human Resources & Consultants"
+  }, /*#__PURE__*/React.createElement("img", {
+    src: "./tile_hr.jpg",
+    alt: "HR Network",
+    className: "hims-tile-photo"
+  })), /*#__PURE__*/React.createElement("div", {
+    className: "hims-tile-empty"
+  }), /*#__PURE__*/React.createElement("div", {
+    className: "hims-tile hims-tile-cyan",
+    onClick: () => onSelectModule('queue'),
+    title: "Patient Management & OPD Queue"
+  }, /*#__PURE__*/React.createElement("div", {
+    className: "hims-tile-icon-wrap"
+  }, /*#__PURE__*/React.createElement("svg", {
+    width: "46",
+    height: "46",
+    viewBox: "0 0 24 24",
+    fill: "none"
+  }, /*#__PURE__*/React.createElement("circle", {
+    cx: "9",
+    cy: "7",
+    r: "3.5",
+    fill: "#ffffff"
+  }), /*#__PURE__*/React.createElement("path", {
+    d: "M3.5 18c0-3 2.5-5.5 5.5-5.5s5.5 2.5 5.5 5.5",
+    stroke: "#ffffff",
+    strokeWidth: "2",
+    fill: "none"
+  }), /*#__PURE__*/React.createElement("circle", {
+    cx: "16",
+    cy: "9",
+    r: "3",
+    fill: "#ffffff"
+  }), /*#__PURE__*/React.createElement("path", {
+    d: "M12.5 18c.3-2 1.8-3.5 3.5-3.5 2 0 3.5 1.5 3.5 3.5",
+    stroke: "#ffffff",
+    strokeWidth: "2",
+    fill: "none"
+  }))), /*#__PURE__*/React.createElement("span", {
+    className: "hims-tile-label"
+  }, "Patient Management")), /*#__PURE__*/React.createElement("div", {
+    className: "hims-tile hims-tile-img",
+    onClick: () => onSelectModule('register'),
+    title: "OP Registration & Clinical Desk"
+  }, /*#__PURE__*/React.createElement("img", {
+    src: "./tile_laptop.jpg",
+    alt: "Doctor Laptop",
+    className: "hims-tile-photo"
+  })), /*#__PURE__*/React.createElement("div", {
+    className: "hims-tile hims-tile-img",
+    onClick: () => onSelectModule('records'),
+    title: "Diagnostic Laboratory & Testing"
+  }, /*#__PURE__*/React.createElement("img", {
+    src: "./tile_flask.jpg",
+    alt: "Lab Flask",
+    className: "hims-tile-photo"
+  })), /*#__PURE__*/React.createElement("div", {
+    className: "hims-tile hims-tile-orange",
+    onClick: () => onSelectModule('records'),
+    title: "Lab Management & Reports"
+  }, /*#__PURE__*/React.createElement("div", {
+    className: "hims-tile-icon-wrap"
+  }, /*#__PURE__*/React.createElement("svg", {
+    width: "46",
+    height: "46",
+    viewBox: "0 0 24 24",
+    fill: "none",
+    stroke: "#ffffff",
+    strokeWidth: "2",
+    strokeLinecap: "round",
+    strokeLinejoin: "round"
+  }, /*#__PURE__*/React.createElement("path", {
+    d: "M6 18h8"
+  }), /*#__PURE__*/React.createElement("path", {
+    d: "M3 22h18"
+  }), /*#__PURE__*/React.createElement("path", {
+    d: "M14 22a7 7 0 1 0 0-14h-1"
+  }), /*#__PURE__*/React.createElement("path", {
+    d: "M9 14h2"
+  }), /*#__PURE__*/React.createElement("path", {
+    d: "M9 12a2 2 0 0 1-2-2V6h6v4a2 2 0 0 1-2 2Z",
+    fill: "rgba(255,255,255,0.2)"
+  }), /*#__PURE__*/React.createElement("path", {
+    d: "M12 6V3a1 1 0 0 0-1-1H9a1 1 0 0 0-1 1v3"
+  }))), /*#__PURE__*/React.createElement("span", {
+    className: "hims-tile-label"
+  }, "Lab Management")), /*#__PURE__*/React.createElement("div", {
+    className: "hims-tile hims-tile-img",
+    onClick: () => onSelectModule('pharmacy'),
+    title: "Pharmacy Dispensary & Drugs"
+  }, /*#__PURE__*/React.createElement("img", {
+    src: "./tile_pharmacy.jpg",
+    alt: "Pharmacy",
+    className: "hims-tile-photo"
+  })), /*#__PURE__*/React.createElement("div", {
+    className: "hims-tile hims-tile-teal",
+    onClick: () => onSelectModule('slip'),
+    title: "Credit Billing & Cashier Desk"
+  }, /*#__PURE__*/React.createElement("div", {
+    className: "hims-tile-icon-wrap"
+  }, /*#__PURE__*/React.createElement("svg", {
+    width: "44",
+    height: "44",
+    viewBox: "0 0 24 24",
+    fill: "none",
+    stroke: "#ffffff",
+    strokeWidth: "2",
+    strokeLinecap: "round",
+    strokeLinejoin: "round"
+  }, /*#__PURE__*/React.createElement("rect", {
+    width: "14",
+    height: "10",
+    x: "2",
+    y: "3",
+    rx: "2"
+  }), /*#__PURE__*/React.createElement("path", {
+    d: "M6 13v2"
+  }), /*#__PURE__*/React.createElement("path", {
+    d: "M10 13v2"
+  }), /*#__PURE__*/React.createElement("path", {
+    d: "M4 17h8"
+  }), /*#__PURE__*/React.createElement("rect", {
+    width: "8",
+    height: "6",
+    x: "14",
+    y: "14",
+    rx: "1",
+    fill: "rgba(255,255,255,0.2)"
+  }), /*#__PURE__*/React.createElement("line", {
+    x1: "16",
+    x2: "20",
+    y1: "12",
+    y2: "12"
+  }))), /*#__PURE__*/React.createElement("span", {
+    className: "hims-tile-label"
+  }, "Credit Billing")), /*#__PURE__*/React.createElement("div", {
+    className: "hims-tile-empty"
+  }), /*#__PURE__*/React.createElement("div", {
+    className: "hims-tile-empty"
+  }), /*#__PURE__*/React.createElement("div", {
+    className: "hims-tile hims-tile-magenta",
+    onClick: () => onSelectModule('vitals'),
+    title: "CSSD - Central Sterile Services Department"
+  }, /*#__PURE__*/React.createElement("div", {
+    className: "hims-tile-icon-wrap"
+  }, /*#__PURE__*/React.createElement("svg", {
+    width: "44",
+    height: "44",
+    viewBox: "0 0 24 24",
+    fill: "none"
+  }, /*#__PURE__*/React.createElement("path", {
+    d: "M8 8 C8 4 16 4 16 8 Z",
+    fill: "#38bdf8"
+  }), /*#__PURE__*/React.createElement("circle", {
+    cx: "12",
+    cy: "9",
+    r: "3.5",
+    fill: "#fbcfe8"
+  }), /*#__PURE__*/React.createElement("rect", {
+    x: "9",
+    y: "9",
+    width: "6",
+    height: "3",
+    rx: "1",
+    fill: "#ffffff"
+  }), /*#__PURE__*/React.createElement("path", {
+    d: "M5 20c0-3.5 3-6 7-6s7 2.5 7 6",
+    fill: "#38bdf8"
+  }))), /*#__PURE__*/React.createElement("span", {
+    className: "hims-tile-label"
+  }, "CSSD")), /*#__PURE__*/React.createElement("div", {
+    className: "hims-tile hims-tile-lightgreen",
+    onClick: () => onSelectModule('vitals'),
+    title: "Nursing Care & Vitals Station"
+  }, /*#__PURE__*/React.createElement("div", {
+    className: "hims-tile-icon-wrap"
+  }, /*#__PURE__*/React.createElement("svg", {
+    width: "44",
+    height: "44",
+    viewBox: "0 0 24 24",
+    fill: "none"
+  }, /*#__PURE__*/React.createElement("path", {
+    d: "M9 5 L15 5 L14 7 L10 7 Z",
+    fill: "#ffffff"
+  }), /*#__PURE__*/React.createElement("path", {
+    d: "M11.5 5.5 v2 M10.5 6.5 h2",
+    stroke: "#dc2626",
+    strokeWidth: "1.5"
+  }), /*#__PURE__*/React.createElement("circle", {
+    cx: "12",
+    cy: "10",
+    r: "3.5",
+    fill: "#fed7aa"
+  }), /*#__PURE__*/React.createElement("path", {
+    d: "M6 21c0-3.5 2.5-6 6-6s6 2.5 6 6",
+    fill: "#ffffff"
+  }))), /*#__PURE__*/React.createElement("span", {
+    className: "hims-tile-label"
+  }, "Nursing")), /*#__PURE__*/React.createElement("div", {
+    className: "hims-tile hims-tile-img",
+    onClick: () => onSelectModule('staff'),
+    title: "Operations & Administration Team"
+  }, /*#__PURE__*/React.createElement("img", {
+    src: "./tile_puzzle.jpg",
+    alt: "Puzzle Strategy",
+    className: "hims-tile-photo"
+  })), /*#__PURE__*/React.createElement("div", {
+    className: "hims-tile hims-tile-purple",
+    onClick: () => onSelectModule('doctors'),
+    title: "Human Resources & Medical Faculty"
+  }, /*#__PURE__*/React.createElement("div", {
+    className: "hims-tile-icon-wrap"
+  }, /*#__PURE__*/React.createElement("svg", {
+    width: "46",
+    height: "46",
+    viewBox: "0 0 24 24",
+    fill: "none"
+  }, /*#__PURE__*/React.createElement("circle", {
+    cx: "12",
+    cy: "7",
+    r: "3",
+    fill: "#ffffff"
+  }), /*#__PURE__*/React.createElement("path", {
+    d: "M7 19c0-2.8 2.2-5 5-5s5 2.2 5 5",
+    fill: "#ffffff"
+  }), /*#__PURE__*/React.createElement("circle", {
+    cx: "5",
+    cy: "9",
+    r: "2.2",
+    fill: "rgba(255,255,255,0.7)"
+  }), /*#__PURE__*/React.createElement("path", {
+    d: "M1 19c0-2.2 1.8-4 4-4 .8 0 1.5.2 2.2.6-.7 1-.9 2.2-.9 3.4",
+    fill: "rgba(255,255,255,0.7)"
+  }), /*#__PURE__*/React.createElement("circle", {
+    cx: "19",
+    cy: "9",
+    r: "2.2",
+    fill: "rgba(255,255,255,0.7)"
+  }), /*#__PURE__*/React.createElement("path", {
+    d: "M17.7 15.6c.7-.4 1.4-.6 2.3-.6 2.2 0 4 1.8 4 4h-5.4c0-1.2-.2-2.4-.9-3.4",
+    fill: "rgba(255,255,255,0.7)"
+  }))), /*#__PURE__*/React.createElement("span", {
+    className: "hims-tile-label"
+  }, "Human Resource"))))), /*#__PURE__*/React.createElement("footer", {
+    className: "atri-footer-bar"
+  }, /*#__PURE__*/React.createElement("span", null, "Developed and Supported by : "), /*#__PURE__*/React.createElement("a", {
+    href: "mailto:info@atribiz.com",
+    className: "atri-footer-highlight"
+  }, "AtriBiz Solutions LLP"), /*#__PURE__*/React.createElement("span", null, ", info@atribiz.com, Phone: +91 7995881582.")));
+}
+
 // --- src/components/Navbar.jsx ---
 
 function Navbar({
   activeTab,
   setActiveTab,
   onOpenRegister,
-  waitingTotal
+  waitingTotal,
+  currentUser,
+  onLogout
 }) {
   return /*#__PURE__*/React.createElement("header", null, /*#__PURE__*/React.createElement("div", {
     className: "top-emergency-bar"
@@ -778,7 +1294,8 @@ function Navbar({
     style: {
       display: 'flex',
       alignItems: 'center',
-      gap: '16px'
+      gap: '16px',
+      flexWrap: 'wrap'
     }
   }, /*#__PURE__*/React.createElement("span", {
     className: "emergency-chip"
@@ -795,13 +1312,32 @@ function Navbar({
       alignItems: 'center',
       gap: '14px',
       fontSize: '0.8rem',
-      color: '#94a3b8'
+      color: '#94a3b8',
+      flexWrap: 'wrap'
     }
-  }, /*#__PURE__*/React.createElement("span", null, "Live OPD Server: ", /*#__PURE__*/React.createElement("strong", {
+  }, currentUser && /*#__PURE__*/React.createElement("span", {
+    style: {
+      color: '#e2e8f0',
+      display: 'flex',
+      alignItems: 'center',
+      gap: '6px'
+    }
+  }, /*#__PURE__*/React.createElement("span", null, "User:"), /*#__PURE__*/React.createElement("strong", {
+    style: {
+      color: '#38bdf8'
+    }
+  }, currentUser.name), /*#__PURE__*/React.createElement("span", {
+    style: {
+      background: 'rgba(255,255,255,0.1)',
+      padding: '2px 8px',
+      borderRadius: '12px',
+      fontSize: '0.72rem'
+    }
+  }, "ADMIN")), /*#__PURE__*/React.createElement("span", null, "ATRI HIMS: ", /*#__PURE__*/React.createElement("strong", {
     style: {
       color: '#34d399'
     }
-  }, "Connected \u25CF")), /*#__PURE__*/React.createElement("span", null, "Waiting Tokens: ", /*#__PURE__*/React.createElement("strong", {
+  }, "Connected \u2713")), /*#__PURE__*/React.createElement("span", null, "Waiting Tokens: ", /*#__PURE__*/React.createElement("strong", {
     style: {
       color: '#38bdf8'
     }
@@ -809,7 +1345,8 @@ function Navbar({
     className: "hospital-navbar"
   }, /*#__PURE__*/React.createElement("div", {
     className: "brand-logo",
-    onClick: () => setActiveTab('overview')
+    onClick: () => setActiveTab('hims_home'),
+    title: "Return to ATRI HIMS Home Tiles"
   }, /*#__PURE__*/React.createElement("div", {
     className: "logo-badge"
   }, /*#__PURE__*/React.createElement("svg", {
@@ -829,27 +1366,49 @@ function Navbar({
     d: "M5 12h14"
   }))), /*#__PURE__*/React.createElement("div", {
     className: "brand-text"
-  }, /*#__PURE__*/React.createElement("h1", null, "PulseCare ", /*#__PURE__*/React.createElement("span", {
+  }, /*#__PURE__*/React.createElement("h1", null, "ATRI ", /*#__PURE__*/React.createElement("span", {
     className: "accent"
-  }, "Health")), /*#__PURE__*/React.createElement("p", null, "Outpatient (OPD) & Specialty Medical Center"))), /*#__PURE__*/React.createElement("div", {
+  }, "HIMS")), /*#__PURE__*/React.createElement("p", null, "Integrated Hospital Information Management System"))), /*#__PURE__*/React.createElement("div", {
     className: "nav-links"
   }, /*#__PURE__*/React.createElement("button", {
-    className: `nav-item ${activeTab === 'overview' ? 'active' : ''}`,
-    onClick: () => setActiveTab('overview')
+    className: `nav-item ${activeTab === 'hims_home' ? 'active' : ''}`,
+    onClick: () => setActiveTab('hims_home'),
+    style: {
+      fontWeight: 700,
+      color: '#0284c7'
+    }
   }, /*#__PURE__*/React.createElement("svg", {
     width: "16",
     height: "16",
     viewBox: "0 0 24 24",
     fill: "none",
     stroke: "currentColor",
-    strokeWidth: "2",
-    strokeLinecap: "round",
-    strokeLinejoin: "round"
-  }, /*#__PURE__*/React.createElement("path", {
-    d: "m3 9 9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"
-  }), /*#__PURE__*/React.createElement("polyline", {
-    points: "9 22 9 12 15 12 15 22"
-  })), "Hospital Home"), /*#__PURE__*/React.createElement("button", {
+    strokeWidth: "2"
+  }, /*#__PURE__*/React.createElement("rect", {
+    width: "7",
+    height: "7",
+    x: "3",
+    y: "3",
+    rx: "1"
+  }), /*#__PURE__*/React.createElement("rect", {
+    width: "7",
+    height: "7",
+    x: "14",
+    y: "3",
+    rx: "1"
+  }), /*#__PURE__*/React.createElement("rect", {
+    width: "7",
+    height: "7",
+    x: "14",
+    y: "14",
+    rx: "1"
+  }), /*#__PURE__*/React.createElement("rect", {
+    width: "7",
+    height: "7",
+    x: "3",
+    y: "14",
+    rx: "1"
+  })), "HIMS Home Tiles"), /*#__PURE__*/React.createElement("button", {
     className: `nav-item ${activeTab === 'queue' ? 'active' : ''}`,
     onClick: () => setActiveTab('queue')
   }, /*#__PURE__*/React.createElement("svg", {
@@ -858,9 +1417,7 @@ function Navbar({
     viewBox: "0 0 24 24",
     fill: "none",
     stroke: "currentColor",
-    strokeWidth: "2",
-    strokeLinecap: "round",
-    strokeLinejoin: "round"
+    strokeWidth: "2"
   }, /*#__PURE__*/React.createElement("rect", {
     width: "20",
     height: "14",
@@ -877,7 +1434,7 @@ function Navbar({
     x2: "12",
     y1: "17",
     y2: "21"
-  })), "Live OPD Queue"), /*#__PURE__*/React.createElement("button", {
+  })), "Patient Queue"), /*#__PURE__*/React.createElement("button", {
     className: `nav-item ${activeTab === 'register' ? 'active' : ''}`,
     onClick: () => setActiveTab('register')
   }, /*#__PURE__*/React.createElement("svg", {
@@ -886,9 +1443,7 @@ function Navbar({
     viewBox: "0 0 24 24",
     fill: "none",
     stroke: "currentColor",
-    strokeWidth: "2",
-    strokeLinecap: "round",
-    strokeLinejoin: "round"
+    strokeWidth: "2"
   }, /*#__PURE__*/React.createElement("path", {
     d: "M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"
   }), /*#__PURE__*/React.createElement("circle", {
@@ -905,7 +1460,7 @@ function Navbar({
     x2: "16",
     y1: "11",
     y2: "11"
-  })), "OP Registration & Pay"), /*#__PURE__*/React.createElement("button", {
+  })), "Registration & Billing"), /*#__PURE__*/React.createElement("button", {
     className: `nav-item ${activeTab === 'vitals' ? 'active' : ''}`,
     onClick: () => setActiveTab('vitals'),
     style: {
@@ -917,12 +1472,10 @@ function Navbar({
     viewBox: "0 0 24 24",
     fill: "none",
     stroke: "currentColor",
-    strokeWidth: "2",
-    strokeLinecap: "round",
-    strokeLinejoin: "round"
+    strokeWidth: "2"
   }, /*#__PURE__*/React.createElement("path", {
     d: "M22 12h-4l-3 9L9 3l-3 9H2"
-  })), "Vitals Station"), /*#__PURE__*/React.createElement("button", {
+  })), "Nursing / Vitals"), /*#__PURE__*/React.createElement("button", {
     className: `nav-item ${activeTab === 'doctors' ? 'active' : ''}`,
     onClick: () => setActiveTab('doctors')
   }, /*#__PURE__*/React.createElement("svg", {
@@ -931,9 +1484,7 @@ function Navbar({
     viewBox: "0 0 24 24",
     fill: "none",
     stroke: "currentColor",
-    strokeWidth: "2",
-    strokeLinecap: "round",
-    strokeLinejoin: "round"
+    strokeWidth: "2"
   }, /*#__PURE__*/React.createElement("path", {
     d: "M4.8 2.3A.3.3 0 1 0 5 2H4a2 2 0 0 0-2 2v5a6 6 0 0 0 6 6v0a6 6 0 0 0 6-6V4a2 2 0 0 0-2-2h-1a.2.2 0 1 0 .3.3"
   }), /*#__PURE__*/React.createElement("path", {
@@ -942,7 +1493,7 @@ function Navbar({
     cx: "20",
     cy: "10",
     r: "2"
-  })), "Doctor Schedule"), /*#__PURE__*/React.createElement("button", {
+  })), "Human Resource (Doctors)"), /*#__PURE__*/React.createElement("button", {
     className: `nav-item ${activeTab === 'records' ? 'active' : ''}`,
     onClick: () => setActiveTab('records')
   }, /*#__PURE__*/React.createElement("svg", {
@@ -951,9 +1502,7 @@ function Navbar({
     viewBox: "0 0 24 24",
     fill: "none",
     stroke: "currentColor",
-    strokeWidth: "2",
-    strokeLinecap: "round",
-    strokeLinejoin: "round"
+    strokeWidth: "2"
   }, /*#__PURE__*/React.createElement("path", {
     d: "M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"
   }), /*#__PURE__*/React.createElement("polyline", {
@@ -970,7 +1519,7 @@ function Navbar({
     y2: "17"
   }), /*#__PURE__*/React.createElement("polyline", {
     points: "10 9 9 9 8 9"
-  })), "OP Records & Rx"), /*#__PURE__*/React.createElement("button", {
+  })), "Lab Records & Rx"), /*#__PURE__*/React.createElement("button", {
     className: `nav-item ${activeTab === 'pharmacy' ? 'active' : ''}`,
     onClick: () => setActiveTab('pharmacy'),
     style: {
@@ -982,14 +1531,12 @@ function Navbar({
     viewBox: "0 0 24 24",
     fill: "none",
     stroke: "currentColor",
-    strokeWidth: "2",
-    strokeLinecap: "round",
-    strokeLinejoin: "round"
+    strokeWidth: "2"
   }, /*#__PURE__*/React.createElement("path", {
     d: "m10.5 20.5 10-10a4.95 4.95 0 1 0-7-7l-10 10a4.95 4.95 0 1 0 7 7Z"
   }), /*#__PURE__*/React.createElement("path", {
     d: "m8.5 8.5 7 7"
-  })), "Pharmacy & Drugs"), /*#__PURE__*/React.createElement("button", {
+  })), "Pharmacy"), /*#__PURE__*/React.createElement("button", {
     className: `nav-item ${activeTab === 'staff' ? 'active' : ''}`,
     onClick: () => setActiveTab('staff'),
     style: {
@@ -1001,16 +1548,14 @@ function Navbar({
     viewBox: "0 0 24 24",
     fill: "none",
     stroke: "currentColor",
-    strokeWidth: "2",
-    strokeLinecap: "round",
-    strokeLinejoin: "round"
+    strokeWidth: "2"
   }, /*#__PURE__*/React.createElement("path", {
-    d: "M12.22 2h-.44a2 2 0 0 0-2 2v.18a2 2 0 0 1-1 1.73l-.43.25a2 2 0 0 1-2 0l-.15-.08a2 2 0 0 0-2.73.73l-.22.38a2 2 0 0 0 .73 2.73l.15.1a2 2 0 0 1 1 1.72v.51a2 2 0 0 1-1 1.74l-.15.09a2 2 0 0 0-.73 2.73l.22.38a2 2 0 0 0 2.73.73l.15-.08a2 2 0 0 1 2 0l.43.25a2 2 0 0 1 1 1.73V20a2 2 0 0 0 2 2h.44a2 2 0 0 0 2-2v-.18a2 2 0 0 1 1-1.73l.43-.25a2 2 0 0 1 2 0l.15.08a2 2 0 0 0 2.73-.73l.22-.39a2 2 0 0 0-.73-2.73l-.15-.08a2 2 0 0 1-1-1.74v-.5a2 2 0 0 1 1-1.74l.15-.09a2 2 0 0 0 .73-2.73l-.22-.38a2 2 0 0 0-2.73-.73l-.15.08a2 2 0 0 1-2 0l-.43-.25a2 2 0 0 1-1-1.73V4a2 2 0 0 0-2-2z"
+    d: "M12.22 2h-.44a2 2 0 0 0-2 2v.18a2 2 0 0 1-1 1.73l-.43.25a2 2 0 0 1 2 0l-.15-.08a2 2 0 0 0-2.73.73l-.22.38a2 2 0 0 0 .73 2.73l.15.1a2 2 0 0 1 1 1.72v.51a2 2 0 0 1-1 1.74l-.15.09a2 2 0 0 0-.73 2.73l.22.38a2 2 0 0 0 2.73.73l.15-.08a2 2 0 0 1 2 0l.43.25a2 2 0 0 1 1 1.73V20a2 2 0 0 0 2 2h.44a2 2 0 0 0 2-2v-.18a2 2 0 0 1 1-1.73l.43-.25a2 2 0 0 1 2 0l.15.08a2 2 0 0 0 2.73-.73l.22-.39a2 2 0 0 0-.73-2.73l-.15-.08a2 2 0 0 1-1-1.74v-.5a2 2 0 0 1 1-1.74l.15-.09a2 2 0 0 0 .73-2.73l-.22-.38a2 2 0 0 0-2.73-.73l-.15.08a2 2 0 0 1-2 0l-.43-.25a2 2 0 0 1-1-1.73V4a2 2 0 0 0-2-2z"
   }), /*#__PURE__*/React.createElement("circle", {
     cx: "12",
     cy: "12",
     r: "3"
-  })), "OPD Desk Control")), /*#__PURE__*/React.createElement("div", {
+  })), "Admin / Desk Control")), /*#__PURE__*/React.createElement("div", {
     className: "nav-actions"
   }, /*#__PURE__*/React.createElement("button", {
     className: "btn btn-primary",
@@ -1021,9 +1566,7 @@ function Navbar({
     viewBox: "0 0 24 24",
     fill: "none",
     stroke: "currentColor",
-    strokeWidth: "2.5",
-    strokeLinecap: "round",
-    strokeLinejoin: "round"
+    strokeWidth: "2.5"
   }, /*#__PURE__*/React.createElement("line", {
     x1: "12",
     x2: "12",
@@ -1034,7 +1577,25 @@ function Navbar({
     x2: "19",
     y1: "12",
     y2: "12"
-  })), "Get OP Token"))));
+  })), "New OP Token"), onLogout && /*#__PURE__*/React.createElement("button", {
+    className: "btn btn-secondary btn-logout",
+    onClick: onLogout,
+    title: "Logout from ATRI HIMS"
+  }, /*#__PURE__*/React.createElement("svg", {
+    width: "15",
+    height: "15",
+    viewBox: "0 0 24 24",
+    fill: "none",
+    stroke: "currentColor",
+    strokeWidth: "2"
+  }, /*#__PURE__*/React.createElement("path", {
+    d: "M18.36 6.64a9 9 0 1 1-12.73 0"
+  }), /*#__PURE__*/React.createElement("line", {
+    x1: "12",
+    y1: "2",
+    x2: "12",
+    y2: "12"
+  })), "LOGOUT"))));
 }
 
 // --- src/components/HeroSection.jsx ---
@@ -4895,13 +5456,27 @@ function Footer({
 // --- src/App.jsx ---
 
 function App() {
-  const [activeTab, setActiveTab] = useState('overview'); // 'overview', 'queue', 'register', 'slip', 'doctors', 'records', 'staff'
+  // Authentication State: null means show starting Login Screen
+  const [currentUser, setCurrentUser] = useState(null);
+
+  // Active module: defaults to 'hims_home' right after login!
+  const [activeTab, setActiveTab] = useState('hims_home');
   const [departments, setDepartments] = useState(initialDepartments);
   const [doctors] = useState(doctorsRoster);
   const [records, setRecords] = useState(mockOPRecords);
   const [activeAlertToken, setActiveAlertToken] = useState(null);
   const [lastGeneratedToken, setLastGeneratedToken] = useState(null);
   const [tokenCounter, setTokenCounter] = useState(120);
+
+  // Authentication Handlers
+  const handleLogin = user => {
+    setCurrentUser(user);
+    setActiveTab('hims_home'); // Directly show the ATRI HIMS Tile Dashboard after login!
+  };
+  const handleLogout = () => {
+    setCurrentUser(null);
+    setActiveTab('hims_home');
+  };
 
   // Calculate total waiting patients across all departments
   const waitingTotal = departments.reduce((sum, dep) => sum + dep.queue.length, 0);
@@ -4959,22 +5534,12 @@ function App() {
       }),
       priority: formData.priority
     };
-
-    // Place patient in queue (urgent/seniors get moved towards front)
-    setDepartments(prev => prev.map(dep => {
+    setDepartments(prevDeps => prevDeps.map(dep => {
       if (dep.code === formData.departmentCode) {
-        let updatedQueue;
-        if (formData.priority === 'Emergency') {
-          updatedQueue = [newQueueItem, ...dep.queue];
-        } else if (formData.priority === 'Senior Citizen' && dep.queue.length > 1) {
-          updatedQueue = [dep.queue[0], newQueueItem, ...dep.queue.slice(1)];
-        } else {
-          updatedQueue = [...dep.queue, newQueueItem];
-        }
         return {
           ...dep,
-          queue: updatedQueue,
-          nextToken: dep.queue.length === 0 ? generatedToken : dep.nextToken
+          queue: [...dep.queue, newQueueItem],
+          nextToken: dep.nextToken === 'None' ? generatedToken : dep.nextToken
         };
       }
       return dep;
@@ -4993,7 +5558,7 @@ function App() {
       doctor: formData.doctor,
       room: formData.room,
       payment: formData.payment,
-      visitDate: '05-Sep-2026',
+      visitDate: '07-Oct-2026',
       visitType: formData.priority === 'Emergency' ? 'Emergency Outpatient' : 'OPD Consultation',
       vitals: formData.vitals || {
         bp: '122/82 mmHg',
@@ -5098,38 +5663,35 @@ function App() {
   const handleSelectDoctorForBooking = doc => {
     setActiveTab('register');
   };
+
+  // 1. If user is NOT logged in: Show the exact ATRI HIMS starting Login Screen!
+  if (!currentUser) {
+    return /*#__PURE__*/React.createElement(LoginPage, {
+      onLogin: handleLogin
+    });
+  }
+
+  // 2. Right after login: Show the exact ATRI HIMS Tile Dashboard!
+  if (activeTab === 'hims_home') {
+    return /*#__PURE__*/React.createElement(HIMSHomeDashboard, {
+      onSelectModule: tab => setActiveTab(tab),
+      onLogout: handleLogout
+    });
+  }
+
+  // 3. Inside any hospital module: Show Navbar with "HIMS Home Tiles" button to easily return anytime!
   return /*#__PURE__*/React.createElement("div", {
     className: "app-wrapper"
   }, /*#__PURE__*/React.createElement(Navbar, {
     activeTab: activeTab,
     setActiveTab: setActiveTab,
     onOpenRegister: () => setActiveTab('register'),
-    waitingTotal: waitingTotal
-  }), activeTab === 'overview' && /*#__PURE__*/React.createElement(HeroSection, {
-    setActiveTab: setActiveTab,
-    onOpenRegister: () => setActiveTab('register'),
     waitingTotal: waitingTotal,
-    activeDoctorsCount: doctors.length
+    currentUser: currentUser,
+    onLogout: handleLogout
   }), /*#__PURE__*/React.createElement("main", {
     className: "main-content"
-  }, activeTab === 'overview' && /*#__PURE__*/React.createElement("div", null, /*#__PURE__*/React.createElement(QueueBoard, {
-    departments: departments,
-    onCallNext: handleCallNext,
-    activeAlertToken: activeAlertToken,
-    onPlayChime: playHospitalChime
-  }), /*#__PURE__*/React.createElement("div", {
-    style: {
-      marginTop: '48px'
-    }
-  }, /*#__PURE__*/React.createElement("div", {
-    className: "section-header"
-  }, /*#__PURE__*/React.createElement("div", null, /*#__PURE__*/React.createElement("h2", null, "\uD83D\uDC68\u200D\u2695\uFE0F Today's Available OPD Specialists"), /*#__PURE__*/React.createElement("p", null, "Our senior doctors are on duty across consulting cabins today.")), /*#__PURE__*/React.createElement("button", {
-    className: "btn btn-secondary btn-sm",
-    onClick: () => setActiveTab('doctors')
-  }, "View Full Doctor Directory & Hours \u25B6")), /*#__PURE__*/React.createElement(DoctorDirectory, {
-    doctors: doctors.slice(0, 3),
-    onSelectDoctorForBooking: handleSelectDoctorForBooking
-  }))), activeTab === 'queue' && /*#__PURE__*/React.createElement(QueueBoard, {
+  }, activeTab === 'queue' && /*#__PURE__*/React.createElement(QueueBoard, {
     departments: departments,
     onCallNext: handleCallNext,
     activeAlertToken: activeAlertToken,

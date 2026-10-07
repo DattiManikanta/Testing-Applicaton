@@ -1,11 +1,8 @@
-# Dependencies & build tools
-tools/
-node_modules/
-
-# OS and Temp
-.DS_Store
-Thumbs.db
-*.tmp
-# Sub-projects
+﻿# Sub-projects
 chatgpt-app/
 galaxy-striker-3d/
+kids-video-automation/
+village-utsav-app/
+
+# Tools & Local Binaries
+tools/

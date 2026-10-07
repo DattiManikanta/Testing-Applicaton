@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+﻿import React, { useState } from 'react';
 import { initialDepartments, doctorsRoster, mockOPRecords } from './data/hospitalData.js';
 import { playHospitalChime } from './utils/audio.js';
 import { Navbar } from './components/Navbar.jsx';
@@ -12,15 +12,32 @@ import { VitalsScreen } from './components/VitalsScreen.jsx';
 import { PharmacyScreen } from './components/PharmacyScreen.jsx';
 import { StaffDashboard } from './components/StaffDashboard.jsx';
 import { Footer } from './components/Footer.jsx';
+import { LoginPage } from './components/LoginPage.jsx';
+import { HIMSHomeDashboard } from './components/HIMSHomeDashboard.jsx';
 
 export function App() {
-  const [activeTab, setActiveTab] = useState('overview'); // 'overview', 'queue', 'register', 'slip', 'doctors', 'records', 'staff'
+  // Authentication State: null means show starting Login Screen
+  const [currentUser, setCurrentUser] = useState(null);
+
+  // Active module: defaults to 'hims_home' right after login!
+  const [activeTab, setActiveTab] = useState('hims_home');
   const [departments, setDepartments] = useState(initialDepartments);
   const [doctors] = useState(doctorsRoster);
   const [records, setRecords] = useState(mockOPRecords);
   const [activeAlertToken, setActiveAlertToken] = useState(null);
   const [lastGeneratedToken, setLastGeneratedToken] = useState(null);
   const [tokenCounter, setTokenCounter] = useState(120);
+
+  // Authentication Handlers
+  const handleLogin = (user) => {
+    setCurrentUser(user);
+    setActiveTab('hims_home'); // Directly show the ATRI HIMS Tile Dashboard after login!
+  };
+
+  const handleLogout = () => {
+    setCurrentUser(null);
+    setActiveTab('hims_home');
+  };
 
   // Calculate total waiting patients across all departments
   const waitingTotal = departments.reduce((sum, dep) => sum + dep.queue.length, 0);
@@ -80,21 +97,12 @@ export function App() {
       priority: formData.priority
     };
 
-    // Place patient in queue (urgent/seniors get moved towards front)
-    setDepartments(prev => prev.map(dep => {
+    setDepartments(prevDeps => prevDeps.map(dep => {
       if (dep.code === formData.departmentCode) {
-        let updatedQueue;
-        if (formData.priority === 'Emergency') {
-          updatedQueue = [newQueueItem, ...dep.queue];
-        } else if (formData.priority === 'Senior Citizen' && dep.queue.length > 1) {
-          updatedQueue = [dep.queue[0], newQueueItem, ...dep.queue.slice(1)];
-        } else {
-          updatedQueue = [...dep.queue, newQueueItem];
-        }
         return {
           ...dep,
-          queue: updatedQueue,
-          nextToken: dep.queue.length === 0 ? generatedToken : dep.nextToken
+          queue: [...dep.queue, newQueueItem],
+          nextToken: dep.nextToken === 'None' ? generatedToken : dep.nextToken
         };
       }
       return dep;
@@ -113,7 +121,7 @@ export function App() {
       doctor: formData.doctor,
       room: formData.room,
       payment: formData.payment,
-      visitDate: '05-Sep-2026',
+      visitDate: '07-Oct-2026',
       visitType: formData.priority === 'Emergency' ? 'Emergency Outpatient' : 'OPD Consultation',
       vitals: formData.vitals || {
         bp: '122/82 mmHg',
@@ -213,6 +221,26 @@ export function App() {
     setActiveTab('register');
   };
 
+  // 1. If user is NOT logged in: Show the exact ATRI HIMS starting Login Screen!
+  if (!currentUser) {
+    return (
+      <LoginPage 
+        onLogin={handleLogin} 
+      />
+    );
+  }
+
+  // 2. Right after login: Show the exact ATRI HIMS Tile Dashboard!
+  if (activeTab === 'hims_home') {
+    return (
+      <HIMSHomeDashboard 
+        onSelectModule={(tab) => setActiveTab(tab)} 
+        onLogout={handleLogout} 
+      />
+    );
+  }
+
+  // 3. Inside any hospital module: Show Navbar with "HIMS Home Tiles" button to easily return anytime!
   return (
     <div className="app-wrapper">
       <Navbar 
@@ -220,48 +248,11 @@ export function App() {
         setActiveTab={setActiveTab}
         onOpenRegister={() => setActiveTab('register')}
         waitingTotal={waitingTotal}
+        currentUser={currentUser}
+        onLogout={handleLogout}
       />
 
-      {/* Hero only on overview */}
-      {activeTab === 'overview' && (
-        <HeroSection 
-          setActiveTab={setActiveTab}
-          onOpenRegister={() => setActiveTab('register')}
-          waitingTotal={waitingTotal}
-          activeDoctorsCount={doctors.length}
-        />
-      )}
-
       <main className="main-content">
-        {/* Overview Tab shows Queue Board preview + Doctor highlights */}
-        {activeTab === 'overview' && (
-          <div>
-            <QueueBoard 
-              departments={departments}
-              onCallNext={handleCallNext}
-              activeAlertToken={activeAlertToken}
-              onPlayChime={playHospitalChime}
-            />
-
-            <div style={{ marginTop: '48px' }}>
-              <div className="section-header">
-                <div>
-                  <h2>👨‍⚕️ Today's Available OPD Specialists</h2>
-                  <p>Our senior doctors are on duty across consulting cabins today.</p>
-                </div>
-                <button className="btn btn-secondary btn-sm" onClick={() => setActiveTab('doctors')}>
-                  View Full Doctor Directory & Hours ▶
-                </button>
-              </div>
-
-              <DoctorDirectory 
-                doctors={doctors.slice(0, 3)} 
-                onSelectDoctorForBooking={handleSelectDoctorForBooking}
-              />
-            </div>
-          </div>
-        )}
-
         {/* Live Queue Board Tab */}
         {activeTab === 'queue' && (
           <QueueBoard 
