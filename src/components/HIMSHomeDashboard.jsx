@@ -14,6 +14,33 @@ export function HIMSHomeDashboard({ onSelectModule, onLogout }) {
 
   return (
     <div className="hims-home-screen">
+      {/* Background Doctor Photo on the Right */}
+      <div className="atri-bg-doctor-wrap">
+        <img src="./doctor_profile.jpg" alt="Doctor" className="atri-bg-doctor-img" />
+      </div>
+
+      {/* Background Subtle Constellation / Plexus SVG Lines */}
+      <svg className="atri-bg-plexus" viewBox="0 0 1000 800" fill="none" preserveAspectRatio="none">
+        <circle cx="150" cy="200" r="4" fill="#38bdf8" opacity="0.6" />
+        <circle cx="320" cy="180" r="5" fill="#38bdf8" opacity="0.7" />
+        <circle cx="240" cy="360" r="4" fill="#38bdf8" opacity="0.5" />
+        <circle cx="120" cy="480" r="4" fill="#38bdf8" opacity="0.6" />
+        <circle cx="280" cy="580" r="5" fill="#38bdf8" opacity="0.7" />
+        <circle cx="420" cy="450" r="4" fill="#38bdf8" opacity="0.5" />
+        <circle cx="500" cy="280" r="5" fill="#38bdf8" opacity="0.6" />
+        <circle cx="580" cy="520" r="4" fill="#38bdf8" opacity="0.4" />
+        <line x1="150" y1="200" x2="320" y2="180" stroke="#38bdf8" strokeWidth="1" opacity="0.25" />
+        <line x1="320" y1="180" x2="500" y2="280" stroke="#38bdf8" strokeWidth="1" opacity="0.25" />
+        <line x1="320" y1="180" x2="240" y2="360" stroke="#38bdf8" strokeWidth="1" opacity="0.25" />
+        <line x1="240" y1="360" x2="420" y2="450" stroke="#38bdf8" strokeWidth="1" opacity="0.25" />
+        <line x1="150" y1="200" x2="240" y2="360" stroke="#38bdf8" strokeWidth="1" opacity="0.25" />
+        <line x1="240" y1="360" x2="120" y2="480" stroke="#38bdf8" strokeWidth="1" opacity="0.25" />
+        <line x1="120" y1="480" x2="280" y2="580" stroke="#38bdf8" strokeWidth="1" opacity="0.25" />
+        <line x1="280" y1="580" x2="420" y2="450" stroke="#38bdf8" strokeWidth="1" opacity="0.25" />
+        <line x1="420" y1="450" x2="580" y2="520" stroke="#38bdf8" strokeWidth="1" opacity="0.25" />
+        <line x1="500" y1="280" x2="580" y2="520" stroke="#38bdf8" strokeWidth="1" opacity="0.25" />
+      </svg>
+
       {/* Top Header Bar */}
       <header className="hims-top-bar">
         {/* Left: AB Logo */}
@@ -63,7 +90,6 @@ export function HIMSHomeDashboard({ onSelectModule, onLogout }) {
           {/* 6-Column Metro / Windows Flat Grid */}
           <div className="hims-tile-grid">
             {/* ROW 1 */}
-            {/* Col 1,2,3 are empty (occupied by headline banner) */}
             <div className="hims-tile-spacer-row1"></div>
 
             {/* Col 4: ADMIN (Bright Green) */}
@@ -109,7 +135,6 @@ export function HIMSHomeDashboard({ onSelectModule, onLogout }) {
             >
               <div className="hims-tile-icon-wrap">
                 <svg width="46" height="46" viewBox="0 0 24 24" fill="none">
-                  {/* Doctor & Patient head silhouettes */}
                   <circle cx="9" cy="7" r="3.5" fill="#ffffff" />
                   <path d="M3.5 18c0-3 2.5-5.5 5.5-5.5s5.5 2.5 5.5 5.5" stroke="#ffffff" strokeWidth="2" fill="none" />
                   <circle cx="16" cy="9" r="3" fill="#ffffff" />
@@ -186,7 +211,6 @@ export function HIMSHomeDashboard({ onSelectModule, onLogout }) {
 
 
             {/* ROW 3 */}
-            {/* Col 1 & 2: Empty space */}
             <div className="hims-tile-empty"></div>
             <div className="hims-tile-empty"></div>
 
@@ -198,7 +222,6 @@ export function HIMSHomeDashboard({ onSelectModule, onLogout }) {
             >
               <div className="hims-tile-icon-wrap">
                 <svg width="44" height="44" viewBox="0 0 24 24" fill="none">
-                  {/* Surgeon in cap & mask */}
                   <path d="M8 8 C8 4 16 4 16 8 Z" fill="#38bdf8" />
                   <circle cx="12" cy="9" r="3.5" fill="#fbcfe8" />
                   <rect x="9" y="9" width="6" height="3" rx="1" fill="#ffffff" />
@@ -216,7 +239,6 @@ export function HIMSHomeDashboard({ onSelectModule, onLogout }) {
             >
               <div className="hims-tile-icon-wrap">
                 <svg width="44" height="44" viewBox="0 0 24 24" fill="none">
-                  {/* Nurse in cap with red cross */}
                   <path d="M9 5 L15 5 L14 7 L10 7 Z" fill="#ffffff" />
                   <path d="M11.5 5.5 v2 M10.5 6.5 h2" stroke="#dc2626" strokeWidth="1.5" />
                   <circle cx="12" cy="10" r="3.5" fill="#fed7aa" />
@@ -243,7 +265,6 @@ export function HIMSHomeDashboard({ onSelectModule, onLogout }) {
             >
               <div className="hims-tile-icon-wrap">
                 <svg width="46" height="46" viewBox="0 0 24 24" fill="none">
-                  {/* 3 people crowd icon */}
                   <circle cx="12" cy="7" r="3" fill="#ffffff" />
                   <path d="M7 19c0-2.8 2.2-5 5-5s5 2.2 5 5" fill="#ffffff" />
                   <circle cx="5" cy="9" r="2.2" fill="rgba(255,255,255,0.7)" />

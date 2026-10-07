@@ -2296,3 +2296,52 @@ body {
     font-size: 9.5px;
   }
 }
+
+/* ==========================================================================
+   DOCTOR PROFILE IMAGE DISPLAY & PLEXUS OVERLAY
+   ========================================================================== */
+
+.atri-bg-doctor-wrap {
+  position: absolute;
+  right: 0;
+  bottom: 32px;
+  height: 94vh;
+  max-width: 48vw;
+  z-index: 5;
+  pointer-events: none;
+  display: flex;
+  align-items: flex-end;
+  justify-content: flex-end;
+}
+
+.atri-bg-doctor-img {
+  height: 100%;
+  max-height: 94vh;
+  width: auto;
+  object-fit: contain;
+  object-position: right bottom;
+  filter: drop-shadow(-8px 0 25px rgba(15, 23, 42, 0.08));
+}
+
+.atri-bg-plexus {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  z-index: 2;
+  pointer-events: none;
+  opacity: 0.85;
+}
+
+.atri-login-screen,
+.hims-home-screen {
+  background: linear-gradient(135deg, #e4edf6 0%, #edf3f8 45%, #ffffff 100%) !important;
+  background-image: none !important;
+}
+
+@media (max-width: 900px) {
+  .atri-bg-doctor-wrap {
+    opacity: 0.25;
+    max-width: 85vw;
+  }
+}

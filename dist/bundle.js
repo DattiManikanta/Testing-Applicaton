@@ -766,7 +766,7 @@ function playHospitalChime() {
 
 // --- src/components/LoginPage.jsx ---
 
-// AtriBiz AB Logo Vector Component (Matching the screenshot precisely)
+// AtriBiz AB Logo Vector Component
 function AtriBizLogo({
   width = 120,
   height = 62
@@ -848,6 +848,145 @@ function LoginPage({
   return /*#__PURE__*/React.createElement("div", {
     className: "atri-login-screen"
   }, /*#__PURE__*/React.createElement("div", {
+    className: "atri-bg-doctor-wrap"
+  }, /*#__PURE__*/React.createElement("img", {
+    src: "./doctor_profile.jpg",
+    alt: "Doctor",
+    className: "atri-bg-doctor-img"
+  })), /*#__PURE__*/React.createElement("svg", {
+    className: "atri-bg-plexus",
+    viewBox: "0 0 1000 800",
+    fill: "none",
+    preserveAspectRatio: "none"
+  }, /*#__PURE__*/React.createElement("circle", {
+    cx: "150",
+    cy: "200",
+    r: "4",
+    fill: "#38bdf8",
+    opacity: "0.6"
+  }), /*#__PURE__*/React.createElement("circle", {
+    cx: "320",
+    cy: "180",
+    r: "5",
+    fill: "#38bdf8",
+    opacity: "0.7"
+  }), /*#__PURE__*/React.createElement("circle", {
+    cx: "240",
+    cy: "360",
+    r: "4",
+    fill: "#38bdf8",
+    opacity: "0.5"
+  }), /*#__PURE__*/React.createElement("circle", {
+    cx: "120",
+    cy: "480",
+    r: "4",
+    fill: "#38bdf8",
+    opacity: "0.6"
+  }), /*#__PURE__*/React.createElement("circle", {
+    cx: "280",
+    cy: "580",
+    r: "5",
+    fill: "#38bdf8",
+    opacity: "0.7"
+  }), /*#__PURE__*/React.createElement("circle", {
+    cx: "420",
+    cy: "450",
+    r: "4",
+    fill: "#38bdf8",
+    opacity: "0.5"
+  }), /*#__PURE__*/React.createElement("circle", {
+    cx: "500",
+    cy: "280",
+    r: "5",
+    fill: "#38bdf8",
+    opacity: "0.6"
+  }), /*#__PURE__*/React.createElement("circle", {
+    cx: "580",
+    cy: "520",
+    r: "4",
+    fill: "#38bdf8",
+    opacity: "0.4"
+  }), /*#__PURE__*/React.createElement("line", {
+    x1: "150",
+    y1: "200",
+    x2: "320",
+    y2: "180",
+    stroke: "#38bdf8",
+    strokeWidth: "1",
+    opacity: "0.25"
+  }), /*#__PURE__*/React.createElement("line", {
+    x1: "320",
+    y1: "180",
+    x2: "500",
+    y2: "280",
+    stroke: "#38bdf8",
+    strokeWidth: "1",
+    opacity: "0.25"
+  }), /*#__PURE__*/React.createElement("line", {
+    x1: "320",
+    y1: "180",
+    x2: "240",
+    y2: "360",
+    stroke: "#38bdf8",
+    strokeWidth: "1",
+    opacity: "0.25"
+  }), /*#__PURE__*/React.createElement("line", {
+    x1: "240",
+    y1: "360",
+    x2: "420",
+    y2: "450",
+    stroke: "#38bdf8",
+    strokeWidth: "1",
+    opacity: "0.25"
+  }), /*#__PURE__*/React.createElement("line", {
+    x1: "150",
+    y1: "200",
+    x2: "240",
+    y2: "360",
+    stroke: "#38bdf8",
+    strokeWidth: "1",
+    opacity: "0.25"
+  }), /*#__PURE__*/React.createElement("line", {
+    x1: "240",
+    y1: "360",
+    x2: "120",
+    y2: "480",
+    stroke: "#38bdf8",
+    strokeWidth: "1",
+    opacity: "0.25"
+  }), /*#__PURE__*/React.createElement("line", {
+    x1: "120",
+    y1: "480",
+    x2: "280",
+    y2: "580",
+    stroke: "#38bdf8",
+    strokeWidth: "1",
+    opacity: "0.25"
+  }), /*#__PURE__*/React.createElement("line", {
+    x1: "280",
+    y1: "580",
+    x2: "420",
+    y2: "450",
+    stroke: "#38bdf8",
+    strokeWidth: "1",
+    opacity: "0.25"
+  }), /*#__PURE__*/React.createElement("line", {
+    x1: "420",
+    y1: "450",
+    x2: "580",
+    y2: "520",
+    stroke: "#38bdf8",
+    strokeWidth: "1",
+    opacity: "0.25"
+  }), /*#__PURE__*/React.createElement("line", {
+    x1: "500",
+    y1: "280",
+    x2: "580",
+    y2: "520",
+    stroke: "#38bdf8",
+    strokeWidth: "1",
+    opacity: "0.25"
+  })), /*#__PURE__*/React.createElement("div", {
     className: "atri-top-logo"
   }, /*#__PURE__*/React.createElement(AtriBizLogo, {
     width: 135,
@@ -921,7 +1060,146 @@ function HIMSHomeDashboard({
   }, []);
   return /*#__PURE__*/React.createElement("div", {
     className: "hims-home-screen"
-  }, /*#__PURE__*/React.createElement("header", {
+  }, /*#__PURE__*/React.createElement("div", {
+    className: "atri-bg-doctor-wrap"
+  }, /*#__PURE__*/React.createElement("img", {
+    src: "./doctor_profile.jpg",
+    alt: "Doctor",
+    className: "atri-bg-doctor-img"
+  })), /*#__PURE__*/React.createElement("svg", {
+    className: "atri-bg-plexus",
+    viewBox: "0 0 1000 800",
+    fill: "none",
+    preserveAspectRatio: "none"
+  }, /*#__PURE__*/React.createElement("circle", {
+    cx: "150",
+    cy: "200",
+    r: "4",
+    fill: "#38bdf8",
+    opacity: "0.6"
+  }), /*#__PURE__*/React.createElement("circle", {
+    cx: "320",
+    cy: "180",
+    r: "5",
+    fill: "#38bdf8",
+    opacity: "0.7"
+  }), /*#__PURE__*/React.createElement("circle", {
+    cx: "240",
+    cy: "360",
+    r: "4",
+    fill: "#38bdf8",
+    opacity: "0.5"
+  }), /*#__PURE__*/React.createElement("circle", {
+    cx: "120",
+    cy: "480",
+    r: "4",
+    fill: "#38bdf8",
+    opacity: "0.6"
+  }), /*#__PURE__*/React.createElement("circle", {
+    cx: "280",
+    cy: "580",
+    r: "5",
+    fill: "#38bdf8",
+    opacity: "0.7"
+  }), /*#__PURE__*/React.createElement("circle", {
+    cx: "420",
+    cy: "450",
+    r: "4",
+    fill: "#38bdf8",
+    opacity: "0.5"
+  }), /*#__PURE__*/React.createElement("circle", {
+    cx: "500",
+    cy: "280",
+    r: "5",
+    fill: "#38bdf8",
+    opacity: "0.6"
+  }), /*#__PURE__*/React.createElement("circle", {
+    cx: "580",
+    cy: "520",
+    r: "4",
+    fill: "#38bdf8",
+    opacity: "0.4"
+  }), /*#__PURE__*/React.createElement("line", {
+    x1: "150",
+    y1: "200",
+    x2: "320",
+    y2: "180",
+    stroke: "#38bdf8",
+    strokeWidth: "1",
+    opacity: "0.25"
+  }), /*#__PURE__*/React.createElement("line", {
+    x1: "320",
+    y1: "180",
+    x2: "500",
+    y2: "280",
+    stroke: "#38bdf8",
+    strokeWidth: "1",
+    opacity: "0.25"
+  }), /*#__PURE__*/React.createElement("line", {
+    x1: "320",
+    y1: "180",
+    x2: "240",
+    y2: "360",
+    stroke: "#38bdf8",
+    strokeWidth: "1",
+    opacity: "0.25"
+  }), /*#__PURE__*/React.createElement("line", {
+    x1: "240",
+    y1: "360",
+    x2: "420",
+    y2: "450",
+    stroke: "#38bdf8",
+    strokeWidth: "1",
+    opacity: "0.25"
+  }), /*#__PURE__*/React.createElement("line", {
+    x1: "150",
+    y1: "200",
+    x2: "240",
+    y2: "360",
+    stroke: "#38bdf8",
+    strokeWidth: "1",
+    opacity: "0.25"
+  }), /*#__PURE__*/React.createElement("line", {
+    x1: "240",
+    y1: "360",
+    x2: "120",
+    y2: "480",
+    stroke: "#38bdf8",
+    strokeWidth: "1",
+    opacity: "0.25"
+  }), /*#__PURE__*/React.createElement("line", {
+    x1: "120",
+    y1: "480",
+    x2: "280",
+    y2: "580",
+    stroke: "#38bdf8",
+    strokeWidth: "1",
+    opacity: "0.25"
+  }), /*#__PURE__*/React.createElement("line", {
+    x1: "280",
+    y1: "580",
+    x2: "420",
+    y2: "450",
+    stroke: "#38bdf8",
+    strokeWidth: "1",
+    opacity: "0.25"
+  }), /*#__PURE__*/React.createElement("line", {
+    x1: "420",
+    y1: "450",
+    x2: "580",
+    y2: "520",
+    stroke: "#38bdf8",
+    strokeWidth: "1",
+    opacity: "0.25"
+  }), /*#__PURE__*/React.createElement("line", {
+    x1: "500",
+    y1: "280",
+    x2: "580",
+    y2: "520",
+    stroke: "#38bdf8",
+    strokeWidth: "1",
+    opacity: "0.25"
+  })), /*#__PURE__*/React.createElement("header", {
     className: "hims-top-bar"
   }, /*#__PURE__*/React.createElement("div", {
     className: "hims-top-logo"
